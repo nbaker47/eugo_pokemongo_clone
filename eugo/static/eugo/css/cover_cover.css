@@ -1,0 +1,107 @@
+/*
+ * Globals
+ */
+ @-webkit-keyframes titleAnimation { from { font-size:10px; } to { font-size:30px; } }
+ @-moz-keyframes titleAnimation { from { font-size:10px; } to { font-size:30px; } }
+ @keyframes titleAnimation { from { font-size:10px; } to { font-size:30px; } }
+/* Links */
+a,
+a:focus,
+a:hover {
+  color: #fff;
+}
+
+/* Custom default button */
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus {
+  color: #333;
+  text-shadow: none; /* Prevent inheritance from `body` */
+  background-color: #fff;
+  border: .05rem solid #fff;
+}
+
+html,
+body {
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+}
+
+body {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  color: #fff;
+  text-shadow: 0 .1rem .4rem rgba(0, 0, 0, .5);
+  box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+}
+
+#parent-container{
+  position: relative;
+}
+
+
+.canvas_class{
+  z-index: 0;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.cover-container {
+  max-width: 42em;
+  z-index: 2;
+  position: absolute;
+}
+
+.inner-cover{
+  margin-top: 70%;
+}
+
+.cov-head{
+    letter-spacing: .4rem;
+    -webkit-animation:textgrowth ease-in-out 1;
+    -moz-animation:textgrowth ease-in-out 1;
+    animation:textgrowth ease-in-out 1;
+
+    -webkit-animation-fill-mode:forwards;
+    -moz-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+
+    -webkit-animation-duration:3s;
+    -moz-animation-duration:3s;
+    animation-duration:3s;
+}
+
+@keyframes textgrowth {
+  0% {
+  font-size: 48px;
+  letter-spacing: .4rem;
+  }
+  100% {
+  font-size: 50px;
+  letter-spacing: .9rem;
+  }
+}
+
+/*
+ * Cover
+ */
+.cover {
+  padding: 0 1.5rem;
+}
+.cover .btn-lg {
+  padding: .75rem 1.25rem;
+  font-weight: 700;
+}
+
+/*
+ * Footer
+ */
+.mastfoot {
+  color: rgba(255, 255, 255, .5);
+}
+
