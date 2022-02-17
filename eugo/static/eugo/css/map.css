@@ -1,0 +1,35 @@
+.parent-container-map{
+    border-color: red;
+    background: aqua;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+}
+
+.map{
+    border-color: red;
+    background: rgb(55, 73, 47);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+}
+
+.side-panel{
+    border-color: blue;
+    position: absolute; 
+    width: 20%;
+    height: 50%;
+    right: 0%;
+    top: 20%;
+    background-color: blanchedalmond;
+}
+
+.side-panel-list{
+    margin-top: 30%;
+}

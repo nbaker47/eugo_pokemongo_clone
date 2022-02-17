@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+   
+   <!----> <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
+    
+    <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
+
+    <title>EUGO</title>
+
+    <!-- Custom styles for this template -->
+    <link href='{% static "/eugo/css/map.css" %}' rel="stylesheet"> 
+  </head>
+
+  <body>
+
+    <div class="text-center parent-container-map">
+        <div class="map">
+
+        </div>
+
+        <div class="side-panel">
+            <ul class = "side-panel-list list-unstyled ">
+                <li><a href=""> Player </a></li>
+                <li><a href=""> Lecturers </a></li>
+                <li><a href=""> LecturerDex </a></li>
+                <li><a href=""> Logout </a></li>
+            </ul>
+        </div>
+
+    </div>
+
+  </body>
+</html>
