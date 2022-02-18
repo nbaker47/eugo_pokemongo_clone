@@ -16,3 +16,12 @@ def map(request):
 
 def login(request):
     return render(request, 'login.html')
+
+def player(request):
+    return render(request, 'player.html')
+
+def lecturers(request):
+    return render(request, 'lecturers.html')
+
+def lecturerdex(request):
+    return render(request, 'lecturerdex.html')
