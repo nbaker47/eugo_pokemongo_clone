@@ -17,18 +17,18 @@
     <link href='{% static "/eugo/css/map.css" %}' rel="stylesheet"> 
   </head>
 
-  <body>
+  <body class="text-center" id ="parent-container">
 
     <div class="text-center parent-container-map">
         <div class="map">
-
+            <img src='{% static "/eugo/img/exe_map_alpha.png" %}' class="map-img">
         </div>
 
         <div class="side-panel">
             <ul class = "side-panel-list list-unstyled ">
-                <li><a href=""> Player </a></li>
-                <li><a href=""> Lecturers </a></li>
-                <li><a href=""> LecturerDex </a></li>
+                <li><a href="/eugo/player"> Player </a></li>
+                <li><a href="/eugo/lecturers"> Lecturers </a></li>
+                <li><a href="/eugo/lecturerdex"> LecturerDex </a></li>
                 <li><a href=""> Logout </a></li>
             </ul>
         </div>

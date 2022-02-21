@@ -25,3 +25,6 @@ def lecturers(request):
 
 def lecturerdex(request):
     return render(request, 'lecturerdex.html')
+
+def mapmod(request):
+    return render(request, 'mapmod.html')
