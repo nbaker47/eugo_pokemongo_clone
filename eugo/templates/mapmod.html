@@ -20,7 +20,7 @@
   <body>
 
     <div class="text-center parent-container-map" >
-        <div class="map">
+        <div class="map" id="mapConID">
             <img src='{% static "/eugo/img/exe_map_alpha.png" %}' class="map-img" onclick="showEventSelect()">
         </div>
 
@@ -34,8 +34,9 @@
                     <input type="number" name="hp" placeholder="Lecturer Hp">
                     <input type="number" name="attack" placeholder="Lecturer Attack">
                     <select name="type" placeholder="Lecturer Type">
-                        <option value="compsci">Computer Science</option>
+                        <option value="english">English</option>
                         <option value="maths">Maths</option>
+                        <option value="science">Science</option>
                     </select>
                     <div class="image mt-3 mb-3 img-container" id="sliderImages">
                         <img src='{% static "/eugo/img/teacher_sprites/teacher_1.png" %}' class="spirite-img">
@@ -45,9 +46,12 @@
                     
                     <input class="rangeslider" type="range" id="sprite" name="teach_sprite"
                     min="1" max="3" value="1">
+                    <input type="hidden" value="0,0" id="coordsBox">
+                    <input type="hidden" value="" id="gameOpBox">
+                    <input type="submit" class="form-submit" value="Confirm" onclick="confirmForm()">
                 </form>
             </ul>
-            <img src='{% static "/eugo/img/qr_alpha.png" %}' class="qr-img">
+            <!--<img src='{% static "/eugo/img/qr_alpha.png" %}' class="qr-img">-->
         </div>
 
 
@@ -71,33 +75,60 @@
             var y = event.clientY;
             panel.style.left = x + "px";
             panel.style.top = y + "px";
+            resetBox();
+            mapContainer= document.getElementById("mapConID");
+            var xOff = getOffset(mapContainer).left;
+            var yOff = getOffset(mapContainer).top;
+            document.getElementById("coordsBox").value = (x - xOff) + "," + (y - yOff);
             panel.style.visibility = "visible";	
         }
 
+        function getOffset(el) {
+            const rect = el.getBoundingClientRect();
+            return {
+                left: rect.left + window.scrollX,
+                top: rect.top + window.scrollY
+            };
+        }
+
+        function resetBox(){
+            document.getElementById("lecSpawnLi").style.color = "white";
+            document.getElementById("lecBattleLi").style.color = "white";
+            menu = document.getElementById("lecSpawn");
+            menu.style.width = "0";	
+            menu.style.height = "0";
+            menu.style.visibility = "hidden";
+        }
+
         function showLecSpawn(choice){
+            document.getElementById("lecSpawnLi").style.color = "white";
+            document.getElementById("lecBattleLi").style.color = "white";
             menu = document.getElementById("lecSpawn");
             menu.style.width = "100%";	
             menu.style.height = "100%";
             menu.style.visibility = "visible";
             li = document.getElementById(choice);
-            li.style.col	
+            li.style.color = "red";
+            document.getElementById("gameOpBox").value = choice;
         }
 
         window.addEventListener('load', function() {
+            var rangeslider = document.getElementById("sprite");
 
-        var rangeslider = document.getElementById("sprite");
+            var images = document.getElementById("sliderImages");
 
-        var images = document.getElementById("sliderImages");
+            rangeslider.addEventListener('input', function() {
+            for (var i = 0; i < images.children.length; i++) {
+                images.children[i].style.display = 'none';
+            }
+            i = Number(this.value) - 1;
+            images.children[i].style.display = 'block';
+            });
+        });
 
-        rangeslider.addEventListener('input', function() {
-        for (var i = 0; i < images.children.length; i++) {
-            images.children[i].style.display = 'none';
+        function confirmForm(){
+
         }
-        i = Number(this.value) - 1;
-        images.children[i].style.display = 'block';
-        });
-
-        });
 
     </script>
 
