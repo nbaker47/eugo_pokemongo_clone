@@ -18,7 +18,7 @@ class Lecturer(models.Model):
     sprite = models.CharField(max_length=100)
     pos = models.CharField(max_length=100)
     lecturer_type = models.CharField(max_length=100)
-    is_wild = models.BooleanField(defaul=True)
+    is_wild = models.BooleanField(default=True)
 
     def __str__(self):
         return (self.name)
