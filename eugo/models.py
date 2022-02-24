@@ -10,6 +10,7 @@ class Lecturer(models.Model):
     pos = models.CharField(max_length=100)
     type = models.CharField(max_length=100)
     wildOrBattle = models.CharField(max_length=100)
+    qrUrl = models.CharField(max_length=500)
 
     def __str__(self):
         return (self.name)

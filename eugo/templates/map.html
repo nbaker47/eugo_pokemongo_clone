@@ -8,14 +8,18 @@
     <meta name="description" content="">
     <meta name="author" content="">
    
-   <!----> <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
+    <title>EUGO</title>
+    
+    <!--bootstrap CSS-->
+    <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
     
     <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
 
-    <title>EUGO</title>
-
     <!-- Custom styles for this template -->
     <link href='{% static "/eugo/css/map.css" %}' rel="stylesheet"> 
+
+    <!--webcam JS script-->
+
   </head>
 
   <body>
@@ -26,14 +30,14 @@
             <img src='{% static "/eugo/img/exe_map_alpha.png" %}' class="map-img">
         </div>
 
-        {%  for i in lec %}
+        {% for i in lec %}
         <div class="lec-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
         font-weight: bold; list-style-type: none;" id={{i.id}} value={{i.pos}}>
             <li>{{ i.name }}</li>
             <li>{{ i.duration }} Mins Remaining</li>
             <li>{{ i.pos }}</li>
             <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img"></li>
-            <li><img src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example' style="height: 30%; width: 30%;"></li>
+            <li><button type="button" onclick="showCam()">Confirm QR Code</button></li>
         </div>
         {% endfor %}
 
@@ -44,7 +48,15 @@
               <li><a href="/eugo/lecturerdex"> LecturerDex </a></li>
               <li><a href=""> Logout </a></li>
           </ul>
-      </div>
+        </div>
+
+        <div id="cam-div">
+            <video autoplay="true" id="videoElement">
+            </video>
+            <button type="button" class="cam-button" id="cam-button-cancel" 
+                onclick="hideCam()">Cancel</button>
+            <button type="button" class="cam-button" id="cam-button-submit">Submit</button>
+        </div>
 
     </div>
 
@@ -79,7 +91,7 @@
                 
                 document.getElementById('parent-container-map-id').appendChild(xImg);
                 */
-                resetBox();
+                //resetBox();
             } 
         }
 
@@ -89,15 +101,6 @@
                 left: rect.left + window.scrollX,
                 top: rect.top + window.scrollY
             };
-        }
-
-        function resetBox(){
-            document.getElementById("lecSpawnLi").style.color = "white";
-            document.getElementById("lecBattleLi").style.color = "white";
-            menu = document.getElementById("lecSpawn");
-            menu.style.width = "0";	
-            menu.style.height = "0";
-            menu.style.visibility = "hidden";
         }
 
         function showLecSpawn(choice){
@@ -112,20 +115,50 @@
             document.getElementById("gameOpBox").value = choice;
         }
 
-        
-        window.addEventListener('load', function() {
-            var rangeslider = document.getElementById("sprite");
+        function showCam(){
+            camDiv = document.getElementById("cam-div");
+            camDiv.style.width = "500px"
+            camDiv.style.height = "375px"
+            camCam = document.getElementById("videoElement");
+            camCam.style.width = "500px"
+            camCam.style.height = "375px"
+            camBut = document.getElementById("cam-button-cancel");
+            camBut.style.width = "20%"
+            camBut.style.height = "10%"
+            camBut.style.visibility = "visible"
+            camBut = document.getElementById("cam-button-submit");
+            camBut.style.width = "20%"
+            camBut.style.height = "10%"
+            camBut.style.visibility = "visible"
+        }
 
-            var images = document.getElementById("sliderImages");
+        function hideCam(){
+            camDiv = document.getElementById("cam-div");
+            camDiv.style.width = "0"
+            camDiv.style.height = "0"
+            camCam = document.getElementById("videoElement");
+            camCam.style.width = "0"
+            camCam.style.height = "0"
+            camBut = document.getElementById("cam-button-cancel");
+            camBut.style.width = "0%"
+            camBut.style.height = "0%"
+            camBut.style.visibility = "hidden"
+            camBut = document.getElementById("cam-button-submit");
+            camBut.style.width = "0%"
+            camBut.style.height = "0%"
+            camBut.style.visibility = "hidden"
+        }
 
-            rangeslider.addEventListener('input', function() {
-            for (var i = 0; i < images.children.length; i++) {
-                images.children[i].style.display = 'none';
-            }
-            i = Number(this.value) - 1;
-            images.children[i].style.display = 'block';
+        var video = document.querySelector("#videoElement");
+        if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+            video.srcObject = stream;
+            })
+            .catch(function (err0r) {
+            console.log("Something went wrong!");
             });
-        });
+        }
 
     </script>
 
