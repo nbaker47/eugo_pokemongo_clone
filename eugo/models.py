@@ -1,5 +1,11 @@
 from django.db import models
 
+
+class Player(models.Model):
+   username = models.CharField(max_length=20)
+   password = models.CharField(max_length=255)
+   is_admin = models.BooleanField(default=False)
+
 # Create your models here.
 class Lecturer(models.Model):
     duration = models.IntegerField()
