@@ -6,6 +6,9 @@ class Player(models.Model):
    password = models.CharField(max_length=255)
    is_admin = models.BooleanField(default=False)
 
+   def __str__(self):
+       return(self.username)
+
 # Create your models here.
 class Lecturer(models.Model):
     duration = models.IntegerField()
@@ -14,8 +17,8 @@ class Lecturer(models.Model):
     attack = models.IntegerField()
     sprite = models.CharField(max_length=100)
     pos = models.CharField(max_length=100)
-    type = models.CharField(max_length=100)
-    wildOrBattle = models.CharField(max_length=100)
+    lecturer_type = models.CharField(max_length=100)
+    is_wild = models.BooleanField(defaul=True)
 
     def __str__(self):
         return (self.name)
