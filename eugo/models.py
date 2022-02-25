@@ -29,3 +29,8 @@ class Lecturer(models.Model):
 
     def __str__(self):
         return (self.name)
+
+""" A table to link the player with the lecturers they own """
+class Hand(models.Model):
+    username        =   models.ForeignKey(Player, on_delete=models.CASCADE)
+    name            = models.ForeignKey(Lecturer, on_delete=models.CASCADE)
