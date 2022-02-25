@@ -151,6 +151,7 @@
 
         function onScanSuccess(decodedText, decodedResult) {
             curLec = document.getElementById('current-lec').value
+            console.log(curLec + " ?= " + decodedText);
             if(curLec == decodedText + ".png"){
                 alert("matched QR!")
                 

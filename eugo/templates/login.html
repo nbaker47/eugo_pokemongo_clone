@@ -18,6 +18,40 @@
   </head>
 
   <body>
-
+    <div class="full-width-bar">
+      <h1>EUGO</h1>
+  </div>
+  
+  <div>
+      <div>
+          <h2 class="secondHeader">Login</h2>
+  
+          <hr>
+          <br>
+      </div>
+  
+  
+      <form class="form">    <!--idk how to do the method post for django   method="post"-->
+  
+          <label>
+              <input type="text" id="username" name="username" placeholder="Username" size="50" required>
+          </label>
+          <br>
+          <label>
+              <input type="password" name="password" placeholder="Password" size="50" required>
+          </label>
+          <br>
+          <label>
+              <input type="submit" value="Login" size="25">
+              <input type="reset" value="Cancel" size="25">
+          </label>
+          <br>
+      </form>
+      <form class="form" action="./register.html"> 
+          <label >
+              <input type="submit" value="Register" size="50">
+          </label>
+      </form>
+      <br>
   </body>
 </html>

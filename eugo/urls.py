@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+""" All of the urls and extensions that we have made, all of them are /eugo/{} """
 urlpatterns = [
     path('', views.index, name='index'),
     path('login/', views.login, name='login'),
