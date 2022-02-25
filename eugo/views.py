@@ -20,6 +20,23 @@ def map(request):
 def login(request):
     return render(request, 'login.html')
 
+def register(request):
+    if request.method == "POST":
+        print(request.POST)
+
+        firstname   =   request.POST['firstname']
+        surname     =   request.POST['surname']
+        username    =   request.POST['username']
+        password1   =   request.POST['password1']
+        password2   =   request.POST['password2']
+
+        print(firstname, " - ", surname, " - ", username, " - ", password1, " - ", password2)
+
+        #Do salt etc here i think. checking username hasnt been taken
+        #We could do validation here but I think doing it in JavaScript might be easier
+
+    return render(request, 'register.html')
+
 def player(request):
     return render(request, 'player.html')
 
