@@ -20,6 +20,9 @@ def map(request):
 def login(request):
     return render(request, 'login.html')
 
+def register(request):
+    return render(request, 'register.html')
+
 def player(request):
     return render(request, 'player.html')
 
