@@ -2,13 +2,30 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <style media="screen">
+      .stats span{
+    	position:absolute;
+    	visibility:hidden;
+      }
+      .stats:hover span{
+    	visibility:visible;
+      position: absolute;
+      text-align: center;
+    	z-index:1;
+      }
+
+      td {
+        text-align: center;
+      }
+
+    </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-   
-   <!----> <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
-    
+
+   <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
+
     <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
 
     <title>EUGO</title>
@@ -18,6 +35,53 @@
   </head>
 
   <body>
-
+    <div>
+      <table class="visits">
+  			<thead>
+  				<tr>
+  					<th>Evolution 1</th>
+  					<th>Evolution 2</th>
+  					<th>Evolution 3</th>
+  				</tr>
+  			</thead>
+        <tbody id="lecturerdex">
+          {% for i in lec %}
+          <tr>
+            <td class="stats" id="{{i.id}}"><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img" id="{{i.id}}image">
+            <span id="{{i.id}}stat">Name: {{ i.name }} <br> Hitpoints: {{ i.hp }} <br> Attack Power: {{ i.attack }}</span></td>
+          </tr>
+          {% endfor %}
+      </table>
+    </div>
+</div>
+  <script>
+    window.onload = function() {
+      var table = document.getElementById("lecturerdex");
+      for (var i = 0, row; row = table.rows[i]; i++) {
+        for (var j = 0, cell; cell = row.cells[j]; j++) {
+          var lecturer = cell;
+          var image = lecturer.children[0];
+          var stats = lecturer.children[1];
+          var rect = image.getBoundingClientRect();
+          stats.style.left = rect.left - 50 + "px";
+          stats.style.top = rect.top + 35 + "px";
+        }
+      }
+    }
+  </script>
   </body>
 </html>
+
+<!-- <style media="screen">
+  .stats span{
+  position:absolute;
+  visibility:hidden;
+  top:500px; left:550px;
+  }
+  .stats:hover span{
+  visibility:visible;
+  position: absolute;
+  z-index:1;
+  }
+
+</style> -->
