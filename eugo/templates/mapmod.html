@@ -33,7 +33,11 @@
             <li>{{ i.duration }} Mins Remaining</li>
             <li>{{ i.pos }}</li>
             <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img"></li>
-            <li><img src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example' style="height: 30%; width: 30%;"></li>
+            <button type="button" id="qr-gen-but" class="qr-gen-but" onclick="viewQR()">View QR</button>
+            <li class="qr" id="qrId">
+                <img src='{% static "/eugo/img/qr/"%}{{i.qrUrl}}'  style="height: 30%; width: 30%;">
+                <button type="button" onclick="hideQR()" id="hideQRButton" class="hideQRButton">Hide</button>
+            </li>
         </div>
         {% endfor %}
 
@@ -63,7 +67,6 @@
                     min="1" max="3" value="1">
                     <input type="hidden" value="0,0" id="coordsBox" name="coords">
                     <input type="hidden" value="" id="gameOpBox" name="gameop">
-
                     <input type="submit" class="form-submit" value="Confirm">
                 </form>
             </ul>
@@ -103,7 +106,7 @@
                 
                 document.getElementById('parent-container-map-id').appendChild(xImg);
                 */
-                resetBox();
+                //resetBox();
             } 
         }
 
@@ -164,6 +167,20 @@
             images.children[i].style.display = 'block';
             });
         });
+
+        function viewQR(){
+            qr = document.getElementById("qrId");
+            qr.style.visibility = "visible";
+            qr.style.width = "500px";
+            qr.style.height = "500px";
+        }
+
+        function hideQR(){
+            qr = document.getElementById("qrId");
+            qr.style.visibility = "hidden";
+            qr.style.width = "0";
+            qr.style.height = "0";
+        }
 
     </script>
 

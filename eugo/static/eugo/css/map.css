@@ -83,63 +83,111 @@
     margin: 0 auto;
   }
   
-  .myslider {
-    -webkit-appearance: none;
-    background: #FCF3CF;
-    width: 100%;
-    height: 20px;
-    opacity: 0.8;
-    margin-top: 100px;
-  }
-  
-  .myslider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    cursor: pointer;
-    background: #34495E;
-    width: 33%;
-    height: 20px;
-  }
-  
-  .myslider:hover {
-    opacity: 1;
-  }
-  
-  .spirite-img {
+.myslider {
+  -webkit-appearance: none;
+  background: #FCF3CF;
+  width: 100%;
+  height: 20px;
+  opacity: 0.8;
+  margin-top: 100px;
+}
+
+.myslider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  cursor: pointer;
+  background: #34495E;
+  width: 33%;
+  height: 20px;
+}
+
+.myslider:hover {
+  opacity: 1;
+}
+
+.spirite-img {
+  position: relative;
+  width: 40%;
+  height: 40%;
+  margin: 0 auto;
+}
+
+.image>img {
+  display: none;
+}
+
+.image>img.visible,
+.image>img:first-child {
+  display: block;
+}
+
+.sliderOutput>div {
+  margin: 5px;
+  width: 120px;
+  display: inline-block;
+  vertical-align: top;
+  text-align: center;
+}
+
+.sliderOutput h6,
+.sliderOutput p {
+  margin: 5px;
+}
+
+.img-container{
     position: relative;
-    width: 40%;
-    height: 40%;
-    margin: 0 auto;
-  }
-  
-  .image>img {
-    display: none;
-  }
-  
-  .image>img.visible,
-  .image>img:first-child {
-    display: block;
-  }
-  
-  .sliderOutput>div {
-    margin: 5px;
-    width: 120px;
-    display: inline-block;
-    vertical-align: top;
-    text-align: center;
-  }
-  
-  .sliderOutput h6,
-  .sliderOutput p {
-    margin: 5px;
-  }
+    width: 100%;
+    height: 100%;
+}
 
-  .img-container{
-      position: relative;
-      width: 100%;
-      height: 100%;
-  }
+.lec-map-pin{
+  z-index: 3;
+}
 
-  .lec-map-pin{
-    z-index: 3;
-  }
+/*
+#cam-div {
+  margin: 0px auto;
+  width: 500px;
+  height: 375px;
+  position: absolute;
+  top: 20%;
+  z-index: 6;
+  width: 0;
+  height: 0;
+}
+#video{
+  width: 500px;
+  height: 375px;
+  background-color: #666;
+  width: 0;
+  height: 0;
+}
 
+.camera button{
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+*/
+.qr{
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+#reader{
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  z-index: 11;
+  margin-top: 10%;
+  background-color: azure;
+}
+#cam-button-cancel{
+  width: 0;
+  height: 0;
+  z-index: 12;
+  text-align: center;
+  visibility: hidden;
+  position: absolute;
+}
