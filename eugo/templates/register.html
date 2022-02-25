@@ -35,40 +35,46 @@
 
 		<form class="form" method="POST" action="." >    <!--action to the php ./homePage.html -->
 			{% csrf_token %} <!--Prevents csrf attacks -->
-			<!--
+			
 			<label>
-				<input type="text" id="name" name="name" placeholder="Name" size="50" required>
+				<input type="text" name="firstname" placeholder="Name" size="50" required>
 			</label>
 			<br>
 			<label>
-				<input type="text" id="surname" name="surname" placeholder="Surname" size="50">
+				<input type="text" name="surname" placeholder="Surname" size="50">
 			</label>
 			<br>
 			<label>
-				<input type="text" id="username" name="username" placeholder="Username" size="50" required>
+				<input type="text"  name="username" placeholder="Username" size="50" required>
 			</label>
 			<br>
 			<label>
-				<input type="password" name="password" placeholder="Password" size="50" minlength="8" required>
+				<input type="password" name="password1" placeholder="Password" size="50" minlength="8" required>
 			</label>
 			<br>
 			<label>
-				<input type="password" name="repassword" placeholder="Re-enter Password" size="50" minlength="8" required>
+				<input type="password" name="password2" placeholder="Re-enter Password" size="50" minlength="8" required>
 			</label>
 			<br>
 			<label>
 				<input type="submit" value="Register" size="25">
 			</label>
 			<br>
-			-->
-			{{form.username}}
+			
 		</form>
-
+		
+		<a href="/eugo/login"> 
+			<button>
+				Return to Login
+			</button> </a>
+		
+		<!--
 		<form action="./login.php" class="form">
 			<label>
 				<input type="submit" value="Return" size="25">
 			</label>
 		</form>
 		<br>
+		-->
 		</body>
 </html>
