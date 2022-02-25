@@ -11,4 +11,5 @@ urlpatterns = [
     path('lecturers/', views.lecturers, name='lecturers'),
     path('lecturerdex/', views.lecturerdex, name='lecturerdex'),
     path('mapmod/', views.mapmod, name='mapmod'),
+    path('catch/', views.catch, name='catch'),
 ]

@@ -8,6 +8,7 @@ from eugo.models import Lecturer
 from eugo.forms import *
 from random import randint
 import requests
+import qrtools
 
 
 def index(request):
@@ -15,10 +16,6 @@ def index(request):
 
 def battle(request):
     return render(request, 'battle.html')
-
-def map(request):
-    lec = Lecturer.objects.all()
-    return render(request, 'map.html',{'lec': lec})
 
 def login(request):
     return render(request, 'login.html')
@@ -31,6 +28,27 @@ def lecturers(request):
 
 def lecturerdex(request):
     return render(request, 'lecturerdex.html')
+
+def catch(request):
+    if request.method == 'POST':
+        lec_id = request.POST['lecID']
+        print("lec ID: " + lec_id)
+
+    lec = Lecturer.objects.filter(id = lec_id)
+    return render(request, 'catch.html',{'lec': lec})
+
+def map(request):
+    if request.method == 'POST':
+        qrUrl = request.POST['qrUrl']
+        try:
+            qr = qrtools.QR()
+            qr.decode(qrUrl)
+            print (qr.data)
+        except:
+            print('error reading QR')
+
+    lec = Lecturer.objects.all()
+    return render(request, 'map.html',{'lec': lec})
 
 def mapmod(request):
     if request.method == 'POST':
@@ -54,7 +72,7 @@ def mapmod(request):
         with open(file_path, 'wb') as handler:
             handler.write(img_data)
         #create new row in Lecturer table
-        newLec = Lecturer(duration=duration, name=name, hp=hp, attack=attack, sprite=sprite, pos=coords, type=type, wildOrBattle=gameop, qrUrl = qr_key+'.png')
+        newLec = Lecturer(id=qr_key, duration=duration, name=name, hp=hp, attack=attack, sprite=sprite, pos=coords, type=type, wildOrBattle=gameop, qrUrl = qr_key+'.png')
         newLec.save()
         print(newLec)
 

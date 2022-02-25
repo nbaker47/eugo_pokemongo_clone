@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Lecturer(models.Model):
+    id = models.CharField(max_length=100, primary_key=True)
     duration = models.IntegerField()
     name = models.CharField(max_length=100)
     hp = models.IntegerField()

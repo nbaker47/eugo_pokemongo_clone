@@ -143,6 +143,7 @@
   z-index: 3;
 }
 
+/*
 #cam-div {
   margin: 0px auto;
   width: 500px;
@@ -153,7 +154,7 @@
   width: 0;
   height: 0;
 }
-#videoElement {
+#video{
   width: 500px;
   height: 375px;
   background-color: #666;
@@ -161,15 +162,32 @@
   height: 0;
 }
 
-.cam-button{
+.camera button{
   width: 0;
   height: 0;
   visibility: hidden;
 }
-
+*/
 .qr{
   visibility: hidden;
   width: 0;
   height: 0;
+  position: absolute;
+}
+
+#reader{
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  z-index: 11;
+  margin-top: 10%;
+  background-color: azure;
+}
+#cam-button-cancel{
+  width: 0;
+  height: 0;
+  z-index: 12;
+  text-align: center;
+  visibility: hidden;
   position: absolute;
 }

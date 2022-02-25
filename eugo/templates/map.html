@@ -37,7 +37,7 @@
             <li>{{ i.duration }} Mins Remaining</li>
             <li>{{ i.pos }}</li>
             <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img"></li>
-            <li><button type="button" onclick="showCam()">Confirm QR Code</button></li>
+            <li><button type="button" onclick="showCam('{{i.qrUrl}}','{{i.id}}')">Confirm QR Code</button></li>
         </div>
         {% endfor %}
 
@@ -50,15 +50,27 @@
           </ul>
         </div>
 
-        <div id="cam-div">
-            <video autoplay="true" id="videoElement">
-            </video>
-            <button type="button" class="cam-button" id="cam-button-cancel" 
-                onclick="hideCam()">Cancel</button>
-            <button type="button" class="cam-button" id="cam-button-submit">Submit</button>
-        </div>
+        <!--
+        <div class="camera" id='cam-div'>
+            <video id="video">Video stream not available.</video>
+            <button id="startbutton">Take photo</button>
+            <button id="cam-button-cancel" onclick="hideCam()">Cancel</button> 
+          </div>
+          <canvas id="canvas" class="pic-canv">
+          </canvas>
+          <div class="output">
+            <img id="photo" alt="The screen capture will appear in this box."> 
+          </div>
+        -->
 
+        <div style="width: 500px; position: absolute; text-align: center;" id="reader">
+        </div>
+        <div id="qr-reader-results"></div>
+        <button id="cam-button-cancel" onclick="hideCam()">Cancel</button> 
+        <input type="hidden" id="current-lec" value="">
+        <input type="hidden" id="current-lec-id" value="">
     </div>
+
 
     <script>
         window.onload = function(){
@@ -78,20 +90,6 @@
                 pin.style.backgroundImage = "url("+ gifsrc +")";
                 pin.style.backgroundSize = "contain";
                 pin.style.backgroundRepeat = "no-repeat";
-                
-                /*
-                var xImg = new Image();
-                xImg.src = '{% static "/eugo/img/x_alpha.png" %}'
-                xImg.style.left = x - xOff + "px";
-                xImg.style.top = y - yOff+ "px";
-                xImg.style.width = "20px";
-                xImg.style.height = "20px";
-                xImg.style.position = "relative";
-                xImg.style.zIndex = "4";
-                
-                document.getElementById('parent-container-map-id').appendChild(xImg);
-                */
-                //resetBox();
             } 
         }
 
@@ -115,52 +113,86 @@
             document.getElementById("gameOpBox").value = choice;
         }
 
-        function showCam(){
-            camDiv = document.getElementById("cam-div");
-            camDiv.style.width = "500px"
-            camDiv.style.height = "375px"
-            camCam = document.getElementById("videoElement");
-            camCam.style.width = "500px"
-            camCam.style.height = "375px"
-            camBut = document.getElementById("cam-button-cancel");
-            camBut.style.width = "20%"
-            camBut.style.height = "10%"
-            camBut.style.visibility = "visible"
-            camBut = document.getElementById("cam-button-submit");
-            camBut.style.width = "20%"
-            camBut.style.height = "10%"
-            camBut.style.visibility = "visible"
+        function showCam(spriteImg, id){
+            camDiv = document.getElementById("reader");
+            camDiv.style.width = "500px";
+            camDiv.style.height = "375px";
+            camDiv.style.visibility = "visible";
+            canBut = document.getElementById('cam-button-cancel');
+            canBut.style.width = "100px";
+            canBut.style.height = "30px";
+            canBut.style.visibility = "visible";
+
+            document.getElementById('current-lec').value = spriteImg;
+            //console.log("url : " + document.getElementById('current-lec').value);
+
+            document.getElementById('current-lec-id').value = id;
+            //console.log("id : " + document.getElementById('current-lec-id').value);
         }
 
         function hideCam(){
-            camDiv = document.getElementById("cam-div");
-            camDiv.style.width = "0"
-            camDiv.style.height = "0"
-            camCam = document.getElementById("videoElement");
-            camCam.style.width = "0"
-            camCam.style.height = "0"
-            camBut = document.getElementById("cam-button-cancel");
-            camBut.style.width = "0%"
-            camBut.style.height = "0%"
-            camBut.style.visibility = "hidden"
-            camBut = document.getElementById("cam-button-submit");
-            camBut.style.width = "0%"
-            camBut.style.height = "0%"
-            camBut.style.visibility = "hidden"
-        }
-
-        var video = document.querySelector("#videoElement");
-        if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (stream) {
-            video.srcObject = stream;
-            })
-            .catch(function (err0r) {
-            console.log("Something went wrong!");
-            });
+            camDiv = document.getElementById("reader");
+            camDiv.style.width = "0";
+            camDiv.style.height = "0";
+            camDiv.style.visibility = "hidden";
+            canBut = document.getElementById('cam-button-cancel');
+            canBut.style.width = "0";
+            canBut.style.height = "0";
+            canBut.style.visibility = "hidden";
         }
 
     </script>
+    
+
+    <script type="text/javascript" src='{% static "/eugo/js/html5-qrcode.min.js" %}'>
+    </script>
+
+    <script type="text/javascript">
+
+        function onScanSuccess(decodedText, decodedResult) {
+            curLec = document.getElementById('current-lec').value
+            if(curLec == decodedText + ".png"){
+                alert("matched QR!")
+                
+                //create form of lecturer and submit to /eugo/catch
+                let windowName = 'w_' + Date.now() + Math.floor(Math.random() * 100000).toString();
+                var form = document.createElement("form");
+                form.setAttribute("method", "post");
+                form.setAttribute("action", "/eugo/catch/");
+                form.setAttribute("target", windowName);
+
+                var hiddenField = document.createElement("input"); 
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", "lecID");
+                hiddenField.setAttribute("value", decodedText);
+                form.appendChild(hiddenField);
+                document.body.appendChild(form);
+
+                window.open('', windowName);
+
+                form.submit();
+            }
+            else{
+                alert("invalid QR!")
+            }
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning.
+            // for example:
+            console.warn(`Code scan error = ${error}`);
+        }
+
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: {width: 250, height: 250} },
+        /* verbose= */ false);
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
+
+    <!--QR CODE CAMERA SCRIPT
+    <script type="text/javascript" src='{% static "/eugo/js/camera.js" %}'></script>
+    -->
 
   </body>
 </html>
