@@ -27,7 +27,8 @@ def lecturers(request):
     return render(request, 'lecturers.html')
 
 def lecturerdex(request):
-    return render(request, 'lecturerdex.html')
+    lec = Lecturer.objects.all()
+    return render(request, 'lecturerdex.html',{'lec': lec}
 
 def mapmod(request):
     if request.method == 'POST':
