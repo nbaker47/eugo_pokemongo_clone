@@ -24,8 +24,8 @@
   
   <div>
       <div>
+          <br>
           <h2 class="secondHeader">Login</h2>
-  
           <hr>
           <br>
       </div>
@@ -34,7 +34,7 @@
       <form class="form">    <!--idk how to do the method post for django   method="post"-->
   
           <label>
-              <input type="text" id="username" name="username" placeholder="Username" size="50" required>
+              <input type="text" id="username" name="username" placeholder="Username" size="50" required autocomplete="off">
           </label>
           <br>
           <label>
@@ -47,9 +47,9 @@
           </label>
           <br>
       </form>
-      <form class="form" action="./register.html"> 
+      <form class="form" action="/eugo/register"> 
           <label >
-              <input type="submit" value="Register" size="50">
+              <input type="submit" value="Register" id="button1" size="50">
           </label>
       </form>
       <br>

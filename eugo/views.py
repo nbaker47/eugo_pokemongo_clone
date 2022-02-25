@@ -22,7 +22,7 @@ def login(request):
 
 def register(request):
     if request.method == "POST":
-        print(request.POST)
+        #print(request.POST)
 
         firstname   =   request.POST['firstname']
         surname     =   request.POST['surname']
