@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
@@ -9,7 +9,9 @@ from random import randint
 import requests
 import qrtools
 import re
-
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 def index(request):
     return render(request, 'index.html')
@@ -17,8 +19,32 @@ def index(request):
 def battle(request):
     return render(request, 'battle.html')
 
-def login(request):
+def signin(request): #cannot be named login because of imported function
+
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+
+        print(username, password)
+        user = authenticate(request, username=username, password=password)
+
+        print(user)
+        if user is not None:
+            login(request, user)
+            firstname = user.first_name
+
+            return render(request, "index.html", {'firstname': firstname})
+        else:
+            messages.error(request, "Incorrect login details")
+            return redirect('/eugo/login')
+
+
     return render(request, 'login.html')
+
+def signout(request):
+    logout(request)
+    messages.success(request, "Logged Out")
+    return redirect('index')
 
 def register(request):
     if request.method == "POST":
@@ -26,11 +52,17 @@ def register(request):
 
         firstname   =   request.POST['firstname']
         surname     =   request.POST['surname']
+        email       =   request.POST['email']
         username    =   request.POST['username']
-        password1   =   request.POST['password1']
-        password2   =   request.POST['password2']
+        password    =   request.POST['password1']
+        
 
-        print(firstname, " - ", surname, " - ", username, " - ", password1, " - ", password2)
+        user = User.objects.create_user(username, email, password)
+        user.first_name = firstname
+        user.last_name = surname
+        user.save()
+        print(user)
+        
 
         #Do salt etc here i think. checking username hasnt been taken
         #We could do validation here but I think doing it in JavaScript might be easier

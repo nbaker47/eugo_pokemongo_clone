@@ -29,10 +29,18 @@
           <hr>
           <br>
       </div>
+      
+      <script>
+          function validateForm() {
+            let username = document.forms['myForm']['username'].value;
+            let password1 = document.forms['myForm']['password'].value;
+            /*onsubmit="return validateForm()"*/
+          }
+
+      </script>
   
-  
-      <form class="form">    <!--idk how to do the method post for django   method="post"-->
-  
+      <form name="myForm" class="form" method="POST" action="." >    <!--idk how to do the method post for django   method="post"-->
+        {% csrf_token %}
           <label>
               <input type="text" id="username" name="username" placeholder="Username" size="50" required autocomplete="off">
           </label>

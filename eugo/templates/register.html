@@ -45,10 +45,15 @@
 				var pwd_expression = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])/;
 				var filter = /^(?=.*?[#?!@$%^&*-])+$/;
 
+
+				/*Alerts should be change to instead change text underneath the button (Added later) */
 				if (filter.test(fname)) {
 					alert("Name must not contain any spaces or special characters")
 					return false;
 				
+				} else if (password1 != password2) {
+					alert("Please keep the passwords the same")
+					return false;
 				}
 			}
 
@@ -58,11 +63,15 @@
 			{% csrf_token %} <!--Prevents csrf attacks -->
 			
 			<label>
-				<input type="text" name="firstname" placeholder="Name" size="50" required autocomplete="off">
+				<input type="text" name="firstname" placeholder="First Name" size="50" required autocomplete="off">
 			</label>
 			<br>
 			<label>
 				<input type="text" name="surname" placeholder="Surname" size="50" required autocomplete="off">
+			</label>
+			<br>
+			<label>
+				<input type="email"  name="email" placeholder="School Email" size="50" required autocomplete="off">
 			</label>
 			<br>
 			<label>
