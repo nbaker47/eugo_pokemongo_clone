@@ -35,10 +35,4 @@ class Lecturer(models.Model):
 """ A table to link the player with the lecturers they own """
 class Hand(models.Model):
     username        =   models.ForeignKey(Player, on_delete=models.CASCADE)
-    name            = models.ForeignKey(Lecturer, on_delete=models.CASCADE)
-
-
-""" A table to link the player with the lecturers they own """
-class Hand(models.Model):
-    username        =   models.ForeignKey(Player, on_delete=models.CASCADE)
-    name            = models.ForeignKey(Lecturer, on_delete=models.CASCADE)
+    lec_id          =   models.ForeignKey(Lecturer, on_delete=models.CASCADE)

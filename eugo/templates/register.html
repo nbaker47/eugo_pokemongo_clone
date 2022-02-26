@@ -33,19 +33,40 @@
 		</div>
 		<!-- Use java script to check validation-->
 
-		<form class="form" method="POST" action="." >    <!--action to the php ./homePage.html -->
+		<script>
+			function validateForm() {
+			
+				let fname = document.forms['myForm']['firstname'].value;
+				let lname = document.forms['myForm']['surname'].value;
+				let username = document.forms['myForm']['username'].value;
+				let password1 = document.forms['myForm']['password1'].value;
+				let password2 = document.forms['myForm']['password2'].value;
+				
+				var pwd_expression = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])/;
+				var filter = /^(?=.*?[#?!@$%^&*-])+$/;
+
+				if (filter.test(fname)) {
+					alert("Name must not contain any spaces or special characters")
+					return false;
+				
+				}
+			}
+
+		</script>
+
+		<form name="myForm" class="form" method="POST" action="." onsubmit="return validateForm()" >    <!--action to the php ./homePage.html -->
 			{% csrf_token %} <!--Prevents csrf attacks -->
 			
 			<label>
-				<input type="text" name="firstname" placeholder="Name" size="50" required>
+				<input type="text" name="firstname" placeholder="Name" size="50" required autocomplete="off">
 			</label>
 			<br>
 			<label>
-				<input type="text" name="surname" placeholder="Surname" size="50">
+				<input type="text" name="surname" placeholder="Surname" size="50" required autocomplete="off">
 			</label>
 			<br>
 			<label>
-				<input type="text"  name="username" placeholder="Username" size="50" required>
+				<input type="text"  name="username" placeholder="Username" size="50" required autocomplete="off">
 			</label>
 			<br>
 			<label>
@@ -53,7 +74,7 @@
 			</label>
 			<br>
 			<label>
-				<input type="password" name="password2" placeholder="Re-enter Password" size="50" minlength="8" required>
+				<input type="password" name="password2" placeholder="Re-enter Password" size="50" minlength="8" required >
 			</label>
 			<br>
 			<label>
@@ -62,19 +83,13 @@
 			<br>
 			
 		</form>
-		
-		<a href="/eugo/login"> 
-			<button>
-				Return to Login
-			</button> </a>
-		
-		<!--
-		<form action="./login.php" class="form">
+	
+	
+		<form action="/eugo/login" class="form">
 			<label>
-				<input type="submit" value="Return" size="25">
+				<input type="submit" value="Return to Login" size="25">
 			</label>
 		</form>
 		<br>
-		-->
 		</body>
 </html>
