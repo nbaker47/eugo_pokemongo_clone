@@ -12,6 +12,7 @@ import re
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.db import IntegrityError
 
 def index(request):
     return render(request, 'index.html')
@@ -24,7 +25,7 @@ def signin(request): #cannot be named login because of imported function
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
-
+   
         print(username, password)
         user = authenticate(request, username=username, password=password)
 
@@ -34,10 +35,6 @@ def signin(request): #cannot be named login because of imported function
             firstname = user.first_name
 
             return render(request, "index.html", {'firstname': firstname})
-        else:
-            messages.error(request, "Incorrect login details")
-            return redirect('/eugo/login')
-
 
     return render(request, 'login.html')
 
@@ -56,15 +53,18 @@ def register(request):
         username    =   request.POST['username']
         password    =   request.POST['password1']
         
+        try:
+            user = User.objects.create_user(username, email, password)
+            user.first_name = firstname
+            user.last_name = surname
+            user.save()
+            print(user)
+        except IntegrityError:
+            messages.error(request, "Username already created")
+            return redirect('/eugo/register')
 
-        user = User.objects.create_user(username, email, password)
-        user.first_name = firstname
-        user.last_name = surname
-        user.save()
-        print(user)
-        
 
-        #Do salt etc here i think. checking username hasnt been taken
+        #Need to check emails to make sure it isnt already used
         #We could do validation here but I think doing it in JavaScript might be easier
 
     return render(request, 'register.html')
