@@ -4,7 +4,7 @@ from . import views
 
 """ All of the urls and extensions that we have made, all of them are /eugo/{} """
 urlpatterns = [
-    path('index.html/', views.index, name='index'),
+    path('index/', views.index, name='index'),
     path('login/', views.signin, name='login'),
     path('logout/', views.signout, name='logout'),
     path('register/', views.register, name='register'),
