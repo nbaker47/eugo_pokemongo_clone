@@ -4,7 +4,7 @@ from . import views
 
 """ All of the urls and extensions that we have made, all of them are /eugo/{} """
 urlpatterns = [
-    path('index.html/', views.index, name='index'),
+    path('index/', views.index, name='index'),
     path('login/', views.signin, name='login'),
     path('logout/', views.signout, name='logout'),
     path('register/', views.register, name='register'),
@@ -15,5 +15,6 @@ urlpatterns = [
     path('lecturerdex/', views.lecturerdex, name='lecturerdex'),
     path('mapmod/', views.mapmod, name='mapmod'),
     path('catch/', views.catch, name='catch'),
+    path('newcatch/', views.catch, name='newcatch'),
 ]
 #login is 'signin' and log out is 'signout' in veiws because of a function imported with the same name

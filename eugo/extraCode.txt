@@ -1,0 +1,19 @@
+<!--
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dissmissable fade show" role="alert">
+        <strong>Message</strong> {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"> </button>
+    </div>
+    {% endfor %}
+    this is to show success messages if we want it
+  -->
+  ^ If we want some sort of message when we login on the index
+
+
+  Index successful: 
+    {% if user.is_authenticated %}
+    <h2>Welcome {{firstname}} to EUGO</h2>
+    <h3>You are successfully logged in</h3>
+    {% else %}
+    <script>window.location.href = "/eugo/login/";</script>
+    {% endif %}

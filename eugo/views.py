@@ -12,6 +12,7 @@ import re
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.db import IntegrityError
 
 def index(request):
     return render(request, 'index.html')
@@ -25,6 +26,7 @@ def signin(request): #cannot be named login because of imported function
         username = request.POST['username']
         password = request.POST['password']
 
+        #try:
         print(username, password)
         user = authenticate(request, username=username, password=password)
 
@@ -34,10 +36,7 @@ def signin(request): #cannot be named login because of imported function
             firstname = user.first_name
 
             return render(request, "index.html", {'firstname': firstname})
-        else:
-            messages.error(request, "Incorrect login details")
-            return redirect('/eugo/login')
-
+        #except no such table: auth_user
 
     return render(request, 'login.html')
 
@@ -56,15 +55,18 @@ def register(request):
         username    =   request.POST['username']
         password    =   request.POST['password1']
         
+        try:
+            user = User.objects.create_user(username, email, password)
+            user.first_name = firstname
+            user.last_name = surname
+            user.save()
+            print(user)
+        except IntegrityError:
+            messages.error(request, "Username already created")
+            return redirect('/eugo/register')
 
-        user = User.objects.create_user(username, email, password)
-        user.first_name = firstname
-        user.last_name = surname
-        user.save()
-        print(user)
-        
 
-        #Do salt etc here i think. checking username hasnt been taken
+        #Need to check emails to make sure it isnt already used
         #We could do validation here but I think doing it in JavaScript might be easier
 
     return render(request, 'register.html')
@@ -81,8 +83,19 @@ def lecturerdex(request):
 
 def catch(request):
     if request.method == 'POST':
-        lec_id = request.POST['lecID']
+        #lec_id = request.POST['lecID']
+        lec_id = str(request.POST.get('lecID'))
         print("lec ID: " + lec_id)
+
+    lec = Lecturer.objects.filter(id = lec_id)
+    return render(request, 'catch.html',{'lec': lec})
+
+def newcatch(request):
+    if request.method == 'POST':
+        lec_id = str(request.POST.get('lec_id'))
+
+        #test output
+        print("lec ID: " + lec_id + "test sucsess")
 
     lec = Lecturer.objects.filter(id = lec_id)
     return render(request, 'catch.html',{'lec': lec})
@@ -99,6 +112,8 @@ def map(request):
 
     lec = Lecturer.objects.all()
     return render(request, 'map.html',{'lec': lec})
+
+
 
 def mapmod(request):
     if request.method == 'POST':
