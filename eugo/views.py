@@ -137,7 +137,11 @@ def map(request):
             print('error reading QR')
 
     lec = Lecturer.objects.all()
-    return render(request, 'map.html',{'lec': lec})
+    players = Player.objects.all()
+    player_vals = players.values()
+    leaderboard = sorted(player_vals, key=lambda d: d['pokemon_caught']) 
+    #print(leaderboard)
+    return render(request, 'map.html',{'lec': lec, 'players': leaderboard})
 
 
 
