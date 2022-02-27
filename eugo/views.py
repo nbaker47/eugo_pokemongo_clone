@@ -73,6 +73,7 @@ def register(request):
             messages.error(sprite_url)
             messages.error(request, e)
             return redirect('/eugo/register')
+        # comment
 
 
         #Need to check emails to make sure it isnt already used
