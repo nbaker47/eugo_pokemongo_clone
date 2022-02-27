@@ -33,13 +33,15 @@
             <li>{{ i.duration }} Mins Remaining</li>
             <li>{{ i.pos }}</li>
             <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img"></li>
-            <button type="button" id="qr-gen-but" class="qr-gen-but" onclick="viewQR()">View QR</button>
-            <li class="qr" id="qrId">
-                <img src='{% static "/eugo/img/qr/"%}{{i.qrUrl}}'  style="height: 30%; width: 30%;">
-                <button type="button" onclick="hideQR()" id="hideQRButton" class="hideQRButton">Hide</button>
-            </li>
+            <button type="button" id="qr-gen-but" class="qr-gen-but" onclick="viewQR('{{i.qrUrl}}')">View QR</button>
         </div>
         {% endfor %}
+
+        <div id="qr-div">
+            <img src=''  style="height: 30%; width: 30%;" id="qrIdImg" value='{% static "/eugo/img/qr/"%}' style="position: absolute; z-index: 15;">
+            <br>
+            <button type="button" onclick="hideQR()" id="hideQRButton" class="hideQRButton">Hide</button>
+        </div>
 
         <div class="event-select-panel" id="panel-id">
             <ul class = "event-select-panel-ul">
@@ -168,18 +170,30 @@
             });
         });
 
-        function viewQR(){
-            qr = document.getElementById("qrId");
+        function viewQR(qrId){
+            qr = document.getElementById("qrIdImg");
+            var static_url = qr.getAttribute("value");
+            console.log(static_url);
+            qr.src = static_url + qrId;
+            console.log(qr.src);
             qr.style.visibility = "visible";
             qr.style.width = "500px";
             qr.style.height = "500px";
+            but = document.getElementById("hideQRButton");
+            but.style.visibility = "visible";
+            but.style.width = "100px";
+            but.style.height = "50px";
         }
 
         function hideQR(){
-            qr = document.getElementById("qrId");
+            qr = document.getElementById("qrIdImg");
             qr.style.visibility = "hidden";
             qr.style.width = "0";
             qr.style.height = "0";
+            but = document.getElementById("hideQRButton");
+            but.style.visibility = "hidden";
+            but.style.width = "0";
+            but.style.height = "0";
         }
 
     </script>

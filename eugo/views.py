@@ -47,15 +47,17 @@ def signout(request):
 
 def register(request):
     if request.method == "POST":
-        #print(request.POST)
+        print(request.POST)
 
         firstname   =   request.POST['firstname']
         surname     =   request.POST['surname']
         email       =   request.POST['email']
         username    =   request.POST['username']
         password    =   request.POST['password1']
-        sprite_url  =   request.POST.get('sprite_url')
-        
+        sprite_no =  request.POST['sprite']
+        sprite_url = "eugo/static/eugo/img/teacher_sprites/teacher_" + sprite_no + ".png"
+        print("SPRITE URL::   " + sprite_url)
+
         try:
             user = User.objects.create_user(username, email, password)
             user.first_name = firstname
@@ -68,8 +70,10 @@ def register(request):
             return redirect('/eugo/login')
          
         except IntegrityError as e:
+            messages.error(sprite_url)
             messages.error(request, e)
             return redirect('/eugo/register')
+        # comment
 
 
         #Need to check emails to make sure it isnt already used

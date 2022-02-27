@@ -17,6 +17,7 @@
 
     <!-- Custom styles for this template -->
     <link href='{% static "/eugo/css/cover_cover.css" %}' rel="stylesheet">
+    <link href='{% static "/eugo/css/map.css" %}' rel="stylesheet">
 </head>
 
 <body>
@@ -60,14 +61,14 @@
             }
         </script>
 
+        <!--
         <div>
-            {% for message in messages %}
             <div class="alert alert-{{message.tags}} alert-dissmissable fade show" role="alert">
                 <strong>Message</strong> {{message}}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"> </button>
             </div>
-            {% endfor %}
         </div>
+    -->
 
         <form id="formp" name="myForm" class="form" method="POST" action="." onsubmit="return validateForm()">
             <!--action to the php ./homePage.html -->
@@ -104,13 +105,16 @@
             <img src="">
             <img src="">
             <img src="">
-            <label for="sprite_url">Choose a Character:</label>
-            <select form="formp" name="spirte_url">
-              <option value="sprite_urls1">Character 1</option>
-              <option value="sprite_urls2">Character 2</option>
-              <option value="sprite_urls3">Character 3</option>
-              
-            </select>
+            <div class="image mt-3 mb-3 img-container" id="sliderImages">
+                <img src='{% static "/eugo/img/teacher_sprites/teacher_1.png" %}' class="spirite-img">
+                <img src='{% static "/eugo/img/teacher_sprites/teacher_2.png" %}' class="spirite-img">
+                <img src='{% static "/eugo/img/teacher_sprites/teacher_3.png" %}' class="spirite-img">
+            </div>
+            
+            <p>SELECT AVATAR:</p>
+            <input class="rangeslider" type="range" id="sprite" name="sprite"
+            min="1" max="3" value="1">
+
             <br>
             <label>
 				<a href="https://gdpr.eu/terms-and-conditions/">Please read and check the Terms and Conditions</a>
@@ -121,7 +125,6 @@
 				<input type="submit" value="Register" size="25">
 			</label>
             <br>
-
         </form>
 
 
@@ -132,5 +135,19 @@
         </form>
         <br>
 </body>
+
+<script>        window.addEventListener('load', function() {
+    var rangeslider = document.getElementById("sprite");
+
+    var images = document.getElementById("sliderImages");
+
+    rangeslider.addEventListener('input', function() {
+    for (var i = 0; i < images.children.length; i++) {
+        images.children[i].style.display = 'none';
+    }
+    i = Number(this.value) - 1;
+    images.children[i].style.display = 'block';
+    });
+});</script>
 
 </html>
