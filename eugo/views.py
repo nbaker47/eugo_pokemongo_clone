@@ -89,13 +89,13 @@ def catch(request):
     return render(request, 'catch.html',{'lec': lec})
 
 def newcatch(request):
-    if request.is_ajax and request.method == 'POST':
+    if request.method == 'POST':
         lec_id = str(request.POST.get('lec_id'))
 
         print(str(request.POST))
 
         #test output
-        print("lec ID: " + lec_id + "test sucsess")
+        print("lec ID: " + lec_id + " was caught")
 
     lec = Lecturer.objects.filter(id = lec_id)
     return render(request, 'catch.html',{'lec': lec})
