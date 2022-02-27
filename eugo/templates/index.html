@@ -19,15 +19,22 @@
 
   <body class="text-center" id ="parent-container">
 
+    
     <canvas id="canvas" class="canvas_class"></canvas>
     
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
       <main role="main" class="inner-cover">
+        {% if not user.is_authenticated %}
+
+        <script>window.location.href = "/eugo/logout/";</script>
+
+        {% endif %}
+
         <p class="lead">Connecting Exeter University</p>
         <h1 class="cov-head">EU GO</h1>
         <br><br>
         <p class="lead">
-          <a href="/eugo/login" class="btn btn-lg btn-secondary">Enter</a>
+          <a href="/eugo/map" class="btn btn-lg btn-secondary">Enter</a>
         </p>
       </main>
       <footer class="mastfoot mt-auto">

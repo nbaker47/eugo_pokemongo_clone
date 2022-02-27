@@ -24,6 +24,12 @@
 
   <body>
 
+    {% if not user.is_authenticated %}
+
+    <script>window.location.href = "/eugo/logout/";</script>
+
+    {% endif %}
+
     <div class="text-center parent-container-map" id="parent-container-map-id">
         
         <div class="map" id="mapConID">
@@ -46,7 +52,7 @@
               <li><a href="/eugo/player"> Player </a></li>
               <li><a href="/eugo/lecturers"> Lecturers </a></li>
               <li><a href="/eugo/lecturerdex"> LecturerDex </a></li>
-              <li><a href=""> Logout </a></li>
+              <li><a href="/eugo/logout"> Logout </a></li>
           </ul>
         </div>
 

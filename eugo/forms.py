@@ -1,3 +1,4 @@
+import email
 from django import forms
 
 class lecMakerForm(forms.Form):
@@ -13,7 +14,9 @@ class lecMakerForm(forms.Form):
 class RegisterForm(forms.Form):
     firstname   =   forms.CharField(label="firstname")
     surname     =   forms.CharField(label="surname")
+    email       =   forms.CharField(label="email")
     username    =   forms.CharField(label="username")
     password1   =   forms.CharField(label="password1")
     password2   =   forms.CharField(label="password2")
+    
 
