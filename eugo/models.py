@@ -9,7 +9,7 @@ class Player(models.Model):
    email            =   models.CharField(max_length=40, null=True)
    username         =   models.CharField(max_length=20)
    pokemon_caught   =   models.IntegerField(default=0)
-   sprite_url       =   models.CharField(default="eugo\static\eugo\img\teacher_sprites\teacher_1.png", max_length=100)
+   sprite_url       =   models.CharField(default="eugo\static\eugo\img\teacher_sprites\teacher_1.png", max_length=100, null=True)
    is_admin         =   models.BooleanField(default=False)
 
    def str(self):

@@ -54,7 +54,8 @@ def register(request):
         email       =   request.POST['email']
         username    =   request.POST['username']
         password    =   request.POST['password1']
-        sprite_url  =   request.POST.get('sprite_url')
+        sprite_url  =   request.POST('sprite_url')
+        print(sprite_url)
         
         try:
             user = User.objects.create_user(username, email, password)
