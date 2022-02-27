@@ -82,7 +82,27 @@ def register(request):
     return render(request, 'register.html')
 
 def player(request):
-    return render(request, 'player.html')
+    # check if they are submitting a POST method or just visiting
+    if request.method == "POST":
+        # make sure that the user is authenticated (not anonymous user)
+        if request.user.is_authenticated:
+            # username is request.user.username
+            password = request.POST['pass1']
+            user = User.objects.get(username__exact=request.user.username)
+            # change the password
+            user.set_password(password)
+            # save the user object
+            user.save()
+            # redirect to login ()
+            return redirect("/eugo/login")
+    # check if the user is authenticated
+    if request.user.is_authenticated:
+        # if they are return the page
+        return render(request, "player.html")
+    else:
+        # if they arent redirect to login
+        return redirect("/eugo/login")
+    
 
 def lecturers(request):
     un = request.user.username
@@ -142,8 +162,6 @@ def map(request):
     leaderboard = sorted(player_vals, key=lambda d: d['pokemon_caught']) 
     #print(leaderboard)
     return render(request, 'map.html',{'lec': lec, 'players': leaderboard})
-
-
 
 def mapmod(request):
     if request.method == 'POST':
