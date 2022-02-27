@@ -54,17 +54,19 @@ def register(request):
         email       =   request.POST['email']
         username    =   request.POST['username']
         password    =   request.POST['password1']
-        sprite_url =  request.POST.get("sprite_url")
+        sprite_no =  request.POST['sprite']
+        sprite_url = "eugo/static/eugo/img/teacher_sprites/teacher_" + sprite_no + ".png"
+        print("SPRITE URL::   " + sprite_url)
 
         try:
-            #user = User.objects.create_user(username, email, password)
-            #user.first_name = firstname
-            #user.last_name = surname
-            #user.save()
+            user = User.objects.create_user(username, email, password)
+            user.first_name = firstname
+            user.last_name = surname
+            user.save()
             p = Player(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
             p.save()
             print(p)
-            #print(user)
+            print(user)
             return redirect('/eugo/login')
          
         except IntegrityError as e:
