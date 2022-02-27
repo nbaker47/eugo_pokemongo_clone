@@ -105,7 +105,7 @@ def player(request):
     
 
 def lecturers(request):
-    return render('lecturers.html')
+    return render(request, 'lecturers.html')
 
 def lecturerdex(request):
     lec = Lecturer.objects.all()
