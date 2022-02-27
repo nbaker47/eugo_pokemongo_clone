@@ -8,11 +8,11 @@ class Player(models.Model):
    surname          =   models.CharField(max_length=30, null=True)
    email            =   models.CharField(max_length=40, null=True)
    username         =   models.CharField(max_length=20)
-   pokemon_caught   =   models.IntegerField(default=0)
-   sprite_url       =   models.CharField(default="eugo\static\eugo\img\teacher_sprites\teacher_1.png", max_length=100, null=True)
+   password         =   models.CharField(max_length=255)
+   salt             =   models.CharField(max_length=10, null=True)
    is_admin         =   models.BooleanField(default=False)
 
-   def str(self):
+   def __str__(self):
        return(self.username)
 
 """ Lecturer table where we will store lecturers (essentially like pokemon) with all their attributes,

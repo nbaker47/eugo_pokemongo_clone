@@ -66,9 +66,9 @@ def register(request):
             print(p)
             print(user)
             return redirect('/eugo/login')
-         
-        except IntegrityError as e:
-            messages.error(request, e)
+
+        except IntegrityError:
+            messages.error(request, "Username already created")
             return redirect('/eugo/register')
 
 

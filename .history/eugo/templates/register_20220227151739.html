@@ -69,7 +69,7 @@
             {% endfor %}
         </div>
 
-        <form id="formp" name="myForm" class="form" method="POST" action="." onsubmit="return validateForm()">
+        <form name="myForm" class="form" method="POST" action="." onsubmit="return validateForm()">
             <!--action to the php ./homePage.html -->
             {% csrf_token %}
             <!--Prevents csrf attacks -->
@@ -104,11 +104,11 @@
             <img src="">
             <img src="">
             <img src="">
-            <label for="sprite_url">Choose a Character:</label>
-            <select form="formp" name="spirte_url">
-              <option value="sprite_urls1">Character 1</option>
-              <option value="sprite_urls2">Character 2</option>
-              <option value="sprite_urls3">Character 3</option>
+            <label for="urls">Choose a Characat:</label>
+            <select name="spirte_url">
+              <option value="sprite_urls">Character 1</option>
+              <option value="sprite_urls">Character 2</option>
+              <option value="sprite_urls">Character 3</option>
               
             </select>
             <br>

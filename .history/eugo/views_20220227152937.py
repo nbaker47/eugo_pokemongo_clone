@@ -63,12 +63,9 @@ def register(request):
             user.save()
             p = Player(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
             p.save()
-            print(p)
             print(user)
-            return redirect('/eugo/login')
-         
-        except IntegrityError as e:
-            messages.error(request, e)
+        except IntegrityError:
+            messages.error(request, "Username already created")
             return redirect('/eugo/register')
 
 
