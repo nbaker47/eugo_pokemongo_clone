@@ -81,7 +81,11 @@ def player(request):
     return render(request, 'player.html')
 
 def lecturers(request):
-    return render(request, 'lecturers.html')
+    un = request.user.username
+    player = Player.objects.filter(username=un)[0]
+    hands = Hand.objects.filter(username = player)
+
+    return render(request, 'lecturers.html',{'hand': hands})
 
 def lecturerdex(request):
     lec = Lecturer.objects.all()
@@ -105,16 +109,18 @@ def newcatch(request):
         #gets the current user
         current_user = request.user
         un = current_user.username
+        player = Player.objects.filter(username=un)[0]
 
         #addds the lec to the players hand
-        h = Hand(username = un, lec_id = lecid)
-        h.add()
+        player.pokemon_caught = player.pokemon_caught+1
+        player.save()
 
-        Player.objects.filter(username=un)
+        h = Hand(username = player, lec_id = lec[0])
+        h.save()
 
-        print(lec.name + " was caputred by " + un )
+        print(lec[0].name + " was caputred by " + un )
 
-    return render(request, 'catch.html',{'lec': lec})
+    return render(request, 'catch.html', {'lec': lec})
 
 def map(request):
     if request.method == 'POST':
