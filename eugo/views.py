@@ -81,8 +81,19 @@ def lecturerdex(request):
 
 def catch(request):
     if request.method == 'POST':
-        lec_id = request.POST['lecID']
+        #lec_id = request.POST['lecID']
+        lec_id = str(request.POST.get('lecID'))
         print("lec ID: " + lec_id)
+
+    lec = Lecturer.objects.filter(id = lec_id)
+    return render(request, 'catch.html',{'lec': lec})
+
+def newcatch(request):
+    if request.method == 'POST':
+        lec_id = str(request.POST.get('lec_id'))
+
+        #test output
+        print("lec ID: " + lec_id + "test sucsess")
 
     lec = Lecturer.objects.filter(id = lec_id)
     return render(request, 'catch.html',{'lec': lec})
@@ -99,6 +110,8 @@ def map(request):
 
     lec = Lecturer.objects.all()
     return render(request, 'map.html',{'lec': lec})
+
+
 
 def mapmod(request):
     if request.method == 'POST':

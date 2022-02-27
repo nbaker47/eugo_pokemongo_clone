@@ -1,0 +1,85 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+   
+    <title>EUGO</title>
+    
+    <!--bootstrap CSS-->
+    <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
+    
+    <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
+
+    <!-- Custom styles for this template -->
+    <link href='{% static "/eugo/css/catch.css" %}' rel="stylesheet"> 
+
+    <!--webcam JS script-->
+
+</head>
+
+<body>
+
+    <div class="center">
+    {% if lec %}
+        {% for l in lec %}
+            <div class = "info">
+                Name: {{l.name}} <br>
+                <img src='{% static "/eugo/img/teacher_sprites/"%}{{l.sprite}}' width="200" height="200">
+
+            </div>   
+            <div class="stats">
+                <p style="color: red;">HP: {{l.hp}} <p>
+                <p style="color: orange;">Attack: {{l.attack}} <p> <br><br>
+                <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} has appered</p>
+                <button onclick="catchAttempt('{{l.name}}','{{l.id}}')">Attempt capture</button>
+            </div>
+            
+            
+            <br style="clear:both;"/>
+        {% endfor %}
+    {% else %}
+        <p> ERROR: your trying to catch a lecturer that doesnt exist</p>
+    {% endif %}
+    </div>
+
+<body>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+<script>
+    const text = document.getElementById("game_txt");
+    
+
+    function catchAttempt(name, id){
+        if(Math.random()>0.75){
+            // lecturer captured
+            text.innerHTML = "Sucsess!";
+
+            $.ajax({
+                type: "POST",
+                url: "/eugo/newcatch/",
+                data: {
+                    "lec_id": id
+                },
+                success: function (data) {
+                    alert("sucess")
+                    console.log("success");
+                    console.log(data);
+                },
+                failure: function (data) {
+                    console.log("failure");
+                    console.log(data);
+                },
+            });
+
+        }else{
+            // try again
+            text.innerHTML = name + " dodged the lectball\xAE , Try again!";
+        }
+    }
+</script>
