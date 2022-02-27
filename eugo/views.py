@@ -47,28 +47,28 @@ def signout(request):
 
 def register(request):
     if request.method == "POST":
-        #print(request.POST)
+        print(request.POST)
 
         firstname   =   request.POST['firstname']
         surname     =   request.POST['surname']
         email       =   request.POST['email']
         username    =   request.POST['username']
         password    =   request.POST['password1']
-        sprite_url  =   request.POST('sprite_url')
-        print(sprite_url)
-        
+        sprite_url =  request.POST.get("sprite_url")
+
         try:
-            user = User.objects.create_user(username, email, password)
-            user.first_name = firstname
-            user.last_name = surname
-            user.save()
+            #user = User.objects.create_user(username, email, password)
+            #user.first_name = firstname
+            #user.last_name = surname
+            #user.save()
             p = Player(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
             p.save()
             print(p)
-            print(user)
+            #print(user)
             return redirect('/eugo/login')
          
         except IntegrityError as e:
+            messages.error(sprite_url)
             messages.error(request, e)
             return redirect('/eugo/register')
 
