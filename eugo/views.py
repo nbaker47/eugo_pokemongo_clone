@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
-from eugo.models import Lecturer
+from eugo.models import Lecturer, Player
 from eugo.forms import *
 from random import randint
 import requests
@@ -25,7 +25,8 @@ def signin(request): #cannot be named login because of imported function
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
-   
+
+        #try:
         print(username, password)
         user = authenticate(request, username=username, password=password)
 
@@ -35,6 +36,7 @@ def signin(request): #cannot be named login because of imported function
             firstname = user.first_name
 
             return render(request, "index.html", {'firstname': firstname})
+        #except no such table: auth_user
 
     return render(request, 'login.html')
 
@@ -52,15 +54,22 @@ def register(request):
         email       =   request.POST['email']
         username    =   request.POST['username']
         password    =   request.POST['password1']
+        sprite_url  =   request.POST('sprite_url')
+        print(sprite_url)
         
         try:
             user = User.objects.create_user(username, email, password)
             user.first_name = firstname
             user.last_name = surname
             user.save()
+            p = Player(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
+            p.save()
+            print(p)
             print(user)
-        except IntegrityError:
-            messages.error(request, "Username already created")
+            return redirect('/eugo/login')
+         
+        except IntegrityError as e:
+            messages.error(request, e)
             return redirect('/eugo/register')
 
 

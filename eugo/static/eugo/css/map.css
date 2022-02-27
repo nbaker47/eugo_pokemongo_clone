@@ -191,3 +191,13 @@
   visibility: hidden;
   position: absolute;
 }
+#qr-div{
+  position: absolute;
+  z-index: 15;
+  margin-top: 9%;
+}
+#hideQRButton{
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}

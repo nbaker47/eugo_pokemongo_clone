@@ -1,47 +1,51 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-   
-   <!----> <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
-    
+
+    <!---->
+    <link rel="stylesheet" type="text/css" href='{% static "/eugo/css/bootstrap.css" %}' />
+
     <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
 
     <title>EUGO</title>
 
     <!-- Custom styles for this template -->
     <link href='{% static "/eugo/css/cover_cover.css" %}' rel="stylesheet">
-  </head>
+</head>
 
-  <body class="text-center" id ="parent-container">
+<body class="text-center" id="parent-container">
 
-    
+
     <canvas id="canvas" class="canvas_class"></canvas>
-    
+
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
-      <main role="main" class="inner-cover">
-        {% if not user.is_authenticated %}
+        <main role="main" class="inner-cover">
+            {% if not user.is_authenticated %}
 
-        <script>window.location.href = "/eugo/logout/";</script>
+            <script>
+                window.location.href = "/eugo/login/";
+            </script>
 
-        {% endif %}
+            {% endif %}
 
-        <p class="lead">Connecting Exeter University</p>
-        <h1 class="cov-head">EU GO</h1>
-        <br><br>
-        <p class="lead">
-          <a href="/eugo/map" class="btn btn-lg btn-secondary">Enter</a>
-        </p>
-      </main>
-      <footer class="mastfoot mt-auto">
-        <div class="inner">
-          <p>Group 28</p>
-        </div>
-      </footer>
+            <p class="lead">Connecting Exeter University</p>
+            <h1 class="cov-head">EU GO</h1>
+            <br><br>
+            <p class="lead">
+                <a href="/eugo/map" class="btn btn-lg btn-secondary">Enter</a>
+            </p>
+        </main>
+        <footer class="mastfoot mt-auto">
+            <div class="inner">
+                <p>Group 28</p>
+            </div>
+        </footer>
     </div>
 
     <!--DRAW JS-->
@@ -51,6 +55,9 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-  </body>
+    <script>
+        window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
+    </script>
+</body>
+
 </html>
