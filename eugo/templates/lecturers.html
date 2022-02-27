@@ -14,10 +14,33 @@
     <title>EUGO</title>
 
     <!-- Custom styles for this template -->
-    <link href='{% static "/eugo/css/cover_cover.css" %}' rel="stylesheet">
+    <link href='{% static "/eugo/css/lecturers.css" %}' rel="stylesheet">
   </head>
 
   <body>
+
+    
+    <div class="center">
+
+          
+      <div class = "info">
+        {% for h in hand %}
+        <div class = vert>
+          Name: {{h.lec_id.name}} <br>
+          <img src='{% static "/eugo/img/teacher_sprites/"%}{{h.lec_id.sprite}}' width="200" height="200">
+          <p style="color: red;">HP: {{h.lec_id.hp}} <p>
+          <p style="color: orange;">Attack: {{h.lec_attack}} <p> 
+        </div>
+        {% endfor %}
+      </div>   
+      <div class="stats">
+          
+      </div>
+      
+      
+      <br style="clear:both;"/>
+          
+      </div>
 
   </body>
 </html>

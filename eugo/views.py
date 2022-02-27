@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
-from eugo.models import Lecturer, Player
+from eugo.models import Lecturer, Player, Hand
 from eugo.forms import *
 from random import randint
 import requests
@@ -105,7 +105,11 @@ def player(request):
     
 
 def lecturers(request):
-    return render(request, 'lecturers.html')
+    un = request.user.username
+    player = Player.objects.filter(username=un)[0]
+    hands = Hand.objects.filter(username = player)
+
+    return render(request, 'lecturers.html',{'hand': hands})
 
 def lecturerdex(request):
     lec = Lecturer.objects.all()
@@ -122,13 +126,25 @@ def catch(request):
 
 def newcatch(request):
     if request.method == 'POST':
-        lec_id = str(request.POST.get('lec_id'))
+        #gets lecturer that was cught by id
+        lecid = str(request.POST.get('lec_id'))
+        lec = Lecturer.objects.filter(id = lecid)
 
-        #test output
-        print("lec ID: " + lec_id + "test sucsess")
+        #gets the current user
+        current_user = request.user
+        un = current_user.username
+        player = Player.objects.filter(username=un)[0]
 
-    lec = Lecturer.objects.filter(id = lec_id)
-    return render(request, 'catch.html',{'lec': lec})
+        #addds the lec to the players hand
+        player.pokemon_caught = player.pokemon_caught+1
+        player.save()
+
+        h = Hand(username = player, lec_id = lec[0])
+        h.save()
+
+        print(lec[0].name + " was caputred by " + un )
+
+    return render(request, 'catch.html', {'lec': lec})
 
 def map(request):
     if request.method == 'POST':
