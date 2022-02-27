@@ -92,7 +92,6 @@ def newcatch(request):
     if request.method == 'POST':
         lec_id = str(request.POST.get('lec_id'))
 
-
         #test output
         print("lec ID: " + lec_id + " was caught")
 

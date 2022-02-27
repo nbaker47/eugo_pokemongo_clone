@@ -64,16 +64,13 @@
                 type: "POST",
                 url: "/eugo/newcatch/",
                 data: {
-                    'lec_id': id
+                    'lec_id': id,
                 },
                 success: function (data) {
-                    alert("sucess")
                     console.log("success");
-                    console.log(data);
                 },
                 failure: function (data) {
                     console.log("failure");
-                    console.log(data);
                 },
             });
 
