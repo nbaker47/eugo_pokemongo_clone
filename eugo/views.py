@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
-from eugo.models import Lecturer, Player
+from eugo.models import Lecturer, Player, Hand
 from eugo.forms import *
 from random import randint
 import requests
@@ -98,12 +98,22 @@ def catch(request):
 
 def newcatch(request):
     if request.method == 'POST':
-        lec_id = str(request.POST.get('lec_id'))
+        #gets lecturer that was cught by id
+        lecid = str(request.POST.get('lec_id'))
+        lec = Lecturer.objects.filter(id = lecid)
 
-        #test output
-        print("lec ID: " + lec_id + "test sucsess")
+        #gets the current user
+        current_user = request.user
+        un = current_user.username
 
-    lec = Lecturer.objects.filter(id = lec_id)
+        #addds the lec to the players hand
+        h = Hand(username = un, lec_id = lecid)
+        h.add()
+
+        Player.objects.filter(username=un)
+
+        print(lec.name + " was caputred by " + un )
+
     return render(request, 'catch.html',{'lec': lec})
 
 def map(request):

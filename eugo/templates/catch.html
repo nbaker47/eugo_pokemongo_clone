@@ -36,7 +36,7 @@
                 <p style="color: red;">HP: {{l.hp}} <p>
                 <p style="color: orange;">Attack: {{l.attack}} <p> <br><br>
                 <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} has appered</p>
-                <button onclick="catchAttempt('{{l.name}}','{{l.id}}')">Attempt capture</button>
+                <button onclick="catchAttempt('{{l.name}}','{{l.id}}')" id="catchbutton">Attempt capture</button>
             </div>
             
             
@@ -67,15 +67,20 @@
                     "lec_id": id
                 },
                 success: function (data) {
-                    alert("sucess")
                     console.log("success");
-                    console.log(data);
+
                 },
                 failure: function (data) {
                     console.log("failure");
-                    console.log(data);
+
                 },
             });
+            
+            var but = document.getElementById("catchbutton");
+            but.innerHTML = "continue"
+            but.onclick = function() {
+                location.href='/eugo/lecturers';
+            }
 
         }else{
             // try again
