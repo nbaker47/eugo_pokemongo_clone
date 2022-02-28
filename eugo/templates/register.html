@@ -21,18 +21,15 @@
 </head>
 
 <body>
+    <div style="margin-top: 5%;">
     <div class="full-width-bar">
         <h1>EUGO</h1>
     </div>
-
-
+    
     <div>
-
-        <div>
+        <div class="cov-head">
             <h2 class="secondHeader">Register</h2>
-
             <hr>
-            <br>
         </div>
         <!-- Use java script to check validation-->
 
@@ -46,7 +43,7 @@
                 let password2 = document.forms['myForm']['password2'].value;
 
                 var pwd_expression = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])/;
-                var filter = /^(?=.*?[#?!@$%^&*-])+$/;
+                var filter = /^(?=.*?[#?!@$%^&*-])+$/;  
 
 
                 /*Alerts should be change to instead change text underneath the button (Added later) */
@@ -74,34 +71,39 @@
             <!--action to the php ./homePage.html -->
             {% csrf_token %}
             <!--Prevents csrf attacks -->
-            <p id="messages"></p>
+            <!--<p id="messages"></p>-->
             <!-- This will have the validation messages from the javascript checks-->
-
+            <div class="form-group">
             <label>
-				<input type="text" name="firstname" placeholder="First Name" size="50" required autocomplete="off">
+				<input type="text" class="form-control" name="firstname" placeholder="First Name" size="50" required autocomplete="off">
 			</label>
             <p id="fname"></p>
-            <br>
+            </div>
+            <div class="form-group">
             <label>
-				<input type="text" name="surname" placeholder="Surname" size="50" required autocomplete="off">
+				<input type="text" class="form-control" name="surname" placeholder="Surname" size="50" required autocomplete="off">
 			</label>
-            <br>
+            </div>
+            <div class="form-group">
             <label>
-				<input type="email"  name="email" placeholder="School Email" size="50" required autocomplete="off">
+				<input type="email" class="form-control"  name="email" placeholder="School Email" size="50" required autocomplete="off">
 			</label>
-            <br>
+            </div>
+            <div class="form-group">
             <label>
-				<input type="text"  name="username" placeholder="Username" size="50" required autocomplete="off">
+				<input type="text"  class="form-control" name="username" placeholder="Username" size="50" required autocomplete="off">
 			</label>
-            <br>
+            </div>
+            <div class="form-group">
             <label>
-				<input type="password" name="password1" placeholder="Password" size="50" minlength="8" required>
+				<input type="password" class="form-control"  name="password1" placeholder="Password" size="50" minlength="8" required>
 			</label>
-            <br>
+            </div>
+            <div class="form-group">
             <label>
-				<input type="password" name="password2" placeholder="Re-enter Password" size="50" minlength="8" required >
+				<input type="password" class="form-control" name="password2" placeholder="Re-enter Password" size="50" minlength="8" required >
 			</label>
-            <br>
+            </div>
             <img src="">
             <img src="">
             <img src="">
@@ -111,29 +113,30 @@
                 <img src='{% static "/eugo/img/teacher_sprites/teacher_3.png" %}' class="spirite-img">
             </div>
             
-            <p>SELECT AVATAR:</p>
+            <p>Please Select an Avatar</p>
             <input class="rangeslider" type="range" id="sprite" name="sprite"
             min="1" max="3" value="1">
 
-            <br>
+            <br><br>
+
             <label>
-				<a href="https://gdpr.eu/terms-and-conditions/">Please read and check the Terms and Conditions</a>
+				<a href="https://gdpr.eu/terms-and-conditions/" class="text-muted">Please read and check the Terms and Conditions</a>
 				<input type="checkbox" name="terms" value="" required>
 			</label>
             <br>
+            <div class="btn-group" role="group" aria-label="Basic example">
             <label>
-				<input type="submit" value="Register" size="25">
+				<input type="submit"  class="btn btn-primary" value="Register" size="25">
 			</label>
             <br>
         </form>
-
-
         <form action="/eugo/login" class="form">
             <label>
-				<input type="submit" value="Return to Login" size="25">
+				<input type="submit" class="btn btn-secondary" value="Return to Login" size="25">
 			</label>
         </form>
-        <br>
+    </div>
+        
 </body>
 
 <script>        window.addEventListener('load', function() {

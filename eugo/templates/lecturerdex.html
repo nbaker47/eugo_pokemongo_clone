@@ -3,6 +3,7 @@
 <html lang="en">
   <head>
     <style media="screen">
+      /*
       .stats span{
     	position:absolute;
     	visibility:hidden;
@@ -13,9 +14,16 @@
       text-align: center;
     	z-index:1;
       }
-
       td {
         text-align: center;
+      }
+      */
+      #lec-container{
+        height: 100%;
+        width: 80%;
+        margin-left: 10%;
+        margin-top: 2%;
+        display: flex;
       }
 
     </style>
@@ -35,8 +43,9 @@
   </head>
 
   <body>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/eugo/map">EUGO</a>
+      <a class="navbar-brand" href="/eugo/index">EUGO</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -76,7 +85,43 @@
         -->
       </div>
     </nav>
-    <div>
+    <div id="lec-container "  class="card text-center">
+      <br>
+      <div class="card-header">
+        All Known Lecturers
+      </div>
+      <div class="card-body" style="
+      height: 100%;
+      width:80%;
+      margin-left:10%;
+      margin-top: 2%;
+      display: flex;
+      text-align: center;
+      justify-content: space-between;">
+      {% for i in lec %}
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' alt="no img">
+        <div class="card-body">
+          <h5 class="card-title">{{ i.name }}</h5>
+          <p class="card-text"> </p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">HP: {{ i.hp }}</li>
+          <li class="list-group-item">Attack: {{ i.attack }}</li>
+          <li class="list-group-item">Type: {{ i.type }}</li>
+        </ul>
+        <!--
+        <div class="card-body">
+          <a href="#" class="card-link">Card link</a>
+          <a href="#" class="card-link">Another link</a>
+        </div>
+        -->
+      </div>
+      {% endfor %}
+    </div>
+    </div>
+
+<!--
       <table class="visits">
   			<thead>
   				<tr>
@@ -94,7 +139,9 @@
           {% endfor %}
       </table>
     </div>
+
 </div>
+    -->
   <script>
     window.onload = function() {
       var table = document.getElementById("lecturerdex");

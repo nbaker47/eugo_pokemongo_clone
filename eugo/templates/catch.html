@@ -23,23 +23,75 @@
 </head>
 
 <body>
-
-    <div class="center">
-    {% if lec %}
-        {% for l in lec %}
-            <div class = "info">
-                Name: {{l.name}} <br>
-                <img src='{% static "/eugo/img/teacher_sprites/"%}{{l.sprite}}' width="200" height="200">
-
-            </div>   
-            <div class="stats">
-                <p style="color: red;">HP: {{l.hp}} <p>
-                <p style="color: orange;">Attack: {{l.attack}} <p> <br><br>
-                <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} has appered</p>
-                <button onclick="catchAttempt('{{l.name}}','{{l.id}}')" id="catchbutton">Attempt capture</button>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/eugo/index">EUGO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/eugo/map">Map <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ user.get_username }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/eugo/player">Profile</a>
+              <a class="dropdown-item" href="/eugo/logout">Logout</a>
             </div>
-            
-            
+          </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
+        </li>
+                    <!--
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      -->
+    </div>
+  </nav>
+  
+    <div class="card text-center" style="
+    background-image: url(https://cdn.wallpapersafari.com/63/63/1bH4SE.jpg);
+    "><br>
+      <div class="card-header">
+        A Wild Lecturer Has Appeared!
+      </div>
+    {% if lec %}
+    <div class="card-body" style="
+    height: 100%;
+    width:80%;margin-left:10%;
+    margin-top: 2%;
+    display: flex;
+    text-align: center;
+    justify-content: space-between;">
+        {% for l in lec %}
+            <div class = "card"  style="width: 18rem;">
+                Name: {{l.name}} <br>
+                <img class="card-img-top" id="lect-pic" src='{% static "/eugo/img/teacher_sprites/"%}{{l.sprite}}' width="200" height="200">
+                <p><br>HP: {{l.hp}} <p>
+                <p>Attack: {{l.attack}}</p>
+            </div>   
+            <div class="card-body">
+
+                <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} Has Appered!</p>
+                <button class="btn btn-success" onclick="catchAttempt('{{l.name}}','{{l.id}}')" id="catchbutton">Throw LectBall</button>
+            </div>
+
             <br style="clear:both;"/>
         {% endfor %}
     {% else %}
@@ -47,47 +99,7 @@
     {% endif %}
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/eugo/map">EUGO</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="/eugo/map">Map <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{ user.get_username }}
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="/eugo/player">Profile</a>
-                  <a class="dropdown-item" href="/eugo/logout">Logout</a>
-                </div>
-              </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
-            </li>
-                        <!--
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-          -->
-        </div>
-      </nav>
+
 
       <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -115,7 +127,8 @@
                 },
                 success: function (data) {
                     console.log("success");
-
+                    lecPic = document.getElementById("lect-pic");
+                    lecPic.src = "/static/eugo/img/teacher_sprites/caught.gif"
                 },
                 failure: function (data) {
                     console.log("failure");
@@ -131,7 +144,10 @@
 
         }else{
             // try again
+            lecPic = document.getElementById("lect-pic");
+            lecPic.src = "/static/eugo/img/teacher_sprites/catching.gif"
             text.innerHTML = name + " dodged the lectball\xAE , Try again!";
+
         }
     }
 </script>

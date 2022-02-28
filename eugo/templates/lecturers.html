@@ -19,7 +19,7 @@
 
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/eugo/map">EUGO</a>
+      <a class="navbar-brand" href="/eugo/index">EUGO</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -59,28 +59,42 @@
         -->
       </div>
     </nav>
-    
-    <div class="center">
 
-          
-      <div class = "info">
-        {% for h in hand %}
-        <div class = vert>
-          Name: {{h.lec_id.name}} <br>
-          <img src='{% static "/eugo/img/teacher_sprites/"%}{{h.lec_id.sprite}}' width="200" height="200">
-          <p style="color: red;">HP: {{h.lec_id.hp}} <p>
-          <p style="color: orange;">Attack: {{h.lec_attack}} <p> 
+
+    <div id="lec-container "  class="card text-center">
+    <br>
+    <div class="card-header">
+      My Caught Lecturers
+    </div>
+    <div class="card-body" style="
+    height: 100%;
+    width:80%;margin-left:10%;
+    margin-top: 2%;
+    display: flex;
+    text-align: center;
+    justify-content: space-between;">
+    {% for h in hand %}
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src='{% static "/eugo/img/teacher_sprites/"%}{{h.lec_id.sprite}}' alt="no img">
+        <div class="card-body">
+          <h5 class="card-title">{{h.lec_id.name}}</h5>
+          <p class="card-text"> </p>
         </div>
-        {% endfor %}
-      </div>   
-      <div class="stats">
-          
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">HP: {{h.lec_id.hp}} </li>
+          <li class="list-group-item">Attack: {{h.lec_id.attack}}</li>
+          <li class="list-group-item">Type: {{h.lec_id.type}}</li>
+        </ul>
+        <!--
+        <div class="card-body">
+          <a href="#" class="card-link">Card link</a>
+          <a href="#" class="card-link">Another link</a>
+        </div>
+        -->
       </div>
-      
-      
-      <br style="clear:both;"/>
-          
-      </div>
+      {% endfor %}
+    </div>
+    </div>
 
       <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
       <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

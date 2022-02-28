@@ -22,7 +22,8 @@ a:hover {
 }
 
 html,
-body {
+body{
+  width:100%;
   height: 100%;
   background-color: rgb(255, 255, 255);
 }
@@ -36,7 +37,7 @@ body {
   justify-content: center;
   color: #fff;
   text-shadow: 0 .1rem .4rem rgba(0, 0, 0, .5);
-  box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+  /*box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);*/
 }
 
 #parent-container{
@@ -103,5 +104,10 @@ body {
  */
 .mastfoot {
   color: rgba(255, 255, 255, .5);
+}
+
+#formp{
+  color: #333;
+  text-shadow: none;
 }
 
