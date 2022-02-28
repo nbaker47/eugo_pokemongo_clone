@@ -38,9 +38,9 @@
         {% for i in lec %}
         <div class="lec-map-pin " style="position: absolute; z-index: 4; font-size: 10px;
         font-weight: bold; list-style-type: none;" id={{i.id}} value={{i.pos}}>
-            <li>{{ i.name }}</li>
-            <li>{{ i.duration }} Mins Remaining</li>
-            <li>{{ i.pos }}</li>
+            <li style="color: black;">{{ i.name }}</li>
+            <li style="color: black;">{{ i.duration }} Mins Remaining</li>
+            <!--<li style="color: black;">{{ i.pos }}</li>-->
             <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img"></li>
             <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.qrUrl}}','{{i.id}}')">Confirm QR Code</button></li>
         </div>
