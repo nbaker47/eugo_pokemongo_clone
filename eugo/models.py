@@ -29,6 +29,7 @@ class Lecturer(models.Model):
     wildOrBattle    =   models.CharField(max_length=100)
     qrUrl           =   models.CharField(max_length=500)
 
+    # return the lecturer name when trying to print the object
     def __str__(self):
         return (self.name)
 
@@ -37,5 +38,6 @@ class Hand(models.Model):
     username        =   models.ForeignKey(Player, on_delete=models.CASCADE)
     lec_id          =   models.ForeignKey(Lecturer, on_delete=models.CASCADE)
 
+    # return the username and lecturer to show the link between 
     def __str__(self):
         return (self.username + ": " + self.lec_id)

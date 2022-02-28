@@ -20,8 +20,9 @@ def index(request):
 def battle(request):
     return render(request, 'battle.html')
 
-def signin(request): #cannot be named login because of imported function
-
+""" This is the method that handles the login page (cannot be named login because of built in function) """
+def signin(request):
+    # check if the method is post 
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
