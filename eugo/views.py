@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
-from eugo.models import Lecturer, Player, Hand, MapEvent
+from eugo.models import Lecturer, Player, Hand, MapEvent, CompleteEvents
 from eugo.forms import *
 from random import randint
 import requests
@@ -121,13 +121,17 @@ def catch(request):
     if request.method == 'POST':
         #lec_id = request.POST['lecID']
         lec_id = str(request.POST.get('lecID'))
+        event_id = request.POST.get('eventID')
+
         print("lec ID: " + lec_id)
+        print("event ID: " + event_id)
 
     lec = Lecturer.objects.filter(id = lec_id)
-    return render(request, 'catch.html',{'lec': lec})
+    return render(request, 'catch.html',{'lec': lec, 'eve': event_id})
 
 def newcatch(request):
     if request.method == 'POST':
+
         #gets lecturer that was cught by id
         lecid = str(request.POST.get('lec_id'))
         lec = Lecturer.objects.filter(id = lecid)
@@ -143,6 +147,12 @@ def newcatch(request):
 
         h = Hand(username = player, lec_id = lec[0])
         h.save()
+
+        #adds the event to the list of events completed my the user 
+        event_id = request.POST.get("event_id")
+        mapEvent = MapEvent.objects.filter(id=event_id)[0]
+        ce = CompleteEvents(username = player, event = mapEvent)
+        ce.save()
 
         print(lec[0].name + " was caputred by " + un )
 
@@ -163,12 +173,21 @@ def map(request):
     player_vals = players.values()
     leaderboard = sorted(player_vals, key=lambda d: d['pokemon_caught'], reverse=True)
     #print(leaderboard)
-    mapEvent = MapEvent.objects.all()
+    mapEvent = list(MapEvent.objects.all())
+
+    #remove completed events
+    completed_events = CompleteEvents.objects.all()
+    for i in completed_events:
+        mapEvent.remove(i.event)
+    
+
     return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent})
 
 def mapmod(request):
     if request.method == 'POST':
         gameop = request.POST.get('gameop')
+        print(gameop + "wut")
+        print("test")
         #creating new lecturer
         if(gameop == 'lecNewLi'):
             print(request.POST)

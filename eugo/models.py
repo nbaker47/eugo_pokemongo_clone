@@ -33,9 +33,16 @@ class Lecturer(models.Model):
 
 """a battle or cpture event on the map"""
 class MapEvent(models.Model):
+    id              =   models.CharField(max_length=100, primary_key=True)
     lec_id          =   models.ForeignKey(Lecturer, on_delete=models.CASCADE)
     pos             =   models.CharField(max_length=100)
     wildOrBattle    =   models.CharField(max_length=100)
+
+"""events copleted by the player"""
+class CompleteEvents(models.Model):
+    username        =   models.ForeignKey(Player, on_delete=models.CASCADE)
+    event           =   models.ForeignKey(MapEvent, on_delete=models.CASCADE)
+
 
 """ A table to link the player with the lecturers they own """
 class Hand(models.Model):

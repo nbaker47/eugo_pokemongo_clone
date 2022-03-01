@@ -86,7 +86,7 @@
                     
                     <input class="rangeslider" type="range" id="sprite" name="sprite"
                     min="1" max="3" value="1">
-                    <input type="hidden" value="" id="gameOpBox" name="gameop">
+                    <input type="hidden" value="" id="gameOpBoxx" name="gameop">
                     <input type="submit" class="form-submit" value="Confirm">
                 </form>
             </ul>
@@ -233,7 +233,9 @@
               document.getElementById("lecSpawn").style.display = "block";
             }
             
-
+            //this is rly dumb and should be changed
+            //realy this all should be ajax
+            document.getElementById("gameOpBoxx").value = choice;
             document.getElementById("gameOpBox").value = choice;
         }
 
