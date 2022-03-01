@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
-from eugo.models import Lecturer, Player, Hand
+from eugo.models import *
 from eugo.forms import *
 from random import randint
 import requests
@@ -73,8 +73,6 @@ def register(request):
             messages.error(sprite_url)
             messages.error(request, e)
             return redirect('/eugo/register')
-        # comment
-
 
         #Need to check emails to make sure it isnt already used
         #We could do validation here but I think doing it in JavaScript might be easier
@@ -148,6 +146,21 @@ def newcatch(request):
 
     return render(request, 'catch.html', {'lec': lec})
 
+def sendchat(request):
+    if request.method == 'POST':
+        try:
+            channel_id = str(request.POST.get('channel'))
+            username = str(request.POST.get('user'))
+            message = str(request.POST.get('message'))
+            channel_id_k = ChatChannel.objects.filter(channel_id  = channel_id)[0]
+            new_message = ChatMessage(channel_id = channel_id_k , user = username, content=message)
+            new_message.save()
+            print("message : " + message)
+        except Exception as e:
+            print(e)
+            
+    return render(request, 'map.html')
+
 def map(request):
     if request.method == 'POST':
         qrUrl = request.POST['qrUrl']
@@ -162,8 +175,9 @@ def map(request):
     players = Player.objects.all()
     player_vals = players.values()
     leaderboard = sorted(player_vals, key=lambda d: d['pokemon_caught'], reverse=True)
+    all_messages = ChatMessage.objects.all()
     #print(leaderboard)
-    return render(request, 'map.html',{'lec': lec, 'players': leaderboard})
+    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'messages': all_messages})
 
 def mapmod(request):
     if request.method == 'POST':

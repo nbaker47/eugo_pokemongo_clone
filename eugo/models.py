@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import *
 
 # here are all of the database tables, class name corresponds to table name
 
@@ -39,3 +40,15 @@ class Hand(models.Model):
 
     def __str__(self):
         return (self.username + ": " + self.lec_id)
+
+""" Chat Box models"""
+class ChatChannel(models.Model):
+    channel_id = models.CharField(max_length=100, primary_key=True)
+    channel_name = models.CharField(max_length=100)
+
+""" chat messages model"""
+class ChatMessage(models.Model):
+    channel_id = models.ForeignKey(ChatChannel, on_delete=models.CASCADE)
+    user = models.CharField(max_length=20)
+    content = models.CharField(max_length=100, default='message', null=True)
+    date = models.DateField(default=date.today)

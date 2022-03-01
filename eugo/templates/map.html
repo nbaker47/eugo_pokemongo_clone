@@ -7,26 +7,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-   
+
+    <!--Favicon-->
+    <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
+
     <title>EUGO</title>
     
     <!--bootstrap CSS-->
     <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
-    
-    <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
 
     <!-- Custom styles for this template -->
     <link href='{% static "/eugo/css/leader.css" %}' rel="stylesheet"> 
     <link href='{% static "/eugo/css/map.css" %}' rel="stylesheet"> 
 
+    <!--Ajax JS-->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <!--Bootstrap JS-->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   </head>
 
   <body>
 
     {% if not user.is_authenticated %}
-
     <script>window.location.href = "/eugo/logout/";</script>
-
     {% endif %}
 
     <div class="text-center parent-container-map" id="parent-container-map-id">
@@ -87,7 +92,7 @@
         </div>
       </nav>
 
-      <!--Leaderboard-->
+    <!--Leaderboard-->
     <div class="leaderboard slidein" id="leaderboard">
         <h1>
         <svg class="ico-cup">
@@ -131,140 +136,71 @@
         </ol>
     </div>
 
+    <!--Chat Panel-->
     <div class="leaderboard slidein" id="leaderboard" style="
-      top: 50%;
+        top: 50%;
         right: 5.5%;
         left: 94.5%;
+        padding: 3px;
+        font-size: 15px;
     ">
-        <h1>
-        <svg class="ico-cup">
-            <use xlink:href="#cup"></use>
-        </svg>
-        Global Chat
-        </h1>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Global Chat
+            </button>
+            <input type="hidden" value='global123' id='channel_selected'>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="">My Friends</a>
+            <a class="dropdown-item" href="">My Inbox</a>
+            <a class="dropdown-item" href="">Contact Support</a>
+            </div>
+        </div>
+        <!--messages-->
+        <br>
+        <section class="chat" id="chatbox"></section>
+            {% for m in messages %}
+            <p><strong>{{ m.user }}</strong> - {{ m.date }} : {{ m.content }}</p>
+            {% endfor %}
+          </section>
+        
+          <form>
+            <input type="text" placeholder="Say something nice" name="message" id="usermsg" style="width: 65%;" />
+            <button class="btn btn-light" name="submitmsg" type="submit" id="submitmsg" value="Send" onclick="sendChat('{{ user.get_username }}')" >Send</button>
+          </form>
+
         <ol>
         </ol>
+   
     </div>
     
-    
-    <script>
-        window.onload = function(){
-            mapContainer= document.getElementById("mapConID");
-            var xOff = getOffset(mapContainer).left;
-            var yOff = getOffset(mapContainer).top;
-            pinL = document.getElementsByClassName("lec-map-pin")
-
-            for (let i = 0; i < pinL.length; i++) {
-                pin = pinL[i];
-                var x = parseInt(pin.getAttribute("value").split(",")[0])
-                var y = parseInt(pin.getAttribute("value").split(",")[1])
-                pin.style.left = x + xOff+ "px";
-                pin.style.top = y + yOff+ "px";
-                console.log(x, y);
-                var gifsrc = '{% static "/eugo/img/circle.gif" %}'
-                pin.style.backgroundImage = "url("+ gifsrc +")";
-                pin.style.backgroundSize = "contain";
-                pin.style.backgroundRepeat = "no-repeat";
-            } 
-        }
-
-        function getOffset(el) {
-            const rect = el.getBoundingClientRect();
-            return {
-                left: rect.left + window.scrollX,
-                top: rect.top + window.scrollY
-            };
-        }
-
-        function showLecSpawn(choice){
-            document.getElementById("lecSpawnLi").style.color = "white";
-            document.getElementById("lecBattleLi").style.color = "white";
-            menu = document.getElementById("lecSpawn");
-            menu.style.width = "100%";	
-            menu.style.height = "100%";
-            menu.style.visibility = "visible";
-            li = document.getElementById(choice);
-            li.style.color = "red";
-            document.getElementById("gameOpBox").value = choice;
-        }
-
-        function showCam(spriteImg, id){
-            camDiv = document.getElementById("reader");
-            camDiv.style.width = "500px";
-            camDiv.style.height = "375px";
-            camDiv.style.visibility = "visible";
-            canBut = document.getElementById('cam-button-cancel');
-            canBut.style.width = "100px";
-            canBut.style.height = "30px";
-            canBut.style.visibility = "visible";
-
-            document.getElementById('current-lec').value = spriteImg;
-            //console.log("url : " + document.getElementById('current-lec').value);
-
-            document.getElementById('current-lec-id').value = id;
-            //console.log("id : " + document.getElementById('current-lec-id').value);
-        }
-
-        function hideCam(){
-            camDiv = document.getElementById("reader");
-            camDiv.style.width = "0";
-            camDiv.style.height = "0";
-            camDiv.style.visibility = "hidden";
-            canBut = document.getElementById('cam-button-cancel');
-            canBut.style.width = "0";
-            canBut.style.height = "0";
-            canBut.style.visibility = "hidden";
-        }
-
-    </script>
-    <script type="text/javascript" src='{% static "/eugo/js/html5-qrcode.min.js" %}'>
-    </script>
+    <!--chatbox script-->
     <script type="text/javascript">
 
-        function onScanSuccess(decodedText, decodedResult) {
-            curLec = document.getElementById('current-lec').value
-            console.log(curLec + " ?= " + decodedText);
-            if(curLec == decodedText + ".png"){
-                alert("matched QR!")
-                
-                //create form of lecturer and submit to /eugo/catch
-                let windowName = 'w_' + Date.now() + Math.floor(Math.random() * 100000).toString();
-                var form = document.createElement("form");
-                form.setAttribute("method", "post");
-                form.setAttribute("action", "/eugo/catch/");
-                form.setAttribute("target", windowName);
+        hidden = document.getElementById('channel_selected');
 
-                var hiddenField = document.createElement("input"); 
-                hiddenField.setAttribute("type", "hidden");
-                hiddenField.setAttribute("name", "lecID");
-                hiddenField.setAttribute("value", decodedText);
-                form.appendChild(hiddenField);
-                document.body.appendChild(form);
-
-                window.open('', windowName);
-
-                form.submit();
-            }
-            else{
-                alert("invalid QR!")
-            }
+        function channelSelect(input){
+            hidden.value = input;
         }
 
-        function onScanFailure(error) {
-            // handle scan failure, usually better to ignore and keep scanning.
-            // for example:
-            console.warn(`Code scan error = ${error}`);
+        function sendChat(username){
+            $.ajax({
+                type: "POST",
+                url: "/eugo/sendchat/",
+                data: {
+                    'channel': hidden.value,
+                    'user' : username,
+                    'message' : document.getElementById('usermsg').value,
+                },
+                success: function (data) {
+                    console.log("sent message");
+                },
+                error: function (data) {
+                    console.log("error : ", JSON.stringify(data));
+                },
+            });
         }
-
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader",
-        { fps: 10, qrbox: {width: 250, height: 250} },
-        /* verbose= */ false);
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     </script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
+
+</body>
 </html>
 
