@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
-from eugo.models import Lecturer
+from eugo.models import Lecturer, Player, Hand
 from eugo.forms import *
 from random import randint
 import requests
@@ -25,7 +25,8 @@ def signin(request): #cannot be named login because of imported function
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
-   
+
+        #try:
         print(username, password)
         user = authenticate(request, username=username, password=password)
 
@@ -35,6 +36,7 @@ def signin(request): #cannot be named login because of imported function
             firstname = user.first_name
 
             return render(request, "index.html", {'firstname': firstname})
+        #except no such table: auth_user
 
     return render(request, 'login.html')
 
@@ -45,23 +47,33 @@ def signout(request):
 
 def register(request):
     if request.method == "POST":
-        #print(request.POST)
+        print(request.POST)
 
         firstname   =   request.POST['firstname']
         surname     =   request.POST['surname']
         email       =   request.POST['email']
         username    =   request.POST['username']
         password    =   request.POST['password1']
-        
+        sprite_no =  request.POST['sprite']
+        sprite_url = "eugo/static/eugo/img/teacher_sprites/teacher_" + sprite_no + ".png"
+        print("SPRITE URL::   " + sprite_url)
+
         try:
             user = User.objects.create_user(username, email, password)
             user.first_name = firstname
             user.last_name = surname
             user.save()
+            p = Player(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
+            p.save()
+            print(p)
             print(user)
-        except IntegrityError:
-            messages.error(request, "Username already created")
+            return redirect('/eugo/login')
+         
+        except IntegrityError as e:
+            messages.error(sprite_url)
+            messages.error(request, e)
             return redirect('/eugo/register')
+        # comment
 
 
         #Need to check emails to make sure it isnt already used
@@ -70,10 +82,36 @@ def register(request):
     return render(request, 'register.html')
 
 def player(request):
-    return render(request, 'player.html')
+    # check if they are submitting a POST method or just visiting
+    if request.method == "POST":
+        # make sure that the usplayerer is authenticated (not anonymous user)
+        if request.user.is_authenticated:
+            # username is request.user.username
+            password = request.POST['pass1']
+            user = User.objects.get(username__exact=request.user.username)
+            # change the password
+            user.set_password(password)
+            # save the user object
+            user.save()
+            # redirect to login ()
+            return redirect("/eugo/login")
+    # check if the user is authenticated
+    if request.user.is_authenticated:
+        cur_play = Player.objects.get(email=request.user.email)
+        player_img = str(cur_play.sprite_url)[4:]
+        name = cur_play.username
+        return render(request, "player.html", {"player":player_img})
+    else:
+        # if they arent redirect to login
+        return redirect("/eugo/login")
+    
 
 def lecturers(request):
-    return render(request, 'lecturers.html')
+    un = request.user.username
+    player = Player.objects.filter(username=un)[0]
+    hands = Hand.objects.filter(username = player)
+
+    return render(request, 'lecturers.html',{'hand': hands})
 
 def lecturerdex(request):
     lec = Lecturer.objects.all()
@@ -90,13 +128,25 @@ def catch(request):
 
 def newcatch(request):
     if request.method == 'POST':
-        lec_id = str(request.POST.get('lec_id'))
+        #gets lecturer that was cught by id
+        lecid = str(request.POST.get('lec_id'))
+        lec = Lecturer.objects.filter(id = lecid)
 
-        #test output
-        print("lec ID: " + lec_id + " was caught")
+        #gets the current user
+        current_user = request.user
+        un = current_user.username
+        player = Player.objects.filter(username=un)[0]
 
-    lec = Lecturer.objects.filter(id = lec_id)
-    return render(request, 'catch.html',{'lec': lec})
+        #addds the lec to the players hand
+        player.pokemon_caught = player.pokemon_caught+1
+        player.save()
+
+        h = Hand(username = player, lec_id = lec[0])
+        h.save()
+
+        print(lec[0].name + " was caputred by " + un )
+
+    return render(request, 'catch.html', {'lec': lec})
 
 def map(request):
     if request.method == 'POST':
@@ -109,9 +159,11 @@ def map(request):
             print('error reading QR')
 
     lec = Lecturer.objects.all()
-    return render(request, 'map.html',{'lec': lec})
-
-
+    players = Player.objects.all()
+    player_vals = players.values()
+    leaderboard = sorted(player_vals, key=lambda d: d['pokemon_caught'], reverse=True)
+    #print(leaderboard)
+    return render(request, 'map.html',{'lec': lec, 'players': leaderboard})
 
 def mapmod(request):
     if request.method == 'POST':

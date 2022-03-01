@@ -18,25 +18,131 @@
   </head>
 
   <body>
-    <div class="full-width-bar">
-      <h1>EUGO</h1>
-    </div>
+    {% if not user.is_authenticated %}
 
+    <script>window.location.href = "/eugo/logout/";</script>
+
+    {% endif %}
+
+    <!-- The EUGO bar at the top -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/eugo/index">EUGO</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item ">
+            <a class="nav-link" href="/eugo/map">Map <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
+          </li>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ user.get_username }}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="/eugo/player">Profile</a>
+                <a class="dropdown-item" href="/eugo/logout">Logout</a>
+              </div>
+            </li>
+          <li class="nav-item">
+              <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
+          </li>
+                      <!--
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        -->
+      </div>
+    </nav>
+
+    <!-- just print out the username -->
     <div class="whole-page">
-      <h2 class="username">{{username}}</h2>
-
+      <br>
+      <h2 class="username text-center">{{user.username}}</h2>
       <hr>
       <br>
     </div>
 
-    <div class="side-panel">
-      <ul class="side-panel-list list-unstyled">
-        <li><a href="/eugo/map"> Map </a></li>
-        <li><a href="/eugo/lecturers"> Lecturers </a></li>
-        <li><a href="/eugo/lecturerdex"> LecturerDex </a>
-        <li><a href="/eugo/logout"> Logout </a></li>
-      </ul>
+    <!--player card-->
+    <div class="card text-center">
+      <div class="card-header">
+        How you look:
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
+        <img src='{{player}}' style="width: 10%;">
+      </div>
+      <div class="card-footer text-muted">
+        ~what a handsome boy!
+      </div>
     </div>
+
+
+    <!-- the password validation check for changing user password -->
+    <script>
+      function check_password() {
+        // get the two passwords from the form
+        let pass1 = document.forms['password_form']['pass1'].value;
+        let pass2 = document.forms['password_form']['pass2'].value;
+
+        // a var for the regex format that the password should be in
+        var filter = /^(?=.*?[a-z])(?=.*?[a-z])(?=.*?[0-9])/;
+
+        // check that passwords match
+        if (pass1 != pass2) {
+          alert("Passwords do not match");
+          return false;
+        // check that the passwords are in the correct format
+        // the checks can be done in any order, doesnt change anything
+        } else if (filter.test(pass1)) {
+          alert("Password is not in the right format");
+          return false;
+        }
+        // alert of change and that they will be redirected
+        alert("Password change successful, please log in again.")
+      }
+    </script>
+
+    <!-- password input and avatar change forms -->
+    <!-- the password form -->
+    <!-- the check_password is ran before the POST request is sent to the server-->
+    <form id="formp" name="password_form" class="form" method="POST" action="." onsubmit="return check_password()"
+    style="margin-left: 40%; margin-top: 4%;">
+      <!-- prevents csrf attacks -->
+      {% csrf_token %}
+      <!-- first password -->
+      <div class="form-group">
+      <label>Change Password:
+        <input class="form-control" type="password" name="pass1" placeholder="Password" size="50" minlength="8" required>
+      </label>
+      </div>
+      <!-- confirm, or repeat password -->
+      <div class="form-group">
+      <label>Confirm new Password:
+        <input class="form-control" type="password" name="pass2" placeholder="Repeat Password" size="50" minlength="8" required>
+      </label>
+      </div>
+      <!-- the button to submit the form -->
+      <div class="form-group">
+      <label>
+        <input type="submit" value="Change Password" size="25" class="btn btn-primary">
+      </label>
+      <br>
+    </form>
+
+
 
     
   </body>

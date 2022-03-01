@@ -16,9 +16,8 @@
     <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
 
     <!-- Custom styles for this template -->
+    <link href='{% static "/eugo/css/leader.css" %}' rel="stylesheet"> 
     <link href='{% static "/eugo/css/map.css" %}' rel="stylesheet"> 
-
-    <!--webcam JS script-->
 
   </head>
 
@@ -37,47 +36,117 @@
         </div>
 
         {% for i in lec %}
-        <div class="lec-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
+        <div class="lec-map-pin " style="position: absolute; z-index: 4; font-size: 10px;
         font-weight: bold; list-style-type: none;" id={{i.id}} value={{i.pos}}>
-            <li>{{ i.name }}</li>
-            <li>{{ i.duration }} Mins Remaining</li>
-            <li>{{ i.pos }}</li>
+            <li style="color: black;">{{ i.name }}</li>
+            <li style="color: black;">{{ i.duration }} Mins Remaining</li>
+            <!--<li style="color: black;">{{ i.pos }}</li>-->
             <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img"></li>
-            <li><button type="button" onclick="showCam('{{i.qrUrl}}','{{i.id}}')">Confirm QR Code</button></li>
+            <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.qrUrl}}','{{i.id}}')">Confirm QR Code</button></li>
         </div>
         {% endfor %}
 
-        <div class="side-panel">
-          <ul class = "side-panel-list list-unstyled ">
-              <li><a href="/eugo/player"> Player </a></li>
-              <li><a href="/eugo/lecturers"> Lecturers </a></li>
-              <li><a href="/eugo/lecturerdex"> LecturerDex </a></li>
-              <li><a href="/eugo/logout"> Logout </a></li>
-          </ul>
-        </div>
-
-        <!--
-        <div class="camera" id='cam-div'>
-            <video id="video">Video stream not available.</video>
-            <button id="startbutton">Take photo</button>
-            <button id="cam-button-cancel" onclick="hideCam()">Cancel</button> 
-          </div>
-          <canvas id="canvas" class="pic-canv">
-          </canvas>
-          <div class="output">
-            <img id="photo" alt="The screen capture will appear in this box."> 
-          </div>
-        -->
-
+        <button id="cam-button-cancel" class="btn btn-danger" onclick="hideCam()" style="position: absolute; text-align: center; top: 550px">Cancel</button> 
         <div style="width: 500px; position: absolute; text-align: center;" id="reader">
         </div>
         <div id="qr-reader-results"></div>
-        <button id="cam-button-cancel" onclick="hideCam()">Cancel</button> 
+        </div>
+
         <input type="hidden" id="current-lec" value="">
         <input type="hidden" id="current-lec-id" value="">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/eugo/index">EUGO</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/eugo/map">Map <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ user.get_username }}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="/eugo/player">Profile</a>
+                  <a class="dropdown-item" href="/eugo/logout">Logout</a>
+                </div>
+              </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
+            </li>
+        </div>
+      </nav>
+
+      <!--Leaderboard-->
+    <div class="leaderboard slidein" id="leaderboard">
+        <h1>
+        <svg class="ico-cup">
+            <use xlink:href="#cup"></use>
+        </svg>
+        Most Lecturers Caught
+        </h1>
+        <ol>
+        <li>
+            <mark>{{ players.0.username }}</mark>
+            <small>{{ players.0.pokemon_caught }}</small>
+        </li>
+        <li>
+            <mark>{{ players.1.username }}</mark>
+            <small>{{ players.1.pokemon_caught }}</small>
+        </li>
+        <li>
+            <mark>{{ players.2.username }}</mark>
+            <small>{{ players.2.pokemon_caught }}</small>
+        </li>
+        <li>
+            <mark>{{ players.3.username }}</mark>
+            <small>{{ players.3.pokemon_caught }}</small>
+        </li>
+        <li>
+            <mark>{{ players.4.username }}</mark>
+            <small>{{ players.4.pokemon_caught }}</small>
+        </li>
+        <li>
+            <mark>{{ players.5.username }}</mark>
+            <small>{{ players.5.pokemon_caught }}</small>
+        </li>
+        <li>
+            <mark>{{ players.6.username }}</mark>
+            <small>{{ players.6.pokemon_caught }}</small>
+        </li>
+        <li>
+            <mark>{{ players.7.username }}</mark>
+            <small>{{ players.7.pokemon_caught }}</small>
+        </li>  
+        </ol>
     </div>
 
-
+    <div class="leaderboard slidein" id="leaderboard" style="
+      top: 50%;
+        right: 5.5%;
+        left: 94.5%;
+    ">
+        <h1>
+        <svg class="ico-cup">
+            <use xlink:href="#cup"></use>
+        </svg>
+        Global Chat
+        </h1>
+        <ol>
+        </ol>
+    </div>
+    
+    
     <script>
         window.onload = function(){
             mapContainer= document.getElementById("mapConID");
@@ -148,11 +217,8 @@
         }
 
     </script>
-    
-
     <script type="text/javascript" src='{% static "/eugo/js/html5-qrcode.min.js" %}'>
     </script>
-
     <script type="text/javascript">
 
         function onScanSuccess(decodedText, decodedResult) {
@@ -196,11 +262,9 @@
         /* verbose= */ false);
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     </script>
-
-    <!--QR CODE CAMERA SCRIPT
-    <script type="text/javascript" src='{% static "/eugo/js/camera.js" %}'></script>
-    -->
-
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
 </html>
 
