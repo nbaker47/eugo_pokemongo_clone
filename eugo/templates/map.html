@@ -35,14 +35,14 @@
             <img src='{% static "/eugo/img/exe_map_alpha.png" %}' class="map-img">
         </div>
 
-        {% for i in lec %}
+        {% for i in mapEvent %}
         <div class="lec-map-pin " style="position: absolute; z-index: 4; font-size: 10px;
-        font-weight: bold; list-style-type: none;" id={{i.id}} value={{i.pos}}>
-            <li style="color: black;">{{ i.name }}</li>
-            <li style="color: black;">{{ i.duration }} Mins Remaining</li>
+        font-weight: bold; list-style-type: none;" id='{{i.lec_id.id}}' value='{{i.pos}}'>
+            <li style="color: black;">{{ i.lec_id.name }}</li>
+            <li style="color: black;">{{ i.lec_id.duration }} Mins Remaining</li>
             <!--<li style="color: black;">{{ i.pos }}</li>-->
-            <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img"></li>
-            <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.qrUrl}}','{{i.id}}')">Confirm QR Code</button></li>
+            <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.lec_id.sprite}}' class="spirite-img"></li>
+            <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.lec_id.qrUrl}}','{{i.lec_id.id}}','{{i.id}}')">Confirm QR Code</button></li>
         </div>
         {% endfor %}
 
@@ -54,6 +54,7 @@
 
         <input type="hidden" id="current-lec" value="">
         <input type="hidden" id="current-lec-id" value="">
+        <input type="hidden" id="current-event-id" value="">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/eugo/index">EUGO</a>
@@ -188,7 +189,7 @@
             document.getElementById("gameOpBox").value = choice;
         }
 
-        function showCam(spriteImg, id){
+        function showCam(spriteImg, id, event_id){
             camDiv = document.getElementById("reader");
             camDiv.style.width = "500px";
             camDiv.style.height = "375px";
@@ -203,6 +204,8 @@
 
             document.getElementById('current-lec-id').value = id;
             //console.log("id : " + document.getElementById('current-lec-id').value);
+
+            document.getElementById('current-event-id').value = event_id;
         }
 
         function hideCam(){
@@ -223,6 +226,8 @@
 
         function onScanSuccess(decodedText, decodedResult) {
             curLec = document.getElementById('current-lec').value
+            event_id = document.getElementById('current-event-id').value
+            console.log("eventid: " + event_id)
             console.log(curLec + " ?= " + decodedText);
             if(curLec == decodedText + ".png"){
                 alert("matched QR!")
@@ -234,11 +239,24 @@
                 form.setAttribute("action", "/eugo/catch/");
                 form.setAttribute("target", windowName);
 
+                //add lect id to post form
                 var hiddenField = document.createElement("input"); 
                 hiddenField.setAttribute("type", "hidden");
                 hiddenField.setAttribute("name", "lecID");
                 hiddenField.setAttribute("value", decodedText);
                 form.appendChild(hiddenField);
+
+                //add event id to post form
+                var eventfield = document.createElement("input"); 
+                eventfield.setAttribute("type", "hidden");
+                eventfield.setAttribute("name", "eventID");
+                eventfield.setAttribute("value", event_id);
+                form.appendChild(eventfield);
+
+                /*realy we should just use the post id and then quirey the db for the lecture server side 
+                but oh well again this really needs to be done with ajax*/
+
+                
                 document.body.appendChild(form);
 
                 window.open('', windowName);
