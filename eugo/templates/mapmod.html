@@ -26,14 +26,14 @@
             <img src='{% static "/eugo/img/exe_map_alpha.png" %}' class="map-img" onclick="showEventSelect()">
         </div>
 
-        {%  for i in lec %}
+        {%  for i in mapEvent %}
         <div class="lec-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
-        font-weight: bold; list-style-type: none;" id={{i.id}} value={{i.pos}}>
-            <li>{{ i.name }}</li>
-            <li>{{ i.duration }} Mins Remaining</li>
+        font-weight: bold; list-style-type: none;" id='{{i.lec.id}}' value='{{i.pos}}'>
+            <li>{{ i.lec_id.name }}</li>
+            <li>{{ i.lec_id.duration }} Mins Remaining</li>
             <li>{{ i.pos }}</li>
-            <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img"></li>
-            <button type="button" class="btn btn-light btn-sm" id="qr-gen-but" class="qr-gen-but" onclick="viewQR('{{i.qrUrl}}')">View QR</button>
+            <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.lec_id.sprite}}' class="spirite-img"></li>
+            <button type="button" class="btn btn-light btn-sm" id="qr-gen-but" class="qr-gen-but" onclick="viewQR('{{i.lec_id.qrUrl}}')">View QR</button>
         </div>
         {% endfor %}
 
@@ -47,13 +47,32 @@
             <ul class = "event-select-panel-ul">
                 <li onclick="showLecSpawn('lecSpawnLi')" id="lecSpawnLi">Wild Lecturer Spawn</li>
                 <li onclick="showLecSpawn('lecBattleLi')" id="lecBattleLi">Lecturer Battle</li>
+                <li onclick="showLecSpawn('lecNewLi')" id="lecNewLi">New Lecturer</li>
+
+
                 <form class="spawn-lecturer-menu" id="lecSpawn" method="post">
+                  {% csrf_token %}
+                  
+                  <label for="lecturers">Choose a lecturer:</label>
+                  <select id="lecturers" name="lecturer">
+                      {%  for i in lec %}
+                        <option value='{{i.id}}'>{{i.name}}</option>
+                      {% endfor %}
+                  </select>
+                  
+                  <input type="hidden" value="0,0" id="coordsBox" name="coords">
+                  <input type="hidden" value="" id="gameOpBox" name="gameop">
+                  <input type="submit" class="form-submit" value="Confirm">
+              </form>
+
+                
+                <form class="new-lecturer-menu" id="newLec" method="post">
                     {% csrf_token %}
 
                     <input type="number" name="duration" placeholder="Duration (mins)" required>
                     <input type="text" name="name" placeholder="Lecturer Name" required>
                     <input type="number" name="hp" placeholder="Lecturer Hp" required>
-                    <input type="number" name="attack" placeholder="Lecturer Attack" required>
+                    <input type="number" name="attack" placeholder="Lecturer Attack" required></br>
                     <select name="type" placeholder="Lecturer Type" required>
                         <option value="english">English</option>
                         <option value="maths">Maths</option>
@@ -67,7 +86,6 @@
                     
                     <input class="rangeslider" type="range" id="sprite" name="sprite"
                     min="1" max="3" value="1">
-                    <input type="hidden" value="0,0" id="coordsBox" name="coords">
                     <input type="hidden" value="" id="gameOpBox" name="gameop">
                     <input type="submit" class="form-submit" value="Confirm">
                 </form>
@@ -171,6 +189,8 @@
             var yOff = getOffset(mapContainer).top;
             document.getElementById("coordsBox").value = (x - xOff) + "," + (y - yOff);
             panel.style.visibility = "visible";	
+            document.getElementById("newLec").style.display = "none";
+            document.getElementById("lecSpawn").style.display = "none";
         }
 
         function getOffset(el) {
@@ -184,6 +204,7 @@
         function resetBox(){
             document.getElementById("lecSpawnLi").style.color = "white";
             document.getElementById("lecBattleLi").style.color = "white";
+            document.getElementById("lecNewLi").style.color = "white";
             menu = document.getElementById("lecSpawn");
             menu.style.width = "0";	
             menu.style.height = "0";
@@ -193,12 +214,26 @@
         function showLecSpawn(choice){
             document.getElementById("lecSpawnLi").style.color = "white";
             document.getElementById("lecBattleLi").style.color = "white";
+            document.getElementById("lecNewLi").style.color = "white";
             menu = document.getElementById("lecSpawn");
             menu.style.width = "100%";	
             menu.style.height = "100%";
             menu.style.visibility = "visible";
+            menu.style.display = "none";
             li = document.getElementById(choice);
             li.style.color = "red";
+
+            //if coice new lec show new menue
+            if(choice == "lecNewLi"){
+              document.getElementById("newLec").style.display = "block";
+              document.getElementById("lecSpawn").style.display = "none";
+            }else{
+              //else show drop down
+              document.getElementById("newLec").style.display = "none";
+              document.getElementById("lecSpawn").style.display = "block";
+            }
+            
+
             document.getElementById("gameOpBox").value = choice;
         }
 

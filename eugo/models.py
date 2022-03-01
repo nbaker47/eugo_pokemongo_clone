@@ -19,18 +19,23 @@ class Player(models.Model):
     we will have every lecturer as their own object """
 class Lecturer(models.Model):
     id              =   models.CharField(max_length=100, primary_key=True)
-    duration        =   models.IntegerField()
     name            =   models.CharField(max_length=100)
     hp              =   models.IntegerField()
     attack          =   models.IntegerField()
     sprite          =   models.CharField(max_length=100)
-    pos             =   models.CharField(max_length=100)
     type            =   models.CharField(max_length=100)
-    wildOrBattle    =   models.CharField(max_length=100)
+    duration        =   models.IntegerField()
     qrUrl           =   models.CharField(max_length=500)
+
 
     def __str__(self):
         return (self.name)
+
+"""a battle or cpture event on the map"""
+class MapEvent(models.Model):
+    lec_id          =   models.ForeignKey(Lecturer, on_delete=models.CASCADE)
+    pos             =   models.CharField(max_length=100)
+    wildOrBattle    =   models.CharField(max_length=100)
 
 """ A table to link the player with the lecturers they own """
 class Hand(models.Model):
