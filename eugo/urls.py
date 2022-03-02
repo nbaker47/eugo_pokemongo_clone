@@ -16,5 +16,6 @@ urlpatterns = [
     path('mapmod/', views.mapmod, name='mapmod'),
     path('catch/', views.catch, name='catch'),
     path('newcatch/', views.newcatch, name='newcatch'),
+    #path('sendchat/', views.sendchat, name = 'sendchat' ),
 ]
 #login is 'signin' and log out is 'signout' in veiws because of a function imported with the same name

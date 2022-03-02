@@ -4,3 +4,5 @@ qrtools
 requests
 # regex for patterns
 regex
+# channels for the chat
+channels
