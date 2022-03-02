@@ -4,7 +4,7 @@ from django.db import models            # import models in order to create the m
 from django.utils import timezone       # import timezeone to be able to log events
 
 """ OTHER IMPORTS ------------ """
-from datetime import *                  # import all from datetime to be able to log events
+# import datetime                           # import all from datetime to be able to log events
 
 
 """ --------------------------- MODELS ---------------------------------------------------------------- """

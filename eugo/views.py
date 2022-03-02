@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-from django.http import HttpResponse
-from django.shortcuts import redirect, render
-from django.http import HttpResponse
-from django.template import loader
-from django.shortcuts import get_object_or_404
-from eugo.models import Lecturer, Player, Hand, MapEvent, CompleteEvents
-from eugo.forms import *
-from random import randint
-import requests
-import qrtools
-import re
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.db import IntegrityError
-from datetime import datetime
-
-=======
 """ ---------------------------- IMPORTS -------------------------------------------------------------- """
 """ IMPORTS FROM EUGO -------- """
 from eugo.models import *                                       # import the models (database)
@@ -25,8 +6,8 @@ from eugo.forms import *                                        # all of the for
 """ IMPORTS FROM DJANGO ------ """
 from django.shortcuts import redirect, render                   # to render templates and redirect 
 from django.http import HttpResponse                            # send a http response using django
-from django.template import loader """ TODO: DEAD IMPORT? """
-from django.shortcuts import get_object_or_404 """ TODO: DEAD IMPORT? """
+from django.template import loader #""" TODO: DEAD IMPORT? """
+from django.shortcuts import get_object_or_404 #""" TODO: DEAD IMPORT? """
 from django.contrib.auth.models import User                     # to be able to access the user database
 from django.contrib.auth import authenticate, login, logout     # built in django methods that handle the
                                                                 # user moving through pages
@@ -38,12 +19,12 @@ import requests                                                 # for the image 
 import qrtools                                                  # for scanning and recognising the qr code
 import re                                                       # for regex patterns
 from random import randint                                      # random is self-explanatory
+from datetime import datetime
 
 
 """ ---------------------------- VIEWS ---------------------------------------------------------------- """
 """ INDEX -------------------- """
 """ This method to handle index.html (not much going on because this is just teh cover page) """
->>>>>>> a9ce109c206b911ebc83a2e9ec9bfd9b89fcdad3
 def index(request):
     return render(request, 'index.html')
 
