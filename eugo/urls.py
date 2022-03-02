@@ -18,4 +18,4 @@ urlpatterns = [
     path('newcatch/', views.newcatch, name='newcatch'),
     #path('sendchat/', views.sendchat, name = 'sendchat' ),
 ]
-#login is 'signin' and log out is 'signout' in veiws because of a function imported with the same name
+#login is 'signin' and log out is 'signout' in views because of a function imported with the same name

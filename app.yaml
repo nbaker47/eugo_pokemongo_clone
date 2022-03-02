@@ -1,5 +1,7 @@
 runtime: python39
 
+env_variables:
+
 handlers:
 - url: /static
   static_dir: static/
