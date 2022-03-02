@@ -358,6 +358,8 @@
 
     </script>
     <!--QR scripts-->
+    <script type="text/javascript" src='{% static "/eugo/js/html5-qrcode.min.js" %}'></script>
+    <!--SK BROKEN QR SCRIPT
     <script type="text/javascript">
 
         function onScanSuccess(decodedText, decodedResult) {
@@ -404,9 +406,52 @@
             }
         }
     </script>
-    <!--needed??? script-->
-    <script type="text/javascript" src='{% static "/eugo/js/html5-qrcode.min.js" %}'></script>
+    -->
+    <!--Previous working script-->
+    <script type="text/javascript">
 
+        function onScanSuccess(decodedText, decodedResult) {
+            curLec = document.getElementById('current-lec').value
+            console.log(curLec + " ?= " + decodedText);
+            if(curLec == decodedText + ".png"){
+                alert("matched QR!")
+                
+                //create form of lecturer and submit to /eugo/catch
+                let windowName = 'w_' + Date.now() + Math.floor(Math.random() * 100000).toString();
+                var form = document.createElement("form");
+                form.setAttribute("method", "post");
+                form.setAttribute("action", "/eugo/catch/");
+                form.setAttribute("target", windowName);
+
+                var hiddenField = document.createElement("input"); 
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", "lecID");
+                hiddenField.setAttribute("value", decodedText);
+                form.appendChild(hiddenField);
+                document.body.appendChild(form);
+
+                window.open('', windowName);
+
+                form.submit();
+            }
+            else{
+                alert("invalid QR!")
+            }
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning.
+            // for example:
+            console.warn(`Code scan error = ${error}`);
+        }
+
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: {width: 250, height: 250} },
+        /* verbose= */ false);
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
+    
 </body>
 </html>
 
