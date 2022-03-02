@@ -413,6 +413,7 @@
         function onScanSuccess(decodedText, decodedResult) {
             curLec = document.getElementById('current-lec').value
             console.log(curLec + " ?= " + decodedText);
+            event_id = document.getElementById('current-event-id').value
             if(curLec == decodedText + ".png"){
                 alert("matched QR!")
                 
@@ -428,6 +429,18 @@
                 hiddenField.setAttribute("name", "lecID");
                 hiddenField.setAttribute("value", decodedText);
                 form.appendChild(hiddenField);
+                document.body.appendChild(form);
+
+                var eventfield = document.createElement("input"); 
+                eventfield.setAttribute("type", "hidden");
+                eventfield.setAttribute("name", "eventID");
+                eventfield.setAttribute("value", event_id);
+                form.appendChild(eventfield);
+
+                /*realy we should just use the post id and then quirey the db for the lecture server side 
+                but oh well again this really needs to be done with ajax*/
+
+                
                 document.body.appendChild(form);
 
                 window.open('', windowName);
@@ -451,7 +464,7 @@
         /* verbose= */ false);
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     </script>
-    
+
 </body>
 </html>
 
