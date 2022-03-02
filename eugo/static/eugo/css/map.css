@@ -1,3 +1,7 @@
+body{
+  overflow: hidden;
+}
+
 .parent-container-map{
     border-color: red;
     position: fixed;
@@ -141,33 +145,16 @@
 .lec-map-pin{
   z-index: 3;
   filter: drop-shadow(16px 16px 20px rgb(151, 208, 255));
+  color: #fff; text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
 /*
-#cam-div {
-  margin: 0px auto;
-  width: 500px;
-  height: 375px;
-  position: absolute;
-  top: 20%;
-  z-index: 6;
-  width: 0;
-  height: 0;
-}
-#video{
-  width: 500px;
-  height: 375px;
-  background-color: #666;
-  width: 0;
-  height: 0;
-}
-
-.camera button{
-  width: 0;
-  height: 0;
-  visibility: hidden;
+.lec-map-pin button{
+  width: 60%;
+  font-size: 10px;
 }
 */
+
 .qr{
   visibility: hidden;
   width: 0;
@@ -216,4 +203,105 @@
   to {
       margin-right: 0%;
   }
+}
+
+.chatbox{
+  top: 50%;
+  right: 5.5%;
+  left: 93%;
+  padding: 10px;
+  font-size: 15px;
+  resize: horizontal;
+  overflow: hidden;
+  max-height: 1000px;
+  max-width: 1000px;
+  direction: rtl;
+}
+
+#messagesContainer{
+  overflow:scroll;
+  height: 445px;
+}
+
+.chatselect{
+  width: 96%;
+}
+
+.leaderboard{
+  resize: horizontal;
+  overflow: hidden;
+}
+
+.hideChatButton{
+  position: absolute;
+  text-align: center;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%);
+  width: 100px;
+}
+
+#breathing-button {
+  width: 180px;
+  padding: 12px;
+  margin: 50px auto;
+  border: 1px solid #3cc8b4;
+  -webkit-animation: breathing 5s ease-out infinite normal;
+  animation: breathing 5s ease-out infinite normal;
+  font-family:'Lantinghei SC';
+  font-size: 16px;
+  background: #3cc8b4;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  border-radius: 2px;
+  text-align: center;    
+  }
+
+
+@-webkit-keyframes breathing {
+0% {
+  -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+}
+
+25% {
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+
+60% {
+  -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+}
+
+100% {
+  -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+}
+}
+
+@keyframes breathing {
+0% {
+  -webkit-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  transform: scale(0.9);
+}
+
+25% {
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+}
+
+60% {
+  -webkit-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  transform: scale(0.9);
+}
+
+100% {
+  -webkit-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  transform: scale(0.9);
+}
 }

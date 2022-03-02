@@ -36,152 +36,172 @@
 
     <div class="text-center parent-container-map" id="parent-container-map-id">
         
+        <!--map img-->
         <div class="map" id="mapConID">
             <img src='{% static "/eugo/img/exe_map_alpha.png" %}' class="map-img">
         </div>
 
-        {% for i in lec %}
-        <div class="lec-map-pin " style="position: absolute; z-index: 4; font-size: 10px;
-        font-weight: bold; list-style-type: none;" id={{i.id}} value={{i.pos}}>
-            <li style="color: black;">{{ i.name }}</li>
-            <li style="color: black;">{{ i.duration }} Mins Remaining</li>
+        <!--spawn lecturers-->
+        {% for i in mapEvent %}
+        <div class="lec-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
+        font-weight: bold; list-style-type: none;" id='{{i.lec_id.id}}' value='{{i.pos}}'>
+            <li>{{ i.lec_id.name }}</li>
+            <li>{{ i.lec_id.duration }} Mins Remaining</li>
             <!--<li style="color: black;">{{ i.pos }}</li>-->
-            <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img"></li>
-            <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.qrUrl}}','{{i.id}}')">Confirm QR Code</button></li>
+            <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.lec_id.sprite}}' class="spirite-img"></li>
+            <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.lec_id.qrUrl}}','{{i.lec_id.id}}','{{i.id}}')">Confirm QR Code</button></li>
         </div>
         {% endfor %}
 
+        <!--QR handlers-->
         <button id="cam-button-cancel" class="btn btn-danger" onclick="hideCam()" style="position: absolute; text-align: center; top: 550px">Cancel</button> 
         <div style="width: 500px; position: absolute; text-align: center;" id="reader">
         </div>
         <div id="qr-reader-results"></div>
         </div>
 
+        <!--hidden lecturer forms-->
         <input type="hidden" id="current-lec" value="">
         <input type="hidden" id="current-lec-id" value="">
+        <input type="hidden" id="current-event-id" value="">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/eugo/index">EUGO</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="/eugo/map">Map <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ user.get_username }}
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="/eugo/player">Profile</a>
-                  <a class="dropdown-item" href="/eugo/logout">Logout</a>
-                </div>
-              </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
-            </li>
-        </div>
-      </nav>
-
-    <!--Leaderboard-->
-    <div class="leaderboard slidein" id="leaderboard">
-        <h1>
-        <svg class="ico-cup">
-            <use xlink:href="#cup"></use>
-        </svg>
-        Most Lecturers Caught
-        </h1>
-        <ol>
-        <li>
-            <mark>{{ players.0.username }}</mark>
-            <small>{{ players.0.pokemon_caught }}</small>
-        </li>
-        <li>
-            <mark>{{ players.1.username }}</mark>
-            <small>{{ players.1.pokemon_caught }}</small>
-        </li>
-        <li>
-            <mark>{{ players.2.username }}</mark>
-            <small>{{ players.2.pokemon_caught }}</small>
-        </li>
-        <li>
-            <mark>{{ players.3.username }}</mark>
-            <small>{{ players.3.pokemon_caught }}</small>
-        </li>
-        <li>
-            <mark>{{ players.4.username }}</mark>
-            <small>{{ players.4.pokemon_caught }}</small>
-        </li>
-        <li>
-            <mark>{{ players.5.username }}</mark>
-            <small>{{ players.5.pokemon_caught }}</small>
-        </li>
-        <li>
-            <mark>{{ players.6.username }}</mark>
-            <small>{{ players.6.pokemon_caught }}</small>
-        </li>
-        <li>
-            <mark>{{ players.7.username }}</mark>
-            <small>{{ players.7.pokemon_caught }}</small>
-        </li>  
-        </ol>
-    </div>
-
-    <!--Chat Panel-->
-    <div class="leaderboard slidein" id="leaderboard" style="
-        top: 50%;
-        right: 5.5%;
-        left: 94.5%;
-        padding: 3px;
-        font-size: 15px;
-    ">
-        <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Global Chat
+        <!--NavBar-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/eugo/index">EUGO</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
             </button>
-            <input type="hidden" value='global123' id='channel_selected'>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="">My Friends</a>
-            <a class="dropdown-item" href="">My Inbox</a>
-            <a class="dropdown-item" href="">Contact Support</a>
+        
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                <a class="nav-link" href="/eugo/map">Map <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ user.get_username }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="/eugo/player">Profile</a>
+                    <a class="dropdown-item" href="/eugo/logout">Logout</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
+                </li>
+            </div>
+        </nav>
+
+        <!--Leaderboard-->
+        <div class="leaderboard" id="leaderboard">
+            <!--board selector button-->
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle chatselect" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Lecturers Caught
+                </button>
+                <input type="hidden" value='global123' id='channel_selected'>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="">Battles Won</a>
+                <a class="dropdown-item" href="">Trades Made</a>
+                </div>
+            </div>
+            <br>
+            <ol>
+            <li>
+                <mark>{{ players.0.username }}</mark>
+                <small>{{ players.0.pokemon_caught }}</small>
+            </li>
+            <li>
+                <mark>{{ players.1.username }}</mark>
+                <small>{{ players.1.pokemon_caught }}</small>
+            </li>
+            <li>
+                <mark>{{ players.2.username }}</mark>
+                <small>{{ players.2.pokemon_caught }}</small>
+            </li>
+            <li>
+                <mark>{{ players.3.username }}</mark>
+                <small>{{ players.3.pokemon_caught }}</small>
+            </li>
+            <li>
+                <mark>{{ players.4.username }}</mark>
+                <small>{{ players.4.pokemon_caught }}</small>
+            </li>
+            <li>
+                <mark>{{ players.5.username }}</mark>
+                <small>{{ players.5.pokemon_caught }}</small>
+            </li>
+            <li>
+                <mark>{{ players.6.username }}</mark>
+                <small>{{ players.6.pokemon_caught }}</small>
+            </li>
+            <li>
+                <mark>{{ players.7.username }}</mark>
+                <small>{{ players.7.pokemon_caught }}</small>
+            </li>  
+            </ol>
+        </div>
+
+        <!--Chat Panel-->
+        <div class="leaderboard chatbox" id="chatboard">
+            <div id="content" style="direction: ltr;">
+                <!--Channel selector button-->
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle chatselect" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Global Chat
+                    </button>
+                    <input type="hidden" value='global123' id='channel_selected'>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="">Near Me</a>
+                    <a class="dropdown-item" href="">Guild Chat</a>
+                    <a class="dropdown-item" href="">Global Chat History</a>
+                    <a class="dropdown-item" href="">Contact Support</a>
+                    </div>
+                </div>
+                <br>
+
+                <!--Messages-->
+                <div id="messagesContainer">
+                    <i class="text-primary">connected to global channel!</i>
+                    <section class="chat" id="chatboxsock"></section>
+                </div>
+
+                <!--History tab
+                    <section class="chat" id="chatbox" style=" overflow-y: scroll;"></section>
+                        {% for m in messages %}
+                        <p><strong>{{ m.user }}</strong> <i class="text-secondary">{{ m.date }}</i> {{ m.content }}</p>
+                        {% endfor %}
+                    </section>
+                -->
+                
+                <!--input form-->
+                <form>
+                    <input type="text" placeholder="Send a message!" name="" id="usermsg" style="width: 250px;" />
+                    <button class="btn btn-light" name="submitmsg" type="button" id="submitmsg" value="Send" onclick="sendChat('{{ user.get_username }}')" >Send</button>
+                </form>
             </div>
         </div>
-        <!--messages-->
-        <br>
-        <section class="chat" id="chatbox"></section>
-            {% for m in messages %}
-            <p><strong>{{ m.user }}</strong> - {{ m.date }} : {{ m.content }}</p>
-            {% endfor %}
-          </section>
-        
-          <form>
-            <input type="text" placeholder="Say something nice" name="message" id="usermsg" style="width: 65%;" />
-            <button class="btn btn-light" name="submitmsg" type="submit" id="submitmsg" value="Send" onclick="sendChat('{{ user.get_username }}')" >Send</button>
-          </form>
 
-        <ol>
-        </ol>
-   
+        <!--hide panels button-->
+        <button type="button" onclick="hideSidePanel()" id="hideChatButton" class="btn btn-sm btn-primary hideChatButton" value=0>💬</button>
+    
     </div>
     
     <!--chatbox script-->
     <script type="text/javascript">
 
+        //ajax---------------:
         hidden = document.getElementById('channel_selected');
-
         function channelSelect(input){
             hidden.value = input;
         }
-
+        /*
         function sendChat(username){
             $.ajax({
                 type: "POST",
@@ -199,7 +219,193 @@
                 },
             });
         }
+        */
+        //sockets---------:
+        let v = window.location.host
+        let url = 'ws://' + v + '/ws/socket-server/'
+        const chatSocket = new WebSocket(url)
+
+        //reciever
+        chatSocket.onmessage = function(e){
+            let data = JSON.parse(e.data)
+            console.log('Data:', data)
+
+            if(data.type === 'chat'){
+                let messages = document.getElementById('chatboxsock')
+                console.log(data.message)
+
+                messages.insertAdjacentHTML('beforeend', 
+                '<p><strong>'+ data.username +'</strong><i class="text-secondary">' + data.date +
+                '</i> ' + data.message)
+            }
+
+        }
+        
+        //sender
+        function sendChat(username){
+            console.log("sending chat");
+            let message = document.getElementById('usermsg').value
+            if (message.length > 1){
+                chatSocket.send(JSON.stringify({
+                'message': message,
+                'username' : username,
+            }))
+            }
+        }
+
+        //toggle side panels
+        function hideSidePanel(){
+            var buttonVal = parseInt(document.getElementById('hideChatButton').value, 10);
+            if (buttonVal % 2 != 0){
+                chatbox = document.getElementById('chatboard')
+                chatbox.style.width = "285px";	
+                chatbox.style.height = "600px";	
+                chatbox.style.visibility = "visible";
+                chatbox = document.getElementById('leaderboard')
+                chatbox.style.width = "285px";	
+                chatbox.style.height = "600px";	
+                chatbox.style.visibility = "visible";
+            }
+            else{
+                chatbox = document.getElementById('chatboard')
+                chatbox.style.width = "0";	
+                chatbox.style.height = "0";
+                chatbox.style.visibility = "hidden";
+                chatbox = document.getElementById('leaderboard')
+                chatbox.style.width = "0";	
+                chatbox.style.height = "0";
+                chatbox.style.visibility = "hidden";
+            }
+            buttonVal ++;
+            document.getElementById('hideChatButton').value = buttonVal;
+        }
+
     </script>
+    <!--map scripts-->
+    <script>
+        window.onload = function(){
+            mapContainer= document.getElementById("mapConID");
+            var xOff = getOffset(mapContainer).left;
+            var yOff = getOffset(mapContainer).top;
+            pinL = document.getElementsByClassName("lec-map-pin")
+            //scrollbar
+            var myDiv = document.getElementById("messagesContainer");
+            myDiv.scrollTop = myDiv.scrollHeight;
+
+            for (let i = 0; i < pinL.length; i++) {
+                pin = pinL[i];
+                var x = parseInt(pin.getAttribute("value").split(",")[0])
+                var y = parseInt(pin.getAttribute("value").split(",")[1])
+                pin.style.left = x + xOff+ "px";
+                pin.style.top = y + yOff+ "px";
+                console.log(x, y);
+                var gifsrc = '{% static "/eugo/img/circle.gif" %}'
+                pin.style.backgroundImage = "url("+ gifsrc +")";
+                pin.style.backgroundSize = "contain";
+                pin.style.backgroundRepeat = "no-repeat";
+            } 
+        }
+
+        function getOffset(el) {
+            const rect = el.getBoundingClientRect();
+            return {
+                left: rect.left + window.scrollX,
+                top: rect.top + window.scrollY
+            };
+        }
+
+        function showLecSpawn(choice){
+            document.getElementById("lecSpawnLi").style.color = "white";
+            document.getElementById("lecBattleLi").style.color = "white";
+            menu = document.getElementById("lecSpawn");
+            menu.style.width = "100%";	
+            menu.style.height = "100%";
+            menu.style.visibility = "visible";
+            li = document.getElementById(choice);
+            li.style.color = "red";
+            document.getElementById("gameOpBox").value = choice;
+        }
+
+        function showCam(spriteImg, id, event_id){
+            camDiv = document.getElementById("reader");
+            camDiv.style.width = "500px";
+            camDiv.style.height = "375px";
+            camDiv.style.visibility = "visible";
+            canBut = document.getElementById('cam-button-cancel');
+            canBut.style.width = "100px";
+            canBut.style.height = "30px";
+            canBut.style.visibility = "visible";
+
+            document.getElementById('current-lec').value = spriteImg;
+            //console.log("url : " + document.getElementById('current-lec').value);
+
+            document.getElementById('current-lec-id').value = id;
+            //console.log("id : " + document.getElementById('current-lec-id').value);
+
+            document.getElementById('current-event-id').value = event_id;
+        }
+
+        function hideCam(){
+            camDiv = document.getElementById("reader");
+            camDiv.style.width = "0";
+            camDiv.style.height = "0";
+            camDiv.style.visibility = "hidden";
+            canBut = document.getElementById('cam-button-cancel');
+            canBut.style.width = "0";
+            canBut.style.height = "0";
+            canBut.style.visibility = "hidden";
+        }
+
+    </script>
+    <!--QR scripts-->
+    <script type="text/javascript">
+
+        function onScanSuccess(decodedText, decodedResult) {
+            curLec = document.getElementById('current-lec').value
+            event_id = document.getElementById('current-event-id').value
+            console.log("eventid: " + event_id)
+            console.log(curLec + " ?= " + decodedText);
+            if(curLec == decodedText + ".png"){
+                alert("matched QR!")
+                
+                //create form of lecturer and submit to /eugo/catch
+                let windowName = 'w_' + Date.now() + Math.floor(Math.random() * 100000).toString();
+                var form = document.createElement("form");
+                form.setAttribute("method", "post");
+                form.setAttribute("action", "/eugo/catch/");
+                form.setAttribute("target", windowName);
+
+                //add lect id to post form
+                var hiddenField = document.createElement("input"); 
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", "lecID");
+                hiddenField.setAttribute("value", decodedText);
+                form.appendChild(hiddenField);
+
+                //add event id to post form
+                var eventfield = document.createElement("input"); 
+                eventfield.setAttribute("type", "hidden");
+                eventfield.setAttribute("name", "eventID");
+                eventfield.setAttribute("value", event_id);
+                form.appendChild(eventfield);
+
+                /*realy we should just use the post id and then quirey the db for the lecture server side 
+                but oh well again this really needs to be done with ajax*/
+
+                
+                document.body.appendChild(form);
+
+                window.open('', windowName);
+
+                form.submit();
+            }
+            else{
+                alert("invalid QR!")
+            }
+        }
+    </script>
+    <!--needed??? script-->
+    <script type="text/javascript" src='{% static "/eugo/js/html5-qrcode.min.js" %}'></script>
 
 </body>
 </html>

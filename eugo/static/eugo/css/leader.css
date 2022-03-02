@@ -5,18 +5,22 @@ Leaderboard
 .leaderboard {
   position: absolute;
   top: 50%;
-  left: 5.5%;
+  left: 8%;
+  right: 90%;
   transform: translate(-50%, -50%);
   width: 285px;
   height: 600px;
   background: linear-gradient(to bottom, #ffffff, #ffffff);
   border-radius: 10px;
   box-shadow: 0 7px 30px rgba(62, 9, 11, 0.3);
+  padding: 10px;
 }
 .leaderboard h1 {
   font-size: 18px;
   color: #000000;
   padding: 12px 13px 18px;
+  direction: rtl;
+
 }
 .leaderboard h1 svg {
   width: 25px;
@@ -25,9 +29,14 @@ Leaderboard
   top: 3px;
   margin-right: 6px;
   vertical-align: baseline;
+  direction: rtl;
+  left: 100%;
 }
 .leaderboard ol {
   counter-reset: leaderboard;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 .leaderboard ol li {
   position: relative;
@@ -39,6 +48,7 @@ Leaderboard
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
   transform: translateZ(0) scale(1, 1);
+  direction: rtl;
 }
 .leaderboard ol li::before {
   content: counter(leaderboard);

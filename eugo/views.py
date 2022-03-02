@@ -119,13 +119,17 @@ def catch(request):
     if request.method == 'POST':
         #lec_id = request.POST['lecID']
         lec_id = str(request.POST.get('lecID'))
+        event_id = request.POST.get('eventID')
+
         print("lec ID: " + lec_id)
+        print("event ID: " + event_id)
 
     lec = Lecturer.objects.filter(id = lec_id)
-    return render(request, 'catch.html',{'lec': lec})
+    return render(request, 'catch.html',{'lec': lec, 'eve': event_id})
 
 def newcatch(request):
     if request.method == 'POST':
+
         #gets lecturer that was cught by id
         lecid = str(request.POST.get('lec_id'))
         lec = Lecturer.objects.filter(id = lecid)
@@ -142,10 +146,17 @@ def newcatch(request):
         h = Hand(username = player, lec_id = lec[0])
         h.save()
 
+        #adds the event to the list of events completed my the user 
+        event_id = request.POST.get("event_id")
+        mapEvent = MapEvent.objects.filter(id=event_id)[0]
+        ce = CompleteEvents(username = player, event = mapEvent)
+        ce.save()
+
         print(lec[0].name + " was caputred by " + un )
 
     return render(request, 'catch.html', {'lec': lec})
 
+"""
 def sendchat(request):
     if request.method == 'POST':
         try:
@@ -160,6 +171,8 @@ def sendchat(request):
             print(e)
             
     return render(request, 'map.html')
+"""
+
 
 def map(request):
     if request.method == 'POST':
@@ -175,35 +188,58 @@ def map(request):
     players = Player.objects.all()
     player_vals = players.values()
     leaderboard = sorted(player_vals, key=lambda d: d['pokemon_caught'], reverse=True)
+   
     all_messages = ChatMessage.objects.all()
     #print(leaderboard)
-    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'messages': all_messages})
+    mapEvent = list(MapEvent.objects.all())
+    
+    #remove completed events
+    completed_events = CompleteEvents.objects.all()
+    for i in completed_events:
+        mapEvent.remove(i.event)
+    
+    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'messages' : all_messages})
 
 def mapmod(request):
     if request.method == 'POST':
-        print(request.POST)
-        #retrive POST var
-        duration = request.POST['duration']
-        name = request.POST['name']
-        name = re.sub(r'[^\w\s]', '', name)#sanitise
-        hp = request.POST['hp']
-        attack = request.POST['attack']
-        type = request.POST['type']
-        sprite = "teacher_" + str(request.POST['sprite']) + ".png"
-        coords = request.POST['coords']
-        gameop = request.POST['gameop']
-        #generate QR
-        qr_key = str(randint(10000,20000)) + name
-        qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + qr_key
-        #save qr to file
-        img_data = requests.get(qrUrl).content
-        file_path = 'eugo/static/eugo/img/qr/' + qr_key + '.png' 
-        with open(file_path, 'wb') as handler:
-            handler.write(img_data)
-        #create new row in Lecturer table
-        newLec = Lecturer(id=qr_key, duration=duration, name=name, hp=hp, attack=attack, sprite=sprite, pos=coords, type=type, wildOrBattle=gameop, qrUrl = qr_key+'.png')
-        newLec.save()
-        print(newLec)
+        gameop = request.POST.get('gameop')
+        print(gameop + "wut")
+        print("test")
+        #creating new lecturer
+        if(gameop == 'lecNewLi'):
+            print(request.POST)
+            #retrive POST var
+            duration = request.POST.get('duration')
+            name = request.POST.get('name')
+            name = re.sub(r'[^\w\s]', '', name)#sanitise
+            hp = request.POST.get('hp')
+            attack = request.POST.get('attack')
+            type = request.POST.get('type')
+            sprite = "teacher_" + str(request.POST.get('sprite')) + ".png"
+            
+            
+            #generate QR
+            qr_key = str(randint(10000,20000)) + name
+            qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + qr_key
+            #save qr to file
+            img_data = requests.get(qrUrl).content
+            file_path = 'eugo/static/eugo/img/qr/' + qr_key + '.png' 
+            with open(file_path, 'wb') as handler:
+                handler.write(img_data)
+            #create new row in Lecturer table
+            newLec = Lecturer(id=qr_key, duration=duration, name=name, hp=hp, attack=attack, sprite=sprite, type=type, qrUrl = qr_key+'.png')
+            newLec.save()
+            print(newLec)
+        #creating new even
+        else:
+            lecturerID = request.POST.get('lecturer')
+            lecturer = Lecturer.objects.filter(id = lecturerID)[0]
+            coords = request.POST.get('coords')
+
+            
+            newEvent = MapEvent(lec_id = lecturer, pos=coords, wildOrBattle=gameop)
+            newEvent.save()
 
     lec = Lecturer.objects.all()
-    return render(request, 'mapmod.html',{'lec': lec})
+    mapEvent = MapEvent.objects.all()
+    return render(request, 'mapmod.html',{'lec': lec, 'mapEvent': mapEvent})

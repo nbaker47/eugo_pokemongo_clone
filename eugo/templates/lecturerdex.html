@@ -39,7 +39,7 @@
     <title>EUGO</title>
 
     <!-- Custom styles for this template -->
-    <link href='{% static "/eugo/css/map.css" %}' rel="stylesheet">
+    <link href='{% static "/eugo/css/lecturers.css" %}' rel="stylesheet">
   </head>
 
   <body>
@@ -85,31 +85,28 @@
         -->
       </div>
     </nav>
+
+    
     <div id="lec-container "  class="card text-center">
       <br>
       <div class="card-header">
         All Known Lecturers
       </div>
-      <div class="card-body" style="
-      height: 100%;
-      width:80%;
-      margin-left:10%;
-      margin-top: 2%;
-      display: flex;
-      text-align: center;
-      justify-content: space-between;">
+      <div class="card-body">
       {% for i in lec %}
-      <div class="card" style="width: 18rem;">
+      <div class="card lec-card card-dex" style="margin: 1%">
         <img class="card-img-top" src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' alt="no img">
         <div class="card-body">
           <h5 class="card-title">{{ i.name }}</h5>
           <p class="card-text"> </p>
         </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">HP: {{ i.hp }}</li>
-          <li class="list-group-item">Attack: {{ i.attack }}</li>
-          <li class="list-group-item">Type: {{ i.type }}</li>
-        </ul>
+        <div class="lec-list">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">HP: {{ i.hp }}</li>
+            <li class="list-group-item">Attack: {{ i.attack }}</li>
+            <li class="list-group-item">Type: {{ i.type }}</li>
+          </ul>
+        </div>
         <!--
         <div class="card-body">
           <a href="#" class="card-link">Card link</a>

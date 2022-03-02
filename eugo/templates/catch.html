@@ -120,7 +120,8 @@
                 type: "POST",
                 url: "/eugo/newcatch/",
                 data: {
-                    'lec_id': id
+                    'lec_id': id,
+                    'event_id': '{{eve}}'
                 },
                 success: function (data) {
                     console.log("success");
