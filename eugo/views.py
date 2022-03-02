@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db import IntegrityError
+from datetime import datetime
 
 def index(request):
     return render(request, 'index.html')
@@ -220,7 +221,11 @@ def mapmod(request):
             coords = request.POST.get('coords')
 
             
-            newEvent = MapEvent(lec_id = lecturer, pos=coords, wildOrBattle=gameop)
+
+
+            now = datetime.now() # current date and time
+            uniqueid = str(coords) + now.strftime("%H:%M:%S")
+            newEvent = MapEvent(id = uniqueid, lec_id = lecturer, pos=coords, wildOrBattle=gameop)
             newEvent.save()
 
     lec = Lecturer.objects.all()
