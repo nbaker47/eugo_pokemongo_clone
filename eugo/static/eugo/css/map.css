@@ -206,9 +206,8 @@ body{
 }
 
 .chatbox{
-  top: 50%;
-  right: 5.5%;
-  left: 93%;
+  top: 20%;
+  right: 0%;
   padding: 10px;
   font-size: 15px;
   resize: horizontal;
@@ -229,7 +228,17 @@ body{
 
 .leaderboard{
   resize: horizontal;
+  overflow: scroll;
+}
+
+#leaderboard-list{
   overflow: hidden;
+  height: 300px;
+}
+
+.mailbox-div{
+  overflow:scroll;
+  height: 445px;
 }
 
 .hideChatButton{
@@ -304,4 +313,9 @@ body{
   -ms-transform: scale(0.9);
   transform: scale(0.9);
 }
+}
+
+#friends-div, #mailbox-div{
+  opacity : 0;
+  height : 0;
 }

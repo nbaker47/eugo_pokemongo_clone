@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-gamyx*$jyaizoz74z1k+2b1!1+sj9=f1#*8d$=qj68^el!52zp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '192.168.246.30',
+    'localhost',
+    '127.0.0.1',
+]
 
 # Application definition
 

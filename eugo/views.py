@@ -107,14 +107,19 @@ def register(request):
             # print for debugging
             print(p)
             print(user)
+
+            #make friends list
+            fl = FriendsList(user1 = p)
+            fl.save()
+
             # redirect to login screen (register successful)
             return redirect('/eugo/login')
 
         # catch integrity errors (problem with database -> not registered)
         except IntegrityError as e:
             # semd appropriate messages to notify the user of the errors
-            messages.error(sprite_url)
-            messages.error(request, e)
+            #messages.error(sprite_url)
+            #messages.error(request, e)
             # redirect (so they can try again)
             return redirect('/eugo/register')
 
@@ -284,9 +289,46 @@ def map(request):
     for i in completed_events:
         mapEvent.remove(i.event)
     
-    # return the html render, giving it all of the corresponding data
-    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'messages' : all_messages})
+    #get incoming friend requests:
+    reciever = Player.objects.get(username = request.user.username)
+    try:
+        incoming_friend_req = []
+        incoming_friend_req.append(FriendRequest.objects.get(reciever=reciever, is_active=True))
+    except:
+        pass
 
+    #get all friends
+    try:
+        user = Player.objects.get(username = request.user.username)
+        friends = []
+        friends.append(FriendsList.objects.get(user1= user))
+    except:
+        pass
+    
+    print("FRIENDS :", friends)
+    # return the html render, giving it all of the corresponding data
+    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friends})
+
+
+"""FRIEND REQ"""
+def friendreq(request):
+    if request.method == 'POST':
+        #retrieve sender/recipient post data:
+        type = request.POST['type']
+        sender_name = request.POST['sender']
+        sender = Player.objects.get(username = sender_name)
+        reciever_name = request.POST['reciever']
+        reciever = Player.objects.get(username = reciever_name)
+        #send or accept request?
+        if type == 'send':
+            new_friend_req = FriendRequest(sender=sender, reciever=reciever)
+            new_friend_req.save()
+            print(new_friend_req)
+            messages.success(request, "friend request sent" )
+        elif type == 'accept':
+            friend_req = FriendRequest.objects.get(sender=sender, reciever=reciever)
+            friend_req.accept()
+    return render(request, 'map.html')
 
 """ MAPMOD ------------------- """
 """ This method handles the mapmod link (admin map) and the ability to add more events """
