@@ -98,11 +98,17 @@ def register(request):
             user.last_name = surname
             # save the user in the User database
             user.save()
+            
+            # Stops multiple accounts being registered with the same email
+
+            if Player.objects.filter(email=email).exists():
+                raise IntegrityError
 
             # create a new player in the Player database
             p = Player(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
             # save the player in the Player database
             p.save()
+           
 
             # print for debugging
             print(p)
