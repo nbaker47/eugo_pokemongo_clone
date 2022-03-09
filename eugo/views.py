@@ -113,7 +113,7 @@ def register(request):
             fl.save()
 
             # redirect to login screen (register successful)
-            return redirect('/eugo/login')
+            return redirect('/eugo/login/')
 
         # catch integrity errors (problem with database -> not registered)
         except IntegrityError as e:
@@ -121,7 +121,7 @@ def register(request):
             #messages.error(sprite_url)
             #messages.error(request, e)
             # redirect (so they can try again)
-            return redirect('/eugo/register')
+            return redirect('/eugo/register/')
 
         #Need to check emails to make sure it isnt already used
         #We could do validation here but I think doing it in JavaScript might be easier
