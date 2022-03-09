@@ -3,6 +3,8 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
+from pytz import timezone
+from django.utils import timezone as tz
 from eugo.models import Lecturer, Player, Hand, MapEvent, CompleteEvents
 from eugo.forms import *
 from random import randint
@@ -179,8 +181,17 @@ def map(request):
     #remove completed events
     completed_events = CompleteEvents.objects.all()
     for i in completed_events:
-        mapEvent.remove(i.event)
-    
+        try:
+            mapEvent.remove(i.event)
+        except:
+            # removes completed events refrencing events that no longer exist
+            i.delete()
+
+    #remove outdated events    
+    for i in mapEvent:
+        if((tz.now() - i.created_at).total_seconds() > i.lec_id.duration*60):
+            i.delete()
+
 
     return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent})
 
