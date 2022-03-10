@@ -1,12 +1,13 @@
 # ECM2434 Group 28 - EUGO
 ## Requirements
-* >= python3.9
+* \>= python3.9
 * pip
 * python Packages (look bellow for installation):
   * qrtools
   * requests
   * regex
   * channels
+
 ## Setup
 In order to be able to run the server, all of the dependencies will have to be installed, this can be done with the command:
 ```
@@ -18,6 +19,7 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 After this is done, all of the setup for the backend should be complete
+
 ## Server Start up
 In order to be able to access the website, the server should be setup, this can be done with the command:
 ```
