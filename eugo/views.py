@@ -98,11 +98,17 @@ def register(request):
             user.last_name = surname
             # save the user in the User database
             user.save()
+            
+            # Stops multiple accounts being registered with the same email
+
+            if Player.objects.filter(email=email).exists():
+                raise IntegrityError
 
             # create a new player in the Player database
             p = Player(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
             # save the player in the Player database
             p.save()
+           
 
             # print for debugging
             print(p)
@@ -113,7 +119,7 @@ def register(request):
             fl.save()
 
             # redirect to login screen (register successful)
-            return redirect('/eugo/login')
+            return redirect('/eugo/login/')
 
         # catch integrity errors (problem with database -> not registered)
         except IntegrityError as e:
@@ -121,7 +127,7 @@ def register(request):
             #messages.error(sprite_url)
             #messages.error(request, e)
             # redirect (so they can try again)
-            return redirect('/eugo/register')
+            return redirect('/eugo/register/')
 
         #Need to check emails to make sure it isnt already used
         #We could do validation here but I think doing it in JavaScript might be easier
