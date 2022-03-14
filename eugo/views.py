@@ -112,6 +112,8 @@ def register(request):
             fl = FriendsList(user1 = p)
             fl.save()
 
+            print("saved :", fl)
+
             # redirect to login screen (register successful)
             return redirect('/eugo/login')
 

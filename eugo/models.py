@@ -105,7 +105,7 @@ class FriendsList(models.Model):
     def remove_friend(self, user):
         if user in self.friends.all():
             self.friends.remove(user)
-            self.save()
+            self.save() 
     
     def unfriend(self, removee):
         #remove both from eachothers friend list
