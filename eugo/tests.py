@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import auth
 
 from eugo.models import Player
 
@@ -25,6 +26,10 @@ class TestLogin(TestCase):
         response = self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
         self.assertTemplateUsed(response,"index.html")
 
+        # Check the user has actually been authenticated and logged in
+        user = auth.get_user(self.client)
+        assert user.is_authenticated
+
 class TestRegister(TestCase):
     def setUp(self):
         self.client = Client()
@@ -39,6 +44,8 @@ class TestRegister(TestCase):
         response = self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
         self.assertTemplateUsed(response, "index.html")
 
+        self.assertEquals(User.objects.get(username__exact="TestUser").username, "TestUser")
+
     def testRegisterDuplicateUser(self):
 
         # Send post request to register a test user with username=TestUser and password=12345678
@@ -52,6 +59,7 @@ class TestRegister(TestCase):
         # Assert that the user is redirected to the register page if they attempt to create a duplicate user
         # Should also test error messages for this
         self.assertRedirects(response, '/eugo/register/')
+        # self.assertEquals(User.objects.all(), 1)
 
 class TestPlayer(TestCase):
     def setUp(self):
@@ -63,11 +71,12 @@ class TestPlayer(TestCase):
         user.last_name = "User"
         user.save()
 
-        # Login with this newly created user
-        self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
-
     def testChangePassword(self):
+
+        # Login with the newly created user
+        self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
 
         # Change the users password to 87654321 and then assert that this has been carried out correctly
         response = self.client.post("/eugo/player/", {"pass1": "87654321"})
         user = User.objects.get(username__exact="TestUser")
+        self.assertEquals(user.check_password("87654321"), True)

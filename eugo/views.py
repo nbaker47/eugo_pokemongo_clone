@@ -73,6 +73,9 @@ def signout(request):
     return redirect('index')
 
 
+class EmailExistsException(Exception):
+    pass
+
 """ REGISTER ----------------- """
 """ This method which handles register.html and the registering of new users """
 def register(request):
@@ -93,37 +96,48 @@ def register(request):
         # try to make the new user in the database
         try:
             # create the new user object in the database and assign attributes
+            print(f"[{username}] attempting account creation")
             user = User.objects.create_user(username, email, password)
             user.first_name = firstname
             user.last_name = surname
             # save the user in the User database
             user.save()
+            print(f"[{username}] created user object")
+            
+            # Stops multiple accounts being registered with the same email
+
+            if Player.objects.filter(email=email).exists():
+                print(f"[{username}] email ({email}) already exists")
+                raise EmailExistsException("Email is already registered")
 
             # create a new player in the Player database
             p = Player(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
             # save the player in the Player database
             p.save()
-
-            # print for debugging
-            print(p)
-            print(user)
+            print(f"[{username}] created player object")
 
             #make friends list
             fl = FriendsList(user1 = p)
             fl.save()
+            print(f"[{username}] created friends list")
 
             print("saved :", fl)
 
             # redirect to login screen (register successful)
-            return redirect('/eugo/login')
+            return redirect('/eugo/login/')
+
+        except EmailExistsException:
+            print(f"[{username}] used an already existing email")
+            return redirect('/eugo/register/')
 
         # catch integrity errors (problem with database -> not registered)
         except IntegrityError as e:
             # semd appropriate messages to notify the user of the errors
             #messages.error(sprite_url)
             #messages.error(request, e)
+            print(f"[{username}] raised IntegrityError")
             # redirect (so they can try again)
-            return redirect('/eugo/register')
+            return redirect('/eugo/register/')
 
         #Need to check emails to make sure it isnt already used
         #We could do validation here but I think doing it in JavaScript might be easier
@@ -312,24 +326,36 @@ def map(request):
     return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friends})
 
 
-"""FRIEND REQ"""
+""" FRIEND REQ --------------- """
+""" This method handles the sending and accepting of friend requests """
 def friendreq(request):
+    # check if POST method is being used (if they are sending a request or just want the page)
     if request.method == 'POST':
-        #retrieve sender/recipient post data:
-        type = request.POST['type']
-        sender_name = request.POST['sender']
-        sender = Player.objects.get(username = sender_name)
-        reciever_name = request.POST['reciever']
-        reciever = Player.objects.get(username = reciever_name)
-        #send or accept request?
+        # retrieve sender/recipient post data:
+        type            =   request.POST['type']
+        sender_name     =   request.POST['sender']
+        sender          =   Player.objects.get(username = sender_name)
+        reciever_name   =   request.POST['reciever']
+        reciever        =   Player.objects.get(username = reciever_name)
+
+        # check if the user is sending or accepting a friend request
         if type == 'send':
+            # if the friend request is sent, then create a new request in the database
             new_friend_req = FriendRequest(sender=sender, reciever=reciever)
+            # save the request
             new_friend_req.save()
-            print(new_friend_req)
-            messages.success(request, "friend request sent" )
+            # print for debug
+            print(f"[{sender_name}] send friend request to [{reciever_name}]")
+            # send the success message
+            messages.success(request, "friend request sent")
+
         elif type == 'accept':
+            # if a friend request is being accepted then just accept it 
             friend_req = FriendRequest.objects.get(sender=sender, reciever=reciever)
             friend_req.accept()
+            print(f"[{sender_name}] accepted a friend request from [{reciever_name}]")
+
+    # finally, return the map render
     return render(request, 'map.html')
 
 """ MAPMOD ------------------- """
