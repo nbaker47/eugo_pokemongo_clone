@@ -4,6 +4,7 @@ from django.db import models
 from django.dispatch import receiver            # import models in order to create the models themselves
 from django.utils import timezone       # import timezeone to be able to log events
 from django.conf import settings
+import uuid
 
 """ OTHER IMPORTS ------------ """
 import datetime               # import all from datetime to be able to log events
@@ -13,6 +14,7 @@ import datetime               # import all from datetime to be able to log event
 """ PLAYER ------------------- """
 """ Player table where we will store the personal account data for the user"""
 class Player(models.Model):
+    id               =   models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     firstname        =   models.CharField(max_length=30, null=True)
     surname          =   models.CharField(max_length=30, null=True)
     email            =   models.CharField(max_length=40, null=True)
@@ -20,7 +22,6 @@ class Player(models.Model):
     pokemon_caught   =   models.IntegerField(default=0)
     sprite_url       =   models.CharField(default="eugo\static\eugo\img\teacher_sprites\teacher_1.png", max_length=100, null=True)
     is_admin         =   models.BooleanField(default=False)
-    id              =   models.CharField(max_length=100, primary_key=True)
 
     # return username when object printed
     def __str__(self):
@@ -89,8 +90,8 @@ class ChatMessage(models.Model):
 """ FRIENDS"""
 """ keeps track of friends/blocked"""
 class FriendsList(models.Model):
-    user1 = models.OneToOneField(Player, on_delete=models.CASCADE, related_name='user')
-    friends = models.ManyToManyField(Player, related_name='friends', blank=True)
+    user1 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='user')
+    friends = models.CharField(default='', max_length=2000)
     #relationship = models.IntegerField() #0=pending 1=friends 2=blocked
     #date_sent = models.DateField(auto_now=True=)
 
@@ -98,15 +99,16 @@ class FriendsList(models.Model):
         return self.user1.username
 
     def add_friend(self, user):
-        if not user in self.friends.all():
-            self.friends.add(user)
-            self.save()
+        print("ADDING A FIREIEAIWDNAD")
+        self.friends = str(self.friends) + ',' + str(user.id)
+        self.save()
     
     def remove_friend(self, user):
         if user in self.friends.all():
             self.friends.remove(user)
             self.save() 
     
+    """
     def unfriend(self, removee):
         #remove both from eachothers friend list
         remover_friends_list = self
@@ -119,6 +121,7 @@ class FriendsList(models.Model):
             return True
         else:
             return False
+    """            
 
 """Class for friend request"""
 class FriendRequest(models.Model):
@@ -134,14 +137,21 @@ class FriendRequest(models.Model):
     def accept(self):
         #update sender and reciever
         print("SELF RECIEVER: ", self.reciever)
-        reciever_friend_list = FriendsList.objects.get(user1=self.reciever)
+        reciever_friend_list = FriendsList.objects.filter(user1=self.reciever)
         if reciever_friend_list:
             reciever_friend_list.add_friend(self.sender)
-            sender_friend_list  = FriendsList.objects.get(user1=self.sender)
-            if sender_friend_list:
-                sender_friend_list.add_friend(self.reciever)
-                self.is_active = False
-                self.save()
+        else:
+            reciever_friend_list = FriendsList.objects.create(user1=self.reciever)
+            reciever_friend_list.add_friend(self.sender)
+        
+        sender_friend_list  = FriendsList.objects.filter(user1=self.sender)
+        if sender_friend_list:
+            sender_friend_list.add_friend(self.reciever)
+        else:
+            sender_friend_list = FriendsList.objects.create(user1=self.sender)
+            sender_friend_list.add_friend(self.reciever)
+        self.is_active = False
+        self.save()
     
     """If reciever declines"""
     def decline(self):

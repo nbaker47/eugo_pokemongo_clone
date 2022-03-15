@@ -111,3 +111,57 @@ body {
   text-shadow: none;
 }
 
+#reg-container{
+  width: 80%;
+  top: 5%;
+  padding: 5%;
+}
+
+#char-select{
+  width: 50%;
+  float: left;
+  padding: 10px;
+  text-align: center;
+  color: #2e2e2e;
+  text-shadow: none;
+}
+
+
+#register-form-left{
+  width: 50%;
+  float: left;
+  padding: 20px;
+}
+
+#myCanvas{
+  width: 0;
+  height: 0;
+  position: relative;
+}
+
+#color-input {
+  display: none;
+}
+#color-label {
+  height: 30px;
+  width: 100px;
+} 
+#color-input:checked ~ #color-picker {
+  opacity: 1;
+}
+#color-picker-div {
+
+}
+canvas:hover {
+  cursor: crosshair;
+}
+
+#sprite-designer-div{
+  opacity: 0;
+  height: 0;
+  width: 0;
+  display: flex;
+}
+
+
+

@@ -1,5 +1,6 @@
 """ ---------------------------- IMPORTS -------------------------------------------------------------- """
 """ IMPORTS FROM EUGO -------- """
+from scipy import rand
 from eugo.models import *                                       # import the models (database)
 from eugo.forms import *                                        # all of the forms ????????? TODO
 
@@ -20,6 +21,7 @@ import qrtools                                                  # for scanning a
 import re                                                       # for regex patterns
 from random import randint                                      # random is self-explanatory
 import datetime
+import urllib.request
 
 """ ---------------------------- VIEWS ---------------------------------------------------------------- """
 """ INDEX -------------------- """
@@ -89,9 +91,23 @@ def register(request):
         email       =   request.POST['email']
         username    =   request.POST['username']
         password    =   request.POST['password1']
-        sprite_no   =   request.POST['sprite']
-        sprite_url  =   "eugo/static/eugo/img/teacher_sprites/teacher_" + sprite_no + ".png"
-        print("SPRITE URL::   " + sprite_url)
+
+        #Custom sprite or preset?:
+        try:
+            custom_s_url = request.POST['canvas-output']
+            if len(custom_s_url)> 1:
+                #retrieve image from posted url
+                sprite_url  =   "eugo/static/eugo/img/player_sprites/" + str(randint(100,999)) + ".png" #change to unique number later
+                urllib.request.urlretrieve(custom_s_url, sprite_url)
+                print("SPRITE URL::   " + sprite_url)
+            else:
+                try:
+                    sprite_no   =   request.POST['sprite']
+                    sprite_url  =   "eugo/static/eugo/img/teacher_sprites/teacher_" + sprite_no + ".png"
+                    print(sprite_no)
+                    print("SPRITE URL::   " + sprite_url)
+                except Exception as e: print(e)
+        except Exception as e: print(e)
 
         # try to make the new user in the database
         try:
@@ -111,17 +127,22 @@ def register(request):
                 raise EmailExistsException("Email is already registered")
 
             # create a new player in the Player database
-            p = Player(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
+            p = Player.objects.create(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
             # save the player in the Player database
-            p.save()
+            #p.save()
             print(f"[{username}] created player object")
-
+            
             #make friends list
-            fl = FriendsList(user1 = p)
-            fl.save()
-            print(f"[{username}] created friends list")
+            #fl = FriendsList(user1 = p)
+            #fl.save()
+            #try to fix bug where user is added to same friends list
+            #try:
+                #fl.remove_frend(p)
+            #except:
+             #   pass
+            print(f"[{username}] created friends list")    
 
-            print("saved :", fl)
+            #print("saved :", fl)
 
             # redirect to login screen (register successful)
             return redirect('/eugo/login/')
@@ -136,6 +157,7 @@ def register(request):
             #messages.error(sprite_url)
             #messages.error(request, e)
             print(f"[{username}] raised IntegrityError")
+            print(e)
             # redirect (so they can try again)
             return redirect('/eugo/register/')
 
@@ -316,14 +338,16 @@ def map(request):
     #get all friends
     try:
         user = Player.objects.get(username = request.user.username)
-        friends = []
-        friends.append(FriendsList.objects.get(user1= user))
+        friends = FriendsList.objects.get(user1= user).friends.split(',')[1:]
+        friend2 = []
+        for f in friends:
+            friend2.append(Player.objects.get(pk=f))
     except:
-        pass
+        friend2 = []
     
-    print("FRIENDS :", friends)
+    #print("FRIENDS :", friends)
     # return the html render, giving it all of the corresponding data
-    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friends})
+    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friend2})
 
 
 """ FRIEND REQ --------------- """

@@ -113,10 +113,10 @@
             <!--Mini navbar-->
             <nav class="navbar navbar-dark bg-primary">
                 <a class="navbar-brand" href="#">Social</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent2">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                     <a class="nav-link" id="global-leaderboard-a" href="#">Global Leaderboard <span class="sr-only">(current)</span></a>
@@ -129,9 +129,11 @@
                         {% endfor %}
                     </a>
                     </li>
+                    <!--
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="mailbox-a">Mailbox</a>
                     </li>
+                    -->
                 </div>
               </nav>
             <br>
@@ -177,7 +179,7 @@
                 </ul>
             </div>
 
-            <!--Mailbox Div-->
+            <!--Mailbox Div
             <div id="mailbox-div">
                 <div class="list-group">
                     <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
@@ -198,6 +200,7 @@
                     </a>
                 </div>
             </div>
+            -->
 
         </div>
 
@@ -209,6 +212,7 @@
                     <button class="btn btn-primary dropdown-toggle chatselect" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Global Chat
                     </button>
+                    <!--
                     <input type="hidden" value='global123' id='channel_selected'>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="">Near Me</a>
@@ -216,6 +220,7 @@
                     <a class="dropdown-item" href="">Global Chat History</a>
                     <a class="dropdown-item" href="">Contact Support</a>
                     </div>
+                    -->
                 </div>
                 <br>
 
@@ -246,6 +251,7 @@
     
     </div>
     
+    
     <!--social panel script-->
     <script type="text/javascript">
         var leaderboard_a = document.getElementById("global-leaderboard-a");
@@ -272,19 +278,19 @@
 
         function showFriendsList(){
             hideDiv("leaderboard-list");
-            hideDiv("mailbox-div");
+            //hideDiv("mailbox-div");
             showDiv("friends-div");
         }
 
         function showMailbox(){
             hideDiv("leaderboard-list");
             hideDiv("friends-div");
-            showDiv("mailbox-div");
+            //showDiv("mailbox-div");
         }
 
         function showLeaderboard(){
             hideDiv("friends-div");
-            hideDiv("mailbox-div");
+            //hideDiv("mailbox-div");
             showDiv("leaderboard-list");
         }
         
@@ -334,30 +340,12 @@
     <!--chatbox script-->
     <script type="text/javascript">
 
-        //ajax---------------:
+        //channel selector---------------:
         hidden = document.getElementById('channel_selected');
         function channelSelect(input){
             hidden.value = input;
         }
-        /*
-        function sendChat(username){
-            $.ajax({
-                type: "POST",
-                url: "/eugo/sendchat/",
-                data: {
-                    'channel': hidden.value,
-                    'user' : username,
-                    'message' : document.getElementById('usermsg').value,
-                },
-                success: function (data) {
-                    console.log("sent message");
-                },
-                error: function (data) {
-                    console.log("error : ", JSON.stringify(data));
-                },
-            });
-        }
-        */
+
         //sockets---------:
         let v = window.location.host
         let url = 'ws://' + v + '/ws/socket-server/'
@@ -376,20 +364,25 @@
                 '<p><strong>'+ data.username +'</strong><i class="text-secondary">' + data.date +
                 '</i> ' + data.message)
             }
-
         }
+        
         
         //sender
         function sendChat(username){
             console.log("sending chat");
             let message = document.getElementById('usermsg').value
+            
             if (message.length > 1){
+                //if (!isOpen(chatSocket)) return;
                 chatSocket.send(JSON.stringify({
                 'message': message,
                 'username' : username,
             }))
             }
         }
+
+        //check if socket is open
+        function isOpen(ws) { return ws.readyState === ws.OPEN }
 
         //toggle side panels
         function hideSidePanel(){

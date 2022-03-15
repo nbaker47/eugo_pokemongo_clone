@@ -21,7 +21,8 @@
 </head>
 
 <body style="overflow: scroll;">
-    <div style="margin-top: 5%;">
+    
+    <div id="reg-container" >
     <div class="full-width-bar">
         <h1>EUGO</h1>
     </div>
@@ -67,79 +68,217 @@
         </div>
     -->
 
+        <br><br>
         <form id="formp" name="myForm" class="form" method="POST" action="." onsubmit="return validateForm()">
             <!--action to the php ./homePage.html -->
             {% csrf_token %}
             <!--Prevents csrf attacks -->
             <!--<p id="messages"></p>-->
             <!-- This will have the validation messages from the javascript checks-->
-            <div class="form-group">
-            <label>
-				<input type="text" class="form-control" name="firstname" placeholder="First Name" size="50" required autocomplete="off">
-			</label>
-            <p id="fname"></p>
+            <div id="register-form-left">
+                <div class="form-group">
+                    <label>
+                        <input type="text" class="form-control" name="firstname" placeholder="First Name" size="50" required autocomplete="off">
+                    </label>
+                    <p id="fname"></p>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="text" class="form-control" name="surname" placeholder="Surname" size="50" required autocomplete="off">
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="email" class="form-control"  name="email" placeholder="School Email" size="50" required autocomplete="off">
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="text"  class="form-control" name="username" placeholder="Username" size="50" required autocomplete="off">
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="password" class="form-control"  name="password1" placeholder="Password" size="50" minlength="8" required>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="password" class="form-control" name="password2" placeholder="Re-enter Password" size="50" minlength="8" required >
+                    </label>
+                </div>
+
+                <br><br>
+
+                <label>
+                    <input type="checkbox" name="terms" value="" required>
+                    <a href="https://gdpr.eu/terms-and-conditions/" class="text-muted">Please read and check the Terms and Conditions</a>
+                </label>
+                <br><br>
             </div>
-            <div class="form-group">
-            <label>
-				<input type="text" class="form-control" name="surname" placeholder="Surname" size="50" required autocomplete="off">
-			</label>
-            </div>
-            <div class="form-group">
-            <label>
-				<input type="email" class="form-control"  name="email" placeholder="School Email" size="50" required autocomplete="off">
-			</label>
-            </div>
-            <div class="form-group">
-            <label>
-				<input type="text"  class="form-control" name="username" placeholder="Username" size="50" required autocomplete="off">
-			</label>
-            </div>
-            <div class="form-group">
-            <label>
-				<input type="password" class="form-control"  name="password1" placeholder="Password" size="50" minlength="8" required>
-			</label>
-            </div>
-            <div class="form-group">
-            <label>
-				<input type="password" class="form-control" name="password2" placeholder="Re-enter Password" size="50" minlength="8" required >
-			</label>
-            </div>
-            <img src="">
-            <img src="">
-            <img src="">
-            <div class="image mt-3 mb-3 img-container" id="sliderImages">
-                <img src='{% static "/eugo/img/teacher_sprites/teacher_1.png" %}' class="spirite-img">
-                <img src='{% static "/eugo/img/teacher_sprites/teacher_2.png" %}' class="spirite-img">
-                <img src='{% static "/eugo/img/teacher_sprites/teacher_3.png" %}' class="spirite-img">
             </div>
             
-            <p>Please Select an Avatar</p>
-            <input class="rangeslider" type="range" id="sprite" name="sprite"
-            min="1" max="3" value="1">
+            <!--Char selector-->
+            <div id="char-select" class="shadow-sm p-3 mb-5 bg-white rounded">
+                <img src="">
+                <img src="">
+                <img src="">
+                <div class="image mt-3 mb-3 img-container" id="sliderImages">
+                    <img src='{% static "/eugo/img/teacher_sprites/teacher_1.png" %}' class="spirite-img">
+                    <img src='{% static "/eugo/img/teacher_sprites/teacher_2.png" %}' class="spirite-img">
+                    <img src='{% static "/eugo/img/teacher_sprites/teacher_3.png" %}' class="spirite-img">
+                </div>
 
-            <br><br>
+                <div id="sprite-designer-div">
+                    <canvas id="myCanvas" class="shadow-sm p-3 mb-5 bg-white rounded" width="500" height="500"></canvas>
+                    <div id="color-picker-div">
+                        <label for="color-input" id="color-label" style="background-color: red"></label>
+                        <input type="checkbox" id="color-input" checked></input>
+                        <br>
+                        <div id="color-picker">
+                        <canvas id="color-block" height="150" width="150"></canvas>
+                        <canvas id="color-strip" height="150" width="30"></canvas>
+                        </div>
+                        <input type="hidden" value="" id="colour-output">
+                        <input type="hidden" value="" id="canvas-output" name="canvas-output">
+                    </div>
+                </div>
 
-            <label>
-				<a href="https://gdpr.eu/terms-and-conditions/" class="text-muted">Please read and check the Terms and Conditions</a>
-				<input type="checkbox" name="terms" value="" required>
-			</label>
-            <br>
+                <p>Please Select an Avatar</p>
+                <input class="rangeslider" type="range" id="sprite" name="sprite"
+                min="1" max="3" value="1">
+                <p>Or draw your own character:</p>
+                <button type="button" id="draw-char-button" class="btn btn-primary">Draw</button>
+                <button type="button" id="draw-char-button-cancel" class="btn btn-warning">Cancel</button>
+            </div>
+
             <div class="btn-group" role="group" aria-label="Basic example">
-            <label>
-				<input type="submit"  class="btn btn-primary" value="Register" size="25">
-			</label>
-            <br>
-        </form>
-        <form action="/eugo/login" class="form">
-            <label>
-				<input type="submit" class="btn btn-secondary" value="Return to Login" size="25">
-			</label>
+                <label>
+                    <input type="submit" onclick="saveCanvas()" class="btn btn-success" value="Register" size="25">
+                </label>
+                <br>
+                </form>
+                 <form action="/eugo/login" class="form">
+                <label>
+                    <input type="submit" class="btn btn-secondary" value="Return to Login" size="25">
+                </label>
+
         </form>
     </div>
         
 </body>
 
-<script>        window.addEventListener('load', function() {
+<!--Color Picker Script-->
+<script type="text/javascript">
+    var colorBlock = document.getElementById('color-block');
+    var ctx1 = colorBlock.getContext('2d');
+    var width1 = colorBlock.width;
+    var height1 = colorBlock.height;
+
+    var colorStrip = document.getElementById('color-strip');
+    var ctx2 = colorStrip.getContext('2d');
+    var width2 = colorStrip.width;
+    var height2 = colorStrip.height;
+
+    var colorLabel = document.getElementById('color-label');
+
+    var x = 0;
+    var y = 0;
+    var drag = false;
+    var rgbaColor = 'rgba(255,0,0,1)';
+
+    ctx1.rect(0, 0, width1, height1);
+    fillGradient();
+
+    ctx2.rect(0, 0, width2, height2);
+    var grd1 = ctx2.createLinearGradient(0, 0, 0, height1);
+    grd1.addColorStop(0, 'rgba(255, 0, 0, 1)');
+    grd1.addColorStop(0.17, 'rgba(255, 255, 0, 1)');
+    grd1.addColorStop(0.34, 'rgba(0, 255, 0, 1)');
+    grd1.addColorStop(0.51, 'rgba(0, 255, 255, 1)');
+    grd1.addColorStop(0.68, 'rgba(0, 0, 255, 1)');
+    grd1.addColorStop(0.85, 'rgba(255, 0, 255, 1)');
+    grd1.addColorStop(1, 'rgba(255, 0, 0, 1)');
+    ctx2.fillStyle = grd1;
+    ctx2.fill();
+
+    function click(e) {
+    x = e.offsetX;
+    y = e.offsetY;
+    var imageData = ctx2.getImageData(x, y, 1, 1).data;
+    rgbaColor = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+    fillGradient();
+    }
+
+    function fillGradient() {
+    ctx1.fillStyle = rgbaColor;
+    ctx1.fillRect(0, 0, width1, height1);
+
+    var grdWhite = ctx2.createLinearGradient(0, 0, width1, 0);
+    grdWhite.addColorStop(0, 'rgba(255,255,255,1)');
+    grdWhite.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx1.fillStyle = grdWhite;
+    ctx1.fillRect(0, 0, width1, height1);
+
+    var grdBlack = ctx2.createLinearGradient(0, 0, 0, height1);
+    grdBlack.addColorStop(0, 'rgba(0,0,0,0)');
+    grdBlack.addColorStop(1, 'rgba(0,0,0,1)');
+    ctx1.fillStyle = grdBlack;
+    ctx1.fillRect(0, 0, width1, height1);
+    }
+
+    function mousedown(e) {
+    drag = true;
+    changeColor(e);
+    }
+
+    function mousemove(e) {
+    if (drag) {
+        changeColor(e);
+    }
+    }
+
+    function mouseup(e) {
+    drag = false;
+    }
+
+    function changeColor(e) {
+        x = e.offsetX;
+        y = e.offsetY;
+        var imageData = ctx1.getImageData(x, y, 1, 1).data;
+        rgbaColor = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+        colorLabel.style.backgroundColor = rgbaColor;
+        document.getElementById("colour-output").value = rgbaColor;
+        var canvas = document.getElementById('myCanvas');
+        var context = document.getElementById('myCanvas').getContext("2d");
+        context = canvas.getContext("2d");
+        context.strokeStyle = rgbaColor;
+    }
+
+    colorStrip.addEventListener("click", click, false);
+
+    colorBlock.addEventListener("mousedown", mousedown, false);
+    colorBlock.addEventListener("mouseup", mouseup, false);
+    colorBlock.addEventListener("mousemove", mousemove, false);
+</script>
+
+<!--Sprite Canvas Script-->
+<script>
+
+    var custom_sprite = false;
+
+    function saveCanvas(){
+        var canvas = document.getElementById('myCanvas');
+        var imageURI = canvas.toDataURL("image/jpg");
+        if (custom_sprite){
+            document.getElementById('canvas-output').value = imageURI;
+            console.log(document.getElementById('canvas-output').value );
+        }
+        //documen
+    }
+
+    //Srpite Slider
+    window.addEventListener('load', function() {
     var rangeslider = document.getElementById("sprite");
 
     var images = document.getElementById("sliderImages");
@@ -151,6 +290,192 @@
     i = Number(this.value) - 1;
     images.children[i].style.display = 'block';
     });
-});</script>
+    });
+
+    //close canvas button hadnler
+    document.getElementById('draw-char-button-cancel').addEventListener("click", closeCanvas);
+    function closeCanvas(){
+        sliderImages = document.getElementById('sliderImages');
+        sliderImages.style.width = '100%';
+        sliderImages.style.height = '100%';
+
+        //hide colors
+        var div = document.getElementById('sprite-designer-div');
+        div.style.opacity = "0";
+        div.style.height = "0";
+        div.style.wdith = "0";
+        var canvas = document.getElementById('myCanvas');
+        canvas.style.width = "0";
+        canvas.style.height = "0";
+
+        custom_sprite = false;
+    }
+
+    //Sprite Drawer:
+    document.getElementById('draw-char-button').addEventListener("click", openCanvas);
+    //open canvas
+    function openCanvas() {
+        //hide sprites
+        sliderImages = document.getElementById('sliderImages');
+        sliderImages.style.width = '0';
+        sliderImages.style.height = '0';
+
+        //show colors
+        var div = document.getElementById('sprite-designer-div');
+        div.style.opacity = "1";
+        div.style.height = "100%";
+        div.style.wdith = "100%";
+
+        var canvas = document.getElementById('myCanvas');
+        canvas.style.width = "500px";
+        canvas.style.height = "500px";
+        var context = document.getElementById('myCanvas').getContext("2d");
+        context = canvas.getContext("2d");
+        context.strokeStyle = document.getElementById("color-label").value;
+        context.lineJoin = "round";
+        context.lineWidth = 5;
+
+        //cancel preset sprite
+        //document.getElementById('sprite').value = '999';
+        custom_sprite = true;
+
+
+        var clickX = [];
+        var clickY = [];
+        var clickDrag = [];
+        var paint;
+
+        /**
+         * Add information where the user clicked at.
+         * @param {number} x
+         * @param {number} y
+         * @return {boolean} dragging
+         */
+        function addClick(x, y, dragging) {
+            clickX.push(x);
+            clickY.push(y);
+            clickDrag.push(dragging);
+        }
+
+        /**
+         * Redraw the complete canvas.
+         */
+        function redraw() {
+            // Clears the canvas
+            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+            for (var i = 0; i < clickX.length; i += 1) {
+                if (!clickDrag[i] && i == 0) {
+                    context.beginPath();
+                    context.moveTo(clickX[i], clickY[i]);
+                    context.stroke();
+                } else if (!clickDrag[i] && i > 0) {
+                    context.closePath();
+
+                    context.beginPath();
+                    context.moveTo(clickX[i], clickY[i]);
+                    context.stroke();
+                } else {
+                    context.lineTo(clickX[i], clickY[i]);
+                    context.stroke();
+                }
+            }
+        }
+
+        /**
+         * Draw the newly added point.
+         * @return {void}
+         */
+        function drawNew() {
+            var i = clickX.length - 1
+            if (!clickDrag[i]) {
+                if (clickX.length == 0) {
+                    context.beginPath();
+                    context.moveTo(clickX[i], clickY[i]);
+                    context.stroke();
+                } else {
+                    context.closePath();
+
+                    context.beginPath();
+                    context.moveTo(clickX[i], clickY[i]);
+                    context.stroke();
+                }
+            } else {
+                context.lineTo(clickX[i], clickY[i]);
+                context.stroke();
+            }
+        }
+
+        function mouseDownEventHandler(e) {
+            paint = true;
+            var x = e.pageX - canvas.offsetLeft;
+            var y = e.pageY - canvas.offsetTop;
+            if (paint) {
+                addClick(x, y, false);
+                drawNew();
+            }
+        }
+
+        function touchstartEventHandler(e) {
+            paint = true;
+            if (paint) {
+                addClick(e.touches[0].pageX - canvas.offsetLeft, e.touches[0].pageY - canvas.offsetTop, false);
+                drawNew();
+            }
+        }
+
+        function mouseUpEventHandler(e) {
+            context.closePath();
+            paint = false;
+        }
+
+        function mouseMoveEventHandler(e) {
+            var x = e.pageX - canvas.offsetLeft;
+            var y = e.pageY - canvas.offsetTop;
+            if (paint) {
+                addClick(x, y, true);
+                drawNew();
+            }
+        }
+
+        function touchMoveEventHandler(e) {
+            if (paint) {
+                addClick(e.touches[0].pageX - canvas.offsetLeft, e.touches[0].pageY - canvas.offsetTop, true);
+                drawNew();
+            }
+        }
+
+        function setUpHandler(isMouseandNotTouch, detectEvent) {
+            removeRaceHandlers();
+            if (isMouseandNotTouch) {
+                canvas.addEventListener('mouseup', mouseUpEventHandler);
+                canvas.addEventListener('mousemove', mouseMoveEventHandler);
+                canvas.addEventListener('mousedown', mouseDownEventHandler);
+                mouseDownEventHandler(detectEvent);
+            } else {
+                canvas.addEventListener('touchstart', touchstartEventHandler);
+                canvas.addEventListener('touchmove', touchMoveEventHandler);
+                canvas.addEventListener('touchend', mouseUpEventHandler);
+                touchstartEventHandler(detectEvent);
+            }
+        }
+
+        function mouseWins(e) {
+            setUpHandler(true, e);
+        }
+
+        function touchWins(e) {
+            setUpHandler(false, e);
+        }
+
+        function removeRaceHandlers() {
+            canvas.removeEventListener('mousedown', mouseWins);
+            canvas.removeEventListener('touchstart', touchWins);
+        }
+
+        canvas.addEventListener('mousedown', mouseWins);
+        canvas.addEventListener('touchstart', touchWins);
+    }
+</script>
 
 </html>
