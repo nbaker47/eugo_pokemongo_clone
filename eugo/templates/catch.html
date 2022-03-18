@@ -89,7 +89,18 @@
             <div class="card-body">
 
                 <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} Has Appered!</p>
-                <button class="btn btn-success" onclick="catchAttempt('{{l.name}}','{{l.id}}')" id="catchbutton">Throw LectBall</button>
+
+              <table class = 'center2'>
+                <tr>
+                  <td id="c1"></td>
+                  <td id="c2"></td>
+                </tr>
+                <tr>
+                  <td id="c3"></td>
+                  <td id="c4"></td>
+                </tr>
+              </table>
+
             </div>
 
             <br style="clear:both;"/>
@@ -110,11 +121,38 @@
 <script>
     const text = document.getElementById("game_txt");
     
+    var resetTimer;
+    var boxes = [document.getElementById("c1"),document.getElementById("c2"),document.getElementById("c3"),document.getElementById("c4")]
 
-    function catchAttempt(name, id){
-        if(Math.random()>0.75){
+    function boxSet(){
+      /* format boxes */
+      "{% for l in lec %}"
+
+      boxes.forEach( (box) => 
+        box.onclick = function(){miss('{{l.name}}');}
+      );
+
+      boxes.forEach( (box) => 
+        box.style.backgroundColor = "aqua"
+      );
+
+      catchBox = boxes[Math.floor(Math.random() * boxes.length)]
+      catchBox.style.backgroundColor = "red";
+
+      /* pick random box */
+      catchBox.onclick = function(){catchLect('{{l.name}}','{{l.id}}')}
+      "{% endfor %}"
+
+    }
+
+    boxSet();
+    setInterval(boxSet, 250);
+
+    function catchLect(name, id){
+
             // lecturer captured
             text.innerHTML = "Sucsess!";
+            clearTimeout( resetTimer );
 
             $.ajax({
                 type: "POST",
@@ -134,18 +172,17 @@
                 },
             });
             
-            var but = document.getElementById("catchbutton");
-            but.innerHTML = "continue"
-            but.onclick = function() {
-                location.href='/eugo/lecturers';
-            }
 
-        }else{
-            // try again
-            lecPic = document.getElementById("lect-pic");
-            lecPic.src = "/static/eugo/img/teacher_sprites/catching.gif"
-            text.innerHTML = name + " dodged the lectball\xAE , Try again!";
-
-        }
+            location.href='/eugo/lecturers';
     }
+
+    function miss(name){
+      // try again
+      boxSet();
+      lecPic = document.getElementById("lect-pic");
+      lecPic.src = "/static/eugo/img/teacher_sprites/catching.gif"
+      text.innerHTML = name + " dodged the lectball\xAE , Try again!";
+
+    }
+
 </script>

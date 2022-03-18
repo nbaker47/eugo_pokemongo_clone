@@ -48,6 +48,7 @@ class MapEvent(models.Model):
     lec_id          =   models.ForeignKey(Lecturer, on_delete=models.CASCADE)
     pos             =   models.CharField(max_length=100)
     wildOrBattle    =   models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 """ COMPLETE EVENTS ---------- """

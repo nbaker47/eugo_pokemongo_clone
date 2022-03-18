@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-from django.http import HttpResponse
-from django.shortcuts import redirect, render
-from django.http import HttpResponse
-from django.template import loader
-from django.shortcuts import get_object_or_404
-from eugo.models import Lecturer, Player, Hand, MapEvent, CompleteEvents
-from eugo.forms import *
-from random import randint
-import requests
-import qrtools
-import re
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.db import IntegrityError
-from datetime import datetime
-
-=======
 """ ---------------------------- IMPORTS -------------------------------------------------------------- """
 """ IMPORTS FROM EUGO -------- """
 from eugo.models import *                                       # import the models (database)
@@ -25,25 +6,26 @@ from eugo.forms import *                                        # all of the for
 """ IMPORTS FROM DJANGO ------ """
 from django.shortcuts import redirect, render                   # to render templates and redirect 
 from django.http import HttpResponse                            # send a http response using django
-from django.template import loader """ TODO: DEAD IMPORT? """
-from django.shortcuts import get_object_or_404 """ TODO: DEAD IMPORT? """
+from django.template import loader # TODO: DEAD IMPORT? 
+from django.shortcuts import get_object_or_404 # TODO: DEAD IMPORT? 
 from django.contrib.auth.models import User                     # to be able to access the user database
 from django.contrib.auth import authenticate, login, logout     # built in django methods that handle the
                                                                 # user moving through pages
 from django.contrib import messages                             # handle sending messages to the client 
 from django.db import IntegrityError                            # throw integrity errors (database)
+from django.utils import timezone as tz
 
 """ OTHER IMPORTS ------------ """
 import requests                                                 # for the image data
 import qrtools                                                  # for scanning and recognising the qr code
 import re                                                       # for regex patterns
 from random import randint                                      # random is self-explanatory
-
+from datetime import datetime
+import copy
 
 """ ---------------------------- VIEWS ---------------------------------------------------------------- """
 """ INDEX -------------------- """
 """ This method to handle index.html (not much going on because this is just teh cover page) """
->>>>>>> a9ce109c206b911ebc83a2e9ec9bfd9b89fcdad3
 def index(request):
     return render(request, 'index.html')
 
@@ -285,7 +267,11 @@ def map(request):
         except:
             print('error reading QR')
 
-    # load the lecturer object on the map
+    #gets the current user
+    current_user = request.user
+    un = current_user.username
+    player = Player.objects.filter(username=un)[0]
+
     lec = Lecturer.objects.all()
     # load the player objects on the map
     players = Player.objects.all()
@@ -296,16 +282,24 @@ def map(request):
     # get all of the chat messages
     all_messages = ChatMessage.objects.all()
     #print(leaderboard)
-    # get a list of all of the events on the map
-    mapEvent = list(MapEvent.objects.all())
-    
-    #remove completed events
+    mapEvent = copy.deepcopy(list(MapEvent.objects.all()))
+
+    #remove completed events from data sent to page
     completed_events = CompleteEvents.objects.all()
     for i in completed_events:
-        mapEvent.remove(i.event)
-    
-    # return the html render, giving it all of the corresponding data
-    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'messages' : all_messages})
+        try:
+            print("t")
+            if(i.username == player):
+                mapEvent.remove(i.event)
+        except:
+            # removes completed events refrencing events that no longer exist
+            i.delete()
+
+    #remove outdated events from whole database  
+    for i in mapEvent:
+        if((tz.now() - i.created_at).total_seconds() > i.lec_id.duration*60):
+            i.delete()
+
 
 
 """ MAPMOD ------------------- """
