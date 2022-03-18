@@ -3,6 +3,8 @@
 from scipy import rand
 from eugo.models import *                                       # import the models (database)
 from eugo.forms import *                                        # all of the forms ????????? TODO
+from eugo.models import Player
+import os.path
 
 """ IMPORTS FROM DJANGO ------ """
 from django.shortcuts import redirect, render                   # to render templates and redirect 
@@ -119,7 +121,7 @@ def register(request):
             if Player.objects.filter(email=email).exists():
                 print(f"[{username}] email ({email}) already exists")
                 raise EmailExistsException("Email is already registered")
-                
+
             # create the new user object in the database and assign attributes
             print(f"[{username}] attempting account creation")
             user = User.objects.create_user(username, email, password)
@@ -332,7 +334,6 @@ def map(request):
     completed_events = CompleteEvents.objects.all()
     for i in completed_events:
         try:
-            print("t")
             if(i.username == player):
                 mapEvent.remove(i.event)
         except:
@@ -435,7 +436,27 @@ def mapmod(request):
             # save the new lecturer
             newLec.save()
             print(newLec)
-        
+        #new pokistop
+        if(gameop == 'newStopLi'):
+            #print(request.POST)
+
+            balls = request.POST.get('balls')
+            extensions = request.POST.get('extensions')
+            now = datetime.datetime.now() # current date and time
+            id = str(coords) + now.strftime("%H:%M:%S")
+
+            #generate qr code
+            qr_key = str(randint(10000,20000)) + id
+            qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + qr_key
+            # save the QR to the file
+            img_data = requests.get(qrUrl).content
+            file_path = 'eugo/static/eugo/img/qr/' + qr_key + '.png' 
+            with open(file_path, 'wb') as handler:
+                handler.write(img_data)
+
+            newStop = LectStop(id = uniqueid, balls = balls, extensions = extensions, qrUrl = qr_key+'.png')
+            newEvent.save()
+
         # create a new event
         else:
             # get the lecturerID, lecturer objects and co-ordinates of the lecturer from the POST method

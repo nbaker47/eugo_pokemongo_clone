@@ -1,5 +1,6 @@
 """ ---------------------------- IMPORTS -------------------------------------------------------------- """
 """ DJANGO IMPORTS ----------- """
+from codecs import backslashreplace_errors
 from django.db import models
 from django.dispatch import receiver            # import models in order to create the models themselves
 from django.utils import timezone       # import timezeone to be able to log events
@@ -22,6 +23,8 @@ class Player(models.Model):
     pokemon_caught   =   models.IntegerField(default=0)
     sprite_url       =   models.CharField(default="eugo\static\eugo\img\teacher_sprites\teacher_1.png", max_length=100, null=True)
     is_admin         =   models.BooleanField(default=False)
+    balls           =   models.IntegerField()
+    extensions      =   models.IntegerField()
 
     # return username when object printed
     def __str__(self):
@@ -54,6 +57,14 @@ class MapEvent(models.Model):
     wildOrBattle    =   models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+class LectStop(models.Model):
+    id              =   models.CharField(max_length=100, primary_key=True)
+    balls           =   models.IntegerField()
+    extensions      =   models.IntegerField()
+    qrUrl           =   models.CharField(max_length=500)
+    created_at      =   models.DateTimeField(auto_now_add=True)
+    pos             =   models.CharField(max_length=100)
 
 """ COMPLETE EVENTS ---------- """
 """ A table that will track all of the events completed by a given player """
