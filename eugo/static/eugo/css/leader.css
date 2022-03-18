@@ -4,11 +4,8 @@ Leaderboard
 --------------------*/
 .leaderboard {
   position: absolute;
-  top: 50%;
-  left: 8%;
-  right: 90%;
-  transform: translate(-50%, -50%);
-  width: 285px;
+  top: 20%;
+  width: 320px;
   height: 600px;
   background: linear-gradient(to bottom, #ffffff, #ffffff);
   border-radius: 10px;
@@ -37,6 +34,7 @@ Leaderboard
   list-style-type: none;
   padding: 0;
   margin: 0;
+  overflow: hidden;
 }
 .leaderboard ol li {
   position: relative;

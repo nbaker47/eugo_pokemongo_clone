@@ -1,16 +1,20 @@
 """ ---------------------------- IMPORTS -------------------------------------------------------------- """
 """ DJANGO IMPORTS ----------- """
-from django.db import models            # import models in order to create the models themselves
+from django.db import models
+from django.dispatch import receiver            # import models in order to create the models themselves
 from django.utils import timezone       # import timezeone to be able to log events
+from django.conf import settings
+import uuid
 
 """ OTHER IMPORTS ------------ """
-from datetime import *                  # import all from datetime to be able to log events
+import datetime               # import all from datetime to be able to log events
 
 
 """ --------------------------- MODELS ---------------------------------------------------------------- """
 """ PLAYER ------------------- """
 """ Player table where we will store the personal account data for the user"""
 class Player(models.Model):
+    id               =   models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     firstname        =   models.CharField(max_length=30, null=True)
     surname          =   models.CharField(max_length=30, null=True)
     email            =   models.CharField(max_length=40, null=True)
@@ -83,3 +87,79 @@ class ChatMessage(models.Model):
     user            =   models.CharField(max_length=20)
     content         =   models.CharField(max_length=100, default='message', null=True)
     date            =   models.TimeField(auto_now=False, default=timezone.now )
+
+""" FRIENDS"""
+""" keeps track of friends/blocked"""
+class FriendsList(models.Model):
+    user1 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='user')
+    friends = models.CharField(default='', max_length=2000)
+    #relationship = models.IntegerField() #0=pending 1=friends 2=blocked
+    #date_sent = models.DateField(auto_now=True=)
+
+    def __str__(self) -> str:
+        return self.user1.username
+
+    def add_friend(self, user):
+        print("ADDING A FIREIEAIWDNAD")
+        self.friends = str(self.friends) + ',' + str(user.id)
+        self.save()
+    
+    def remove_friend(self, user):
+        if user in self.friends.all():
+            self.friends.remove(user)
+            self.save() 
+    
+    """
+    def unfriend(self, removee):
+        #remove both from eachothers friend list
+        remover_friends_list = self
+        remover_friends_list.remove_friend(removee)
+        friends_list = FriendsList.objects.get(user=removee)
+        friends_list.remove_friend(self.user)
+    
+    def is_mutual_friend(self, friend):
+        if friend in self.friends.all():
+            return True
+        else:
+            return False
+    """            
+
+"""Class for friend request"""
+class FriendRequest(models.Model):
+    sender = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="sender")
+    reciever = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="reciever")
+    is_active = models.BooleanField(blank=True, null=False, default=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.sender.username
+    
+    """When receiver accepts"""
+    def accept(self):
+        #update sender and reciever
+        print("SELF RECIEVER: ", self.reciever)
+        reciever_friend_list = FriendsList.objects.filter(user1=self.reciever)
+        if reciever_friend_list:
+            reciever_friend_list.add_friend(self.sender)
+        else:
+            reciever_friend_list = FriendsList.objects.create(user1=self.reciever)
+            reciever_friend_list.add_friend(self.sender)
+        
+        sender_friend_list  = FriendsList.objects.filter(user1=self.sender)
+        if sender_friend_list:
+            sender_friend_list.add_friend(self.reciever)
+        else:
+            sender_friend_list = FriendsList.objects.create(user1=self.sender)
+            sender_friend_list.add_friend(self.reciever)
+        self.is_active = False
+        self.save()
+    
+    """If reciever declines"""
+    def decline(self):
+        self.is_active = False
+        self.save()
+
+    """if sender cancels"""
+    def cancel(self):
+        self.is_active = False
+        self.save()

@@ -34,6 +34,16 @@
     <script>window.location.href = "/eugo/logout/";</script>
     {% endif %}
 
+    <!--
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    -->
+
     <div class="text-center parent-container-map" id="parent-container-map-id">
         
         <!--map img-->
@@ -98,54 +108,100 @@
             </div>
         </nav>
 
-        <!--Leaderboard-->
+        <!--Leaderboard/ Social Panel-->
         <div class="leaderboard" id="leaderboard">
-            <!--board selector button-->
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle chatselect" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Lecturers Caught
+            <!--Mini navbar-->
+            <nav class="navbar navbar-dark bg-primary">
+                <a class="navbar-brand" href="#">Social</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
                 </button>
-                <input type="hidden" value='global123' id='channel_selected'>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="">Battles Won</a>
-                <a class="dropdown-item" href="">Trades Made</a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent2">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                    <a class="nav-link" id="global-leaderboard-a" href="#">Global Leaderboard <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="#" id="friends-list-a">
+                        Friends List
+                        {% for req in incomingReq %}
+                        🔔
+                        {% endfor %}
+                    </a>
+                    </li>
+                    <!--
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="mailbox-a">Mailbox</a>
+                    </li>
+                    -->
+                </div>
+              </nav>
+            <br>
+            <!--leaderboard LIST-->
+            <div id="leaderboard-list">
+                <ol>
+                    {% for player in players %}
+                    <li>
+                        <mark>{{ player.username }}</mark>
+                        <small>{{ player.pokemon_caught }}</small>
+                    </li>
+                    {% endfor %} 
+                </ol>
+            </div>
+            
+            <!--Friends Div-->
+            <div id="friends-div">
+                <!--New friend Search bar-->
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2 sticky-top" type="search" placeholder="Add a new friend!" aria-label="Search" id="friend-input-box">
+                    <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="sendFriendReq('{{ user.get_username }}')">✉</button>
+                </form>
+                <br>
+                <!--pending friends list-->
+                <ul class="list-group">
+                    {% for req in incomingReq %}
+                    <li class="list-group-item list-group-item-success">Incoming Friend : {{ req }} <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="acceptFriendReq('{{ req.sender }}', '{{user.get_username}}')">Accept</button></li>
+                    {% endfor %}
+                </ul>
+                <br>
+                <!--friend list-->
+                <ul class="list-group">
+                    {% for f in friends %}
+                    <li class="list-group-item list-group-item-dark">
+                        <strong>{{ f }}</strong>
+                        <br>
+                        <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="battleFriend()">Battle</button>
+                        <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="tradeFriend('{{ user.get_username }}','{{ f.username }}')">Trade</button>
+                        <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="whisperFriend()">Whisper</button>
+                        <button class="btn btn-outline-danger my-2 my-sm-0 sticky-top" type="button" onclick="unFriend()">Unfriend</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!--Mailbox Div
+            <div id="mailbox-div">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">USERNAME</h5>
+                        <small>3 days ago</small>
+                      </div>
+                      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                      <small>Donec id elit non mi porta.</small>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">USERNAME</h5>
+                        <small class="text-muted">3 days ago</small>
+                      </div>
+                      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                      <small class="text-muted">Donec id elit non mi porta.</small>
+                    </a>
                 </div>
             </div>
-            <br>
-            <ol>
-            <li>
-                <mark>{{ players.0.username }}</mark>
-                <small>{{ players.0.pokemon_caught }}</small>
-            </li>
-            <li>
-                <mark>{{ players.1.username }}</mark>
-                <small>{{ players.1.pokemon_caught }}</small>
-            </li>
-            <li>
-                <mark>{{ players.2.username }}</mark>
-                <small>{{ players.2.pokemon_caught }}</small>
-            </li>
-            <li>
-                <mark>{{ players.3.username }}</mark>
-                <small>{{ players.3.pokemon_caught }}</small>
-            </li>
-            <li>
-                <mark>{{ players.4.username }}</mark>
-                <small>{{ players.4.pokemon_caught }}</small>
-            </li>
-            <li>
-                <mark>{{ players.5.username }}</mark>
-                <small>{{ players.5.pokemon_caught }}</small>
-            </li>
-            <li>
-                <mark>{{ players.6.username }}</mark>
-                <small>{{ players.6.pokemon_caught }}</small>
-            </li>
-            <li>
-                <mark>{{ players.7.username }}</mark>
-                <small>{{ players.7.pokemon_caught }}</small>
-            </li>  
-            </ol>
+            -->
+
         </div>
 
         <!--Chat Panel-->
@@ -156,6 +212,7 @@
                     <button class="btn btn-primary dropdown-toggle chatselect" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Global Chat
                     </button>
+                    <!--
                     <input type="hidden" value='global123' id='channel_selected'>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="">Near Me</a>
@@ -163,6 +220,7 @@
                     <a class="dropdown-item" href="">Global Chat History</a>
                     <a class="dropdown-item" href="">Contact Support</a>
                     </div>
+                    -->
                 </div>
                 <br>
 
@@ -193,33 +251,127 @@
     
     </div>
     
+    
+    <!--social panel script-->
+    <script type="text/javascript">
+        var leaderboard_a = document.getElementById("global-leaderboard-a");
+        var friends_list_a = document.getElementById("friends-list-a");
+        //var mailbox_a = document.getElementById("mailbox-a");
+
+        friends_list_a.onclick = function() {showFriendsList()};
+        //mailbox_a.onclick = function() {showMailbox()};
+        leaderboard_a.onclick = function() {showLeaderboard()};
+
+        function hideDiv(d){
+            let div = document.getElementById(d);
+            div.style.opacity = "0";
+            div.style.height = "0";
+            //div.style.zIndex = "0"
+        }
+
+        function showDiv(d){
+            let div = document.getElementById(d);
+            div.style.opacity = "1";
+            div.style.height = "100%";
+            //div.style.zIndex = "11"
+        }        
+
+        function showFriendsList(){
+            hideDiv("leaderboard-list");
+            //hideDiv("mailbox-div");
+            showDiv("friends-div");
+        }
+
+        function showMailbox(){
+            hideDiv("leaderboard-list");
+            hideDiv("friends-div");
+            //showDiv("mailbox-div");
+        }
+
+        function showLeaderboard(){
+            hideDiv("friends-div");
+            //hideDiv("mailbox-div");
+            showDiv("leaderboard-list");
+        }
+        
+        function sendFriendReq(sender){
+            new_friend_name = document.getElementById("friend-input-box").value;
+            $.ajax({
+                type: "POST",
+                url: "/eugo/friendreq/",
+                data: {
+                    'type' : 'send',
+                    'sender': sender,
+                    'reciever' : new_friend_name,
+                },
+                success: function (data) {
+                    alert("Friend Request Sent!")
+                },
+                error: function (data) {
+                    console.log("error : ", JSON.stringify(data));
+                    alert("Player not Found!")
+                },
+            });   
+        }
+
+        function acceptFriendReq(sender, reciever){
+            //sender_name = document.getElementById("friend-input-box").value;
+            console.log(sender, reciever)
+            $.ajax({
+                type: "POST",
+                url: "/eugo/friendreq/",
+                data: {
+                    'type' : 'accept',
+                    'sender': sender,
+                    'reciever' : reciever,
+                },
+                success: function (data) {
+                    alert("Friend Request Accepted!")
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log("error : ", JSON.stringify(data));
+                    //alert(")
+                },
+            });
+        }
+
+        function tradeFriend(reciever, sender){
+            console.log(sender, reciever)
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "/eugo/trade/";
+
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'reciever';
+            hiddenField.value = reciever;
+
+            const hiddenField2 = document.createElement('input');
+            hiddenField2.type = 'hidden';
+            hiddenField2.name = 'sender';
+            hiddenField2.value = sender;
+
+            console.log(reciever, sender);
+
+            form.appendChild(hiddenField);
+            form.appendChild(hiddenField2);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+    </script>
     <!--chatbox script-->
     <script type="text/javascript">
 
-        //ajax---------------:
+        //channel selector---------------:
         hidden = document.getElementById('channel_selected');
         function channelSelect(input){
             hidden.value = input;
         }
-        /*
-        function sendChat(username){
-            $.ajax({
-                type: "POST",
-                url: "/eugo/sendchat/",
-                data: {
-                    'channel': hidden.value,
-                    'user' : username,
-                    'message' : document.getElementById('usermsg').value,
-                },
-                success: function (data) {
-                    console.log("sent message");
-                },
-                error: function (data) {
-                    console.log("error : ", JSON.stringify(data));
-                },
-            });
-        }
-        */
+
         //sockets---------:
         let v = window.location.host
         let url = 'ws://' + v + '/ws/socket-server/'
@@ -238,20 +390,25 @@
                 '<p><strong>'+ data.username +'</strong><i class="text-secondary">' + data.date +
                 '</i> ' + data.message)
             }
-
         }
+        
         
         //sender
         function sendChat(username){
             console.log("sending chat");
             let message = document.getElementById('usermsg').value
+            
             if (message.length > 1){
+                //if (!isOpen(chatSocket)) return;
                 chatSocket.send(JSON.stringify({
                 'message': message,
                 'username' : username,
             }))
             }
         }
+
+        //check if socket is open
+        function isOpen(ws) { return ws.readyState === ws.OPEN }
 
         //toggle side panels
         function hideSidePanel(){

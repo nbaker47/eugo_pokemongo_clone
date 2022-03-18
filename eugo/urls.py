@@ -16,6 +16,9 @@ urlpatterns = [
     path('mapmod/', views.mapmod, name='mapmod'),
     path('catch/', views.catch, name='catch'),
     path('newcatch/', views.newcatch, name='newcatch'),
+    path('friendreq/', views.friendreq, name='friendreq'),
     #path('sendchat/', views.sendchat, name = 'sendchat' ),
+    path('trade/', views.trade, name='trade'),
+    path('newtrade/', views.newtrade, name='newtrade'),
 ]
 #login is 'signin' and log out is 'signout' in views because of a function imported with the same name
