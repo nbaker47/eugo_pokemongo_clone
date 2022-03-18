@@ -16,6 +16,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db import IntegrityError
 from datetime import datetime
+import copy
 
 def index(request):
     return render(request, 'index.html')
@@ -171,23 +172,30 @@ def map(request):
         except:
             print('error reading QR')
 
+    #gets the current user
+    current_user = request.user
+    un = current_user.username
+    player = Player.objects.filter(username=un)[0]
+
     lec = Lecturer.objects.all()
     players = Player.objects.all()
     player_vals = players.values()
     leaderboard = sorted(player_vals, key=lambda d: d['pokemon_caught'], reverse=True)
     #print(leaderboard)
-    mapEvent = list(MapEvent.objects.all())
+    mapEvent = copy.deepcopy(list(MapEvent.objects.all()))
 
-    #remove completed events
+    #remove completed events from data sent to page
     completed_events = CompleteEvents.objects.all()
     for i in completed_events:
         try:
-            mapEvent.remove(i.event)
+            print("t")
+            if(i.username == player):
+                mapEvent.remove(i.event)
         except:
             # removes completed events refrencing events that no longer exist
             i.delete()
 
-    #remove outdated events    
+    #remove outdated events from whole database  
     for i in mapEvent:
         if((tz.now() - i.created_at).total_seconds() > i.lec_id.duration*60):
             i.delete()
