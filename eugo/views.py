@@ -425,9 +425,6 @@ def mapmod(request):
             lecturer = Lecturer.objects.filter(id = lecturerID)[0]
             coords = request.POST.get('coords')
 
-            
-
-
             now = datetime.datetime.now() # current date and time
             uniqueid = str(coords) + now.strftime("%H:%M:%S")
             newEvent = MapEvent(id = uniqueid, lec_id = lecturer, pos=coords, wildOrBattle=gameop)
@@ -438,3 +435,43 @@ def mapmod(request):
     mapEvent = MapEvent.objects.all()
     # return the render while giving it the lecturers and mapEvents arrays
     return render(request, 'mapmod.html',{'lec': lec, 'mapEvent': mapEvent})
+
+"""TRADE: """
+def trade(request):
+    if request.method == 'POST':
+        print(request.POST)
+        s = request.POST.get('sender')
+        r = request.POST.get('reciever')
+        #retrieve object
+        sender = Player.objects.filter(username=s).first()
+        reciever = Player.objects.get(username=r)
+        print(sender ,"<--- sender")
+        print(reciever ,"<--- reciever")
+        #retrieve their lecturers
+        sender_lects = Hand.objects.filter(username = sender.id)
+        reciever_lects = Hand.objects.filter(username = reciever.id)
+    return render(request, 'trade.html', {'sender':sender_lects,
+                                        'sender_name':sender.username,
+                                        'reciever_name': reciever.username,
+                                         'reciever':reciever_lects})
+
+def newtrade(request):
+    if request.method == 'POST':
+        print(request.POST)
+        l = request.POST.get('left')
+        r = request.POST.get('right')
+
+        current_user = request.user
+        un = current_user.username
+        player = Player.objects.filter(username=un)[0]
+
+        lec = Lecturer.objects.filter()
+
+        #addds the lec to the players hand
+        player.pokemon_caught = player.pokemon_caught+1
+        player.save()
+
+        h = Hand(username = player, lec_id = l.lec_id)
+        h.save()
+
+    return render(request, 'lecturers.html', {})

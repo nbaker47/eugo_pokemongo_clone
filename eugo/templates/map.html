@@ -171,7 +171,7 @@
                         <strong>{{ f }}</strong>
                         <br>
                         <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="battleFriend()">Battle</button>
-                        <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="tradeFriend()">Trade</button>
+                        <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="tradeFriend('{{ user.get_username }}','{{ f.username }}')">Trade</button>
                         <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="whisperFriend()">Whisper</button>
                         <button class="btn btn-outline-danger my-2 my-sm-0 sticky-top" type="button" onclick="unFriend()">Unfriend</button>
                     </li>
@@ -256,10 +256,10 @@
     <script type="text/javascript">
         var leaderboard_a = document.getElementById("global-leaderboard-a");
         var friends_list_a = document.getElementById("friends-list-a");
-        var mailbox_a = document.getElementById("mailbox-a");
+        //var mailbox_a = document.getElementById("mailbox-a");
 
         friends_list_a.onclick = function() {showFriendsList()};
-        mailbox_a.onclick = function() {showMailbox()};
+        //mailbox_a.onclick = function() {showMailbox()};
         leaderboard_a.onclick = function() {showLeaderboard()};
 
         function hideDiv(d){
@@ -334,6 +334,32 @@
                     //alert(")
                 },
             });
+        }
+
+        function tradeFriend(reciever, sender){
+            console.log(sender, reciever)
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "/eugo/trade/";
+
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'reciever';
+            hiddenField.value = reciever;
+
+            const hiddenField2 = document.createElement('input');
+            hiddenField2.type = 'hidden';
+            hiddenField2.name = 'sender';
+            hiddenField2.value = sender;
+
+            console.log(reciever, sender);
+
+            form.appendChild(hiddenField);
+            form.appendChild(hiddenField2);
+
+            document.body.appendChild(form);
+            form.submit();
         }
 
     </script>

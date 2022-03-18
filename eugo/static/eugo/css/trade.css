@@ -2,12 +2,13 @@
 .card-body{
     display: flex;
     flex-wrap: wrap;
-    left: 10%;
     justify-content: center;
 }
 
 .lec-card{
-    width: 300px;
+    font-size: 10px;
+    width: 200px;
+    height: 300px;
     border-radius: 15px;
     margin: 10px;
     padding: 3%;
@@ -34,20 +35,16 @@
     -moz-box-shadow:     0 0 6px #000000;
     -webkit-box-shadow:  0 0 6px #000000;
     box-shadow:          0 0 6px #000000;
+    width: 100%;
 }
 
 #lec-container{
-    height: 100%;
-    width: 80%;
-    margin-left: 10%;
-    margin-top: 2%;
-    display: flex;
-  }
-
+    margin-left: 11%;
+}
   #middle-2-container{
       text-align: center;
   }
 
   .cent-box{
-    box-shadow:         inset 0 0 15px #000000;
+    text-align: center;
   }

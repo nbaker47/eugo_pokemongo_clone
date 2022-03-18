@@ -17,6 +17,7 @@
 
     <!-- Custom styles for this template -->
     <link href='{% static "/eugo/css/catch.css" %}' rel="stylesheet"> 
+    <link href='{% static "/eugo/css/lecturers.css" %}' rel="stylesheet"> 
 
     <!--webcam JS script-->
 
@@ -74,21 +75,24 @@
     {% if lec %}
     <div class="card-body" style="
     height: 100%;
-    width:80%;margin-left:10%;
+    width:60%;
+    margin-left:25%;
     margin-top: 2%;
     display: flex;
     text-align: center;
     justify-content: space-between;">
         {% for l in lec %}
-            <div class = "card"  style="width: 18rem;">
-                Name: {{l.name}} <br>
+            <div class = "card lec-card"  style="width: 18rem;">
+                <strong>Name: </strong> {{l.name}} <br>
                 <img class="card-img-top" id="lect-pic" src='{% static "/eugo/img/teacher_sprites/"%}{{l.sprite}}' width="200" height="200">
-                <p><br>HP: {{l.hp}} <p>
-                <p>Attack: {{l.attack}}</p>
+                <p><br>
+                <strong>HP:</strong> {{l.hp}} <p>
+                <strong>Attack:</strong><p> {{l.attack}}</p>
             </div>   
-            <div class="card-body">
-
-                <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} Has Appered!</p>
+            <div class="">
+                <br><br><br><br>
+                <p style="font-size: 30px;" id="game_txt">A wild <strong>{{l.name}}</strong> Has Appered!</p>
+                <br>
                 <button class="btn btn-success" onclick="catchAttempt('{{l.name}}','{{l.id}}')" id="catchbutton">Throw LectBall</button>
             </div>
 
