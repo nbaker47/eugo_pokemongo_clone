@@ -111,6 +111,12 @@ def register(request):
 
         # try to make the new user in the database
         try:
+            # Stops multiple accounts being registered with the same email
+
+            if Player.objects.filter(email=email).exists():
+                print(f"[{username}] email ({email}) already exists")
+                raise EmailExistsException("Email is already registered")
+                
             # create the new user object in the database and assign attributes
             print(f"[{username}] attempting account creation")
             user = User.objects.create_user(username, email, password)
@@ -119,12 +125,6 @@ def register(request):
             # save the user in the User database
             user.save()
             print(f"[{username}] created user object")
-            
-            # Stops multiple accounts being registered with the same email
-
-            if Player.objects.filter(email=email).exists():
-                print(f"[{username}] email ({email}) already exists")
-                raise EmailExistsException("Email is already registered")
 
             # create a new player in the Player database
             p = Player.objects.create(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
