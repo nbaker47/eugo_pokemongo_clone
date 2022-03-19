@@ -10,6 +10,9 @@ from eugo.views import EmailExistsException
 from eugo.views import register
 from eugo.models import Lecturer
 from eugo.models import MapEvent
+from eugo.models import Player
+from eugo.models import Hand
+from eugo.models import CompleteEvents
 import requests
 
 from eugo.models import Player
@@ -149,22 +152,167 @@ class TestMapmod(TestCase):
 
     def testQrAPI(self):
         # Test to make sure the QR code API is working
-        qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + "123456TestLectutrer"
+        qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + "123456TestLecturer"
         self.assertEquals(requests.get(qrUrl).status_code, 200)
 
     def testWildLecturerSpawn(self):
 
         # Save new lectutrer in the database
-        newLec = Lecturer(id="123456TestLectutrer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
-        type="english", qrUrl = "123456TestLectutrer.png")
+        newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
+        type="english", qrUrl = "123456TestLecturer.png")
         newLec.save()
 
         # Send post request to spawn this new lectuter on the map
-        response = self.client.post("/eugo/mapmod/", {'lecturer': '123456TestLectutrer', 'coords': '[469,509]', 'gameop': 'lecSpawnLi'})
+        response = self.client.post("/eugo/mapmod/", {'lecturer': '123456TestLecturer', 'coords':
+        '[469,509]', 'gameop': 'lecSpawnLi'})
 
         # Check that the spawn has been added and that it is saved in the databse as a wild lectutrer nd not a battle
         self.assertEquals(len(MapEvent.objects.all()), 1)
-        self.assertEquals(MapEvent.objects.get(lec_id='123456TestLectutrer').wildOrBattle, 'lecSpawnLi')
+        self.assertEquals(MapEvent.objects.get(lec_id='123456TestLecturer').wildOrBattle, 'lecSpawnLi')
 
         # Make sure the mapmod template is rendered
         self.assertTemplateUsed(response,"mapmod.html")
+
+    def testLecturerBattle(self):
+
+        # Save new lectutrer in the database
+        newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
+        type="english", qrUrl = "123456TestLecturer.png")
+        newLec.save()
+
+        # Send post request to start new battle on the map
+        response = self.client.post("/eugo/mapmod/", {'lecturer': '123456TestLecturer', 'coords':
+        '[469,509]', 'gameop': 'lecBattleLi'})
+
+        # Check that the spawn has been added and that it is saved in the databse as a battle
+        self.assertEquals(len(MapEvent.objects.all()), 1)
+        self.assertEquals(MapEvent.objects.get(lec_id='123456TestLecturer').wildOrBattle, 'lecBattleLi')
+
+        # Make sure the mapmod template is rendered
+        self.assertTemplateUsed(response,"mapmod.html")
+
+
+class TestCatch(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+
+    def testCatch(self):
+        newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
+        type="english", qrUrl = "123456TestLecturer.png")
+        newLec.save()
+        response = self.client.post("/eugo/catch/", {'lecID': ['123456TestLecturer'], 'eventID': ['709,33316:15:10']})
+        self.assertTemplateUsed(response,'catch.html')
+
+class TestNewCatch(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Set up a new user
+        user = User.objects.create_user("TestUser", "TestUser@gmail.com", "12345678")
+        user.first_name = "Test"
+        user.last_name = "User"
+        user.save()
+
+        # Log in with the new user and check it is authenticated
+        self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
+        user = auth.get_user(self.client)
+        assert user.is_authenticated
+
+        # Create a new player objects
+        self.player = Player.objects.create(firstname = 'Test', surname = 'User', email = 'Test@eugo.com', username = 'TestUser',
+        pokemon_caught = 0, sprite_url = '1')
+        self.player.save()
+
+        # Create a new lecturer object
+        self.newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
+        type="english", qrUrl = "123456TestLecturer.png")
+        self.newLec.save()
+
+        # Create a new wild lectuter spawn with the lecturer we created above
+        self.event = MapEvent(id = '709,33316:15:10', lec_id = self.newLec, pos=[709,33316], wildOrBattle='lecSpawnLi')
+        self.event.save()
+
+    def testCatch(self):
+
+        # Send a post request to catch the new pokemon. We simulate canning a QR code to retrieve the lec
+        # id and then send it to the /newcatch view
+        response = self.client.post("/eugo/newcatch/", {'lec_id': '123456TestLecturer', 'event_id': ['709,33316:15:10']})
+
+        # Assert that the player has their poken caught count incremented by 1
+        self.assertEquals(Player.objects.get(username="TestUser").pokemon_caught, 1)
+
+        # Assert that a new hand has been created for TestUser and the caught lectuter with id 123456TestLecturer
+        self.assertEquals(len(Hand.objects.all()), 1)
+        self.assertEquals(Hand.objects.get(username=self.player).username.username, 'TestUser')
+        self.assertEquals(Hand.objects.get(lec_id=self.newLec).lec_id.id, '123456TestLecturer')
+
+        # Assert that a new event has been completed with the player that caught the pokemon and the event on the map
+        self.assertEquals(len(CompleteEvents.objects.all()), 1)
+        event = CompleteEvents.objects.get(username=self.player)
+        self.assertEquals(event.event, self.event)
+
+        # Assert that the catch.html template is rendered back to the user
+        self.assertTemplateUsed(response, "catch.html")
+
+class TestLecturerdex(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Create a new lecturer object
+        self.newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
+        type="english", qrUrl = "123456TestLecturer.png")
+        self.newLec.save()
+
+    def testLecturerdex(self):
+        # Get request for the lecturerdex
+        response = self.client.get("/eugo/lecturerdex/")
+
+        # Check that the lecturerdex template is rendered
+        self.assertTemplateUsed(response, 'lecturerdex.html')
+
+        # Check that it is rendered with the new lectutrer object
+        self.assertEquals(response.context["lec"].get(id="123456TestLecturer").name, "TestLecturer")
+
+
+class TestLecturers(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Set up a new user
+        user = User.objects.create_user("TestUser", "TestUser@gmail.com", "12345678")
+        user.first_name = "Test"
+        user.last_name = "User"
+        user.save()
+
+        # Log in with the new user and check it is authenticated
+        self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
+        user = auth.get_user(self.client)
+        assert user.is_authenticated
+
+        # Create a new player objects
+        self.player = Player.objects.create(firstname = 'Test', surname = 'User', email = 'Test@eugo.com', username = 'TestUser',
+        pokemon_caught = 0, sprite_url = '1')
+        self.player.save()
+
+        # Create a new lecturer object
+        self.newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
+        type="english", qrUrl = "123456TestLecturer.png")
+        self.newLec.save()
+
+        # Create a new wild lectuter spawn with the lecturer we created above
+        self.event = MapEvent(id = '709,33316:15:10', lec_id = self.newLec, pos=[709,33316], wildOrBattle='lecSpawnLi')
+        self.event.save()
+
+        hand = Hand(username = self.player, lec_id = self.newLec)
+        hand.save()
+
+    def testLecturers(self):
+        # Get request for the lecturers
+        response = self.client.get("/eugo/lecturers/")
+
+        # Check that the lecturers template is rendered
+        self.assertTemplateUsed(response, 'lecturers.html')
+
+        # Check that it is rendered with the hand object
+        self.assertEquals(response.context["hand"].get(username=self.player).lec_id, self.newLec)
