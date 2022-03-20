@@ -13,6 +13,8 @@ from eugo.models import MapEvent
 from eugo.models import Player
 from eugo.models import Hand
 from eugo.models import CompleteEvents
+from eugo.models import FriendRequest
+from eugo.models import FriendsList
 import requests
 
 from eugo.models import Player
@@ -316,3 +318,162 @@ class TestLecturers(TestCase):
 
         # Check that it is rendered with the hand object
         self.assertEquals(response.context["hand"].get(username=self.player).lec_id, self.newLec)
+
+class TestFriendRequest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Set up a new user TestUser
+        user1 = User.objects.create_user("TestUser", "TestUser@gmail.com", "12345678")
+        user1.first_name = "Test"
+        user1.last_name = "User"
+        user1.save()
+
+        # Log in with the new user and check it is authenticated
+        self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
+        user1 = auth.get_user(self.client)
+        assert user1.is_authenticated
+
+        # Create a new player objects
+        self.player1 = Player.objects.create(firstname = 'Test', surname = 'User', email = 'TestUser@eugo.com', username = 'TestUser',
+        pokemon_caught = 0, sprite_url = '1')
+        self.player1.save()
+
+        # Set up a new user TestUser1
+        user2 = User.objects.create_user("TestUser1", "TestUser1@gmail.com", "12345678")
+        user2.first_name = "Test"
+        user2.last_name = "User"
+        user2.save()
+
+        # Log in with the new user and check it is authenticated
+        self.client.post('/eugo/login/', {'username': 'TestUser1', 'password': '12345678'})
+        user2 = auth.get_user(self.client)
+        assert user2.is_authenticated
+
+        # Create a new player objects
+        self.player2 = Player.objects.create(firstname = 'Test', surname = 'User', email = 'TestUser1@eugo.com', username = 'TestUser1',
+        pokemon_caught = 0, sprite_url = '1')
+        self.player2.save()
+
+    def testFriendRequest(self):
+
+        # TestUser sends a friend request to TestUser1 via a post request
+        response = self.client.post("/eugo/friendreq/", {'type': 'send', 'sender': 'TestUser', 'reciever': 'TestUser1'})
+
+        # Assert that a new friend request object is generated
+        self.assertEquals(len(FriendRequest.objects.all()), 1)
+
+        # Check that the correct sender and reciver are stored in the request
+        friend_req = FriendRequest.objects.get(sender=self.player1)
+        self.assertEquals(friend_req.sender.username, "TestUser")
+        self.assertEquals(friend_req.reciever.username, "TestUser1")
+
+        # Check the the rendered template is map.html
+        self.assertTemplateUsed(response, 'map.html')
+
+        # Send a post request to simulate TestUser1 accepting the request
+        response = self.client.post("/eugo/friendreq/", {'type': 'accept', 'sender': 'TestUser', 'reciever': 'TestUser1'})
+
+        # Asser that the two users have been added to the others friend list
+        self.assertEquals(str(FriendsList.objects.get(user1=self.player1).friends), "," + str(self.player2.id))
+        self.assertEquals(str(FriendsList.objects.get(user1=self.player2).friends), "," + str(self.player1.id))
+
+        # Check that the friend reuqest is made inactive after it is accepted
+        friend_req = FriendRequest.objects.get(sender=self.player1)
+        self.assertEquals(friend_req.is_active, False)
+
+        # Check the the rendered template is map.html
+        self.assertTemplateUsed(response, 'map.html')
+
+    def testDuplicateFriendRequest(self):
+
+        # TestUser sends two friend requests to TestUser1 via a post request
+        response = self.client.post("/eugo/friendreq/", {'type': 'send', 'sender': 'TestUser', 'reciever': 'TestUser1'})
+        response = self.client.post("/eugo/friendreq/", {'type': 'send', 'sender': 'TestUser', 'reciever': 'TestUser1'})
+
+        # Assert that only one new friend request object is generated
+        self.assertEquals(len(FriendRequest.objects.all()), 1)
+
+        # Check the the rendered template is map.html
+        self.assertTemplateUsed(response, 'map.html')
+
+    def testPlayerNotFound(self):
+
+        # TestUser sends two friend requests to TestUser2 via a post request
+        try:
+            response = self.client.post("/eugo/friendreq/", {'type': 'send', 'sender': 'TestUser', 'reciever': 'TestUser2'})
+            self.fail("Player does not exist.")
+        except:
+            pass
+
+        # Assert that no new friend request object is generated
+        self.assertEquals(len(FriendRequest.objects.all()), 0)
+
+
+class TestTrade(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Set up a new user TestUser
+        user1 = User.objects.create_user("TestUser", "TestUser@gmail.com", "12345678")
+        user1.first_name = "Test"
+        user1.last_name = "User"
+        user1.save()
+
+        # Log in with the new user and check it is authenticated
+        self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
+        user1 = auth.get_user(self.client)
+        assert user1.is_authenticated
+
+        # Create a new player objects
+        self.player1 = Player.objects.create(firstname = 'Test', surname = 'User', email = 'TestUser@eugo.com', username = 'TestUser',
+        pokemon_caught = 0, sprite_url = '1')
+        self.player1.save()
+
+        # Create a new lecturer object
+        self.newLec1 = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
+        type="english", qrUrl = "123456TestLecturer.png")
+        self.newLec1.save()
+
+        # Store the new lectuter is TestUser's hadnds
+        self.hand1 = Hand(username = self.player1, lec_id = self.newLec1)
+        self.hand1.save()
+
+        # Set up a new user TestUser1
+        user2 = User.objects.create_user("TestUser1", "TestUser1@gmail.com", "12345678")
+        user2.first_name = "Test"
+        user2.last_name = "User"
+        user2.save()
+
+        # Log in with the new user and check it is authenticated
+        self.client.post('/eugo/login/', {'username': 'TestUser1', 'password': '12345678'})
+        user2 = auth.get_user(self.client)
+        assert user2.is_authenticated
+
+        # Create a new player objects
+        self.player2 = Player.objects.create(firstname = 'Test', surname = 'User', email = 'TestUser1@eugo.com', username = 'TestUser1',
+        pokemon_caught = 0, sprite_url = '1')
+        self.player2.save()
+
+        # Create a new lecturer object
+        self.newLec2 = Lecturer(id="123456TestLecturer1", duration="1", name="TestLecturer1", hp="1", attack="1", sprite="2",
+        type="english", qrUrl = "123456TestLecturer1.png")
+        self.newLec2.save()
+
+        # Store the new lectuter is TestUser's hadnds
+        self.hand2 = Hand(username = self.player2, lec_id = self.newLec2)
+        self.hand2.save()
+
+    def testTrade(self):
+
+        response = self.client.post("/eugo/trade/", {'reciever': 'TestUser1', 'sender': 'TestUser'})
+
+        # Assert that the post request renders the trade.html template with the names of the sender
+        # and the name of the receiver and their respective lecturer hands
+        self.assertEquals(response.context["sender"].get(username=self.player1), self.hand1)
+        self.assertEquals(response.context["sender_name"], "TestUser")
+        self.assertEquals(response.context["reciever"].get(username=self.player2), self.hand2)
+        self.assertEquals(response.context["reciever_name"], "TestUser1")
+        self.assertTemplateUsed(response, "trade.html")
+
+        # <QueryDict: {'left': [''], 'right': ['']}>
