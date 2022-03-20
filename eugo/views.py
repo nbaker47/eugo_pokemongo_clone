@@ -382,14 +382,18 @@ def friendreq(request):
 
         # check if the user is sending or accepting a friend request
         if type == 'send':
-            # if the friend request is sent, then create a new request in the database
-            new_friend_req = FriendRequest(sender=sender, reciever=reciever)
-            # save the request
-            new_friend_req.save()
-            # print for debug
-            print(f"[{sender_name}] send friend request to [{reciever_name}]")
-            # send the success message
-            messages.success(request, "friend request sent")
+          
+            request_exists = FriendRequest.objects.filter(sender=sender, reciever=reciever).exists()
+
+            if not request_exists:
+              # if the friend request is sent, then create a new request in the database
+              new_friend_req = FriendRequest(sender=sender, reciever=reciever)
+              # save the request
+              new_friend_req.save()
+              # print for debug
+              print(f"[{sender_name}] send friend request to [{reciever_name}]")
+              # send the success message
+              messages.success(request, "friend request sent")
 
         elif type == 'accept':
             # if a friend request is being accepted then just accept it 
