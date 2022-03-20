@@ -70,7 +70,7 @@ class Hand(models.Model):
 
     # return the username and lecturer to show the link between 
     def __str__(self):
-        return (self.username + ": " + self.lec_id)
+        return (str(self.username) + ": " + str(self.lec_id))
 
 
 """ CHAT CHANNEL ------------- """
