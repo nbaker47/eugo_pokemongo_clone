@@ -134,6 +134,7 @@ def register(request):
             
             else:
                 print("NOT A SUPERUSER/STAFF")
+
                 is_admin = False
             
 
@@ -329,7 +330,6 @@ def map(request):
     un = current_user.username
     player = Player.objects.filter(username=un)[0]
 
-    # Sets if the user is a admin - gives it to the template
     is_admin = player.is_admin
 
     lec = Lecturer.objects.all()
@@ -433,9 +433,7 @@ def mapmod(request):
     current_user = request.user
     un = current_user.username
     player = Player.objects.filter(username=un)[0]
-    
-    # If the user isn't a admin then it sends them back to map
-    # MAPMOD removes it from the html. But incase they try getting into MAPMOD through entering the url
+
     if player.is_admin == False: 
         print("\nNot admin sending back")
         return redirect('/eugo/map/')

@@ -134,6 +134,7 @@ def register(request):
             
             else:
                 print("NOT A SUPERUSER/STAFF")
+
                 is_admin = False
             
 
