@@ -533,7 +533,7 @@ def newtrade(request):
 
     return render(request, 'lecturers.html', {})
 
-""" get_admin ------------------- """
+""" MAPMOD ------------------- """
 """ This method handles checks if the user is an admin. This then gives it to the template """
 def get_admin(request):
     current_user = request.user
