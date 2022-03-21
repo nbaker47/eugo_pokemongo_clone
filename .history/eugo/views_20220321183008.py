@@ -210,7 +210,7 @@ def player(request):
             # load the username
             name = cur_play.username
             # send the request with the sprite back to the player
-            return render(request, "player.html", {"player":player_img, 'is_admin': get_admin(request)})
+            return render(request, "player.html", {"player":player_img})
 
     # if they arent redirect to login
     return redirect("/eugo/login")
@@ -227,7 +227,7 @@ def lecturers(request):
     hands = Hand.objects.filter(username = player)
 
     # finally, return the rendered template with the hand
-    return render(request, 'lecturers.html',{'hand': hands, 'is_admin': get_admin(request)})
+    return render(request, 'lecturers.html',{'hand': hands})
 
 
 """ LECTURERDEX -------------- """
@@ -236,7 +236,7 @@ def lecturerdex(request):
     # get a list of all of the lecturers
     lec = Lecturer.objects.all()
     # return the render with the lecturers list
-    return render(request, 'lecturerdex.html',{'lec': lec, 'is_admin': get_admin(request)})
+    return render(request, 'lecturerdex.html',{'lec': lec})
 
 
 """ CATCH -------------------- """
@@ -257,7 +257,7 @@ def catch(request):
     # get the lecturer object from its id
     lec = Lecturer.objects.filter(id = lec_id)
     # return the render with the lecturer and event IDs
-    return render(request, 'catch.html',{'lec': lec, 'eve': event_id, 'is_admin': get_admin(request)})
+    return render(request, 'catch.html',{'lec': lec, 'eve': event_id, 'is_admin': is_admin})
 
 
 """ NEWCATCH ----------------- """

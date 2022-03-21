@@ -210,7 +210,7 @@ def player(request):
             # load the username
             name = cur_play.username
             # send the request with the sprite back to the player
-            return render(request, "player.html", {"player":player_img, 'is_admin': get_admin(request)})
+            return render(request, "player.html", {"player":player_img})
 
     # if they arent redirect to login
     return redirect("/eugo/login")

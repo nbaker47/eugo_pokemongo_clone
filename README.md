@@ -30,3 +30,10 @@ for running the server, if you would like to have a look at them use the command
 ```
 python manage.py runserver --help
 ```
+
+## Tests
+To run tests use the command:
+```
+py manage.py test
+```
+If it says "OK" at the end then all of the tests ran without errors, otherwise it will tell you which tests failed.
