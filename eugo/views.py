@@ -304,7 +304,7 @@ def map(request):
     # check if the request method is POST (corresponding to QR scans)
     if request.method == 'POST':
         # if it is get the QR URL
-        qrUrl = request.POST['qrUrl']
+        qrUrl = request.POST.get('qrUrl')
         # try decoding the QR
         try:
             qr = qrtools.QR()
@@ -329,6 +329,17 @@ def map(request):
     all_messages = ChatMessage.objects.all()
     #print(leaderboard)
     mapEvent = copy.deepcopy(list(MapEvent.objects.all()))
+
+    if(request.POST.get("stopID")):
+        stop = LectStop.objects.get(id = request.POST.get("stopID"))
+        player.balls = player.balls + stop.balls
+        player.extensions = player.extensions + stop.extensions
+        player.save()
+        #add to complete stops
+        print(player)
+        print(stop)
+        x = CompleteStops(username = player, stop = stop)
+        x.save()
 
     #remove completed events from data sent to page
     completed_events = CompleteEvents.objects.all()
@@ -363,10 +374,25 @@ def map(request):
             friend2.append(Player.objects.get(pk=f))
     except:
         friend2 = []
+
+    stops = list(LectStop.objects.all())
+    completeStops = CompleteStops.objects.all()
+    for s in completeStops:
+        try:
+            if(s.username == player):
+                stops.remove(s.stop)
+        except:
+            # removes completed events refrencing events that no longer exist
+            print("test")
+            s.delete()
+
+
+    
+
     
     #print("FRIENDS :", friends)
     # return the html render, giving it all of the corresponding data
-    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friend2})
+    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friend2, 'stops': stops})
 
 
 """ FRIEND REQ --------------- """
@@ -408,8 +434,7 @@ def mapmod(request):
     if request.method == 'POST':
         # get the operation being performed from the admin
         gameop = request.POST.get('gameop')
-        print(gameop + "wut")
-        print("test")
+
         # if the event is lecNewLi then create the new lecturer (add to database + generate QR)
         if(gameop == 'lecNewLi'):
             print(request.POST)
@@ -437,13 +462,15 @@ def mapmod(request):
             newLec.save()
             print(newLec)
         #new pokistop
-        if(gameop == 'newStopLi'):
-            #print(request.POST)
+        elif(gameop == 'newStopLi'):
+            print(request.POST)
+
 
             balls = request.POST.get('balls')
             extensions = request.POST.get('extensions')
+            coords = request.POST.get('coords')
             now = datetime.datetime.now() # current date and time
-            id = str(coords) + now.strftime("%H:%M:%S")
+            id = str(balls) + now.strftime("%H:%M:%S").replace(":", "") + str(extensions)
 
             #generate qr code
             qr_key = str(randint(10000,20000)) + id
@@ -454,8 +481,8 @@ def mapmod(request):
             with open(file_path, 'wb') as handler:
                 handler.write(img_data)
 
-            newStop = LectStop(id = uniqueid, balls = balls, extensions = extensions, qrUrl = qr_key+'.png')
-            newEvent.save()
+            newStop = LectStop(id = id, balls = balls, extensions = extensions, qrUrl = qr_key+'.png', pos=coords)
+            newStop.save()
 
         # create a new event
         else:
@@ -472,8 +499,8 @@ def mapmod(request):
     # get all of the lecturers and map events
     lec = Lecturer.objects.all()
     mapEvent = MapEvent.objects.all()
-    # return the render while giving it the lecturers and mapEvents arrays
-    return render(request, 'mapmod.html',{'lec': lec, 'mapEvent': mapEvent})
+    stops = LectStop.objects.all()
+    return render(request, 'mapmod.html',{'lec': lec, 'mapEvent': mapEvent, 'stops': stops})
 
 """TRADE: """
 def trade(request):

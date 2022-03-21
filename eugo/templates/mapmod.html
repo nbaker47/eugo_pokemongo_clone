@@ -25,7 +25,22 @@
         <div class="map" id="mapConID">
             <img src='{% static "/eugo/img/exe_map_alpha.png" %}' class="map-img" onclick="showEventSelect()">
         </div>
+        
+        <!-- create lectstops -->
 
+        {%  for i in stops %}
+
+        <div class="stop-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
+        font-weight: bold; list-style-type: none;" id='{{i.id}}' value='{{i.pos}}'>
+            <li>LectStop</li>
+            <li>{{ i.pos }}</li>
+            <li><img src='{% static "/eugo/img/"%}stopmark.png' class="spirite-img" style="width: 15%; height: 15%"></li>
+            <button type="button" class="btn btn-light btn-sm" id="qr-gen-but" class="qr-gen-but" onclick="viewQR('{{i.qrUrl}}')">View QR</button>
+        </div>
+
+        {% endfor %}
+
+        <!-- create spawns and battles (position chanaged in js) -->
         {%  for i in mapEvent %}
         <div class="lec-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
         font-weight: bold; list-style-type: none;" id='{{i.lec.id}}' value='{{i.pos}}'>
@@ -163,6 +178,7 @@
             var xOff = getOffset(mapContainer).left;
             var yOff = getOffset(mapContainer).top;
             pinL = document.getElementsByClassName("lec-map-pin")
+            stops = document.getElementsByClassName("stop-map-pin")
 
             for (let i = 0; i < pinL.length; i++) {
                 pin = pinL[i];
@@ -190,6 +206,23 @@
                 */
                 //resetBox();
             } 
+
+            for (let i = 0; i < stops.length; i++) {
+                
+                pin = stops[i];
+                var x = parseInt(pin.getAttribute("value").split(",")[0])
+                console.log(x)
+                var y = parseInt(pin.getAttribute("value").split(",")[1])
+                pin.style.left = x + xOff+ "px";
+                pin.style.top = y + yOff+ "px";
+                console.log(x, y);
+                var gifsrc = '{% static "/eugo/img/circle.gif" %}'
+                pin.style.backgroundImage = "url("+ gifsrc +")";
+                pin.style.backgroundSize = "contain";
+                pin.style.backgroundRepeat = "no-repeat";
+                
+            } 
+
         }
 
         function showEventSelect(){

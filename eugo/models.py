@@ -23,8 +23,8 @@ class Player(models.Model):
     pokemon_caught   =   models.IntegerField(default=0)
     sprite_url       =   models.CharField(default="eugo\static\eugo\img\teacher_sprites\teacher_1.png", max_length=100, null=True)
     is_admin         =   models.BooleanField(default=False)
-    balls           =   models.IntegerField()
-    extensions      =   models.IntegerField()
+    balls           =   models.IntegerField(default=0)
+    extensions      =   models.IntegerField(default=0)
 
     # return username when object printed
     def __str__(self):
@@ -65,6 +65,13 @@ class LectStop(models.Model):
     qrUrl           =   models.CharField(max_length=500)
     created_at      =   models.DateTimeField(auto_now_add=True)
     pos             =   models.CharField(max_length=100)
+
+
+""" COMPLETE STOPS ---------- """
+""" A table that will track all of the stops collected by a given player """
+class CompleteStops(models.Model):
+    username        =   models.ForeignKey(Player, on_delete=models.CASCADE)
+    stop           =   models.ForeignKey(LectStop, on_delete=models.CASCADE)
 
 """ COMPLETE EVENTS ---------- """
 """ A table that will track all of the events completed by a given player """
