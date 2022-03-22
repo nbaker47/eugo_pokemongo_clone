@@ -408,13 +408,13 @@ def map(request):
             print("test")
             s.delete()
 
-
+    items = [player.balls, player.extensions]
     
 
     
     #print("FRIENDS :", friends)
     # return the html render, giving it all of the corresponding data
-    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friend2, 'stops': stops, 'is_admin': is_admin})
+    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friend2, 'stops': stops, 'is_admin': is_admin, 'items': items})
 
 
 """ FRIEND REQ --------------- """
