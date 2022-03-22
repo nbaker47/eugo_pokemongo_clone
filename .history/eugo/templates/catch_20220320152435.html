@@ -1,0 +1,191 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+   
+    <title>EUGO</title>
+    
+    <!--bootstrap CSS-->
+    <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
+    
+    <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
+
+    <!-- Custom styles for this template -->
+    <link href='{% static "/eugo/css/catch.css" %}' rel="stylesheet"> 
+    <link href='{% static "/eugo/css/lecturers.css" %}' rel="stylesheet"> 
+
+    <!--webcam JS script-->
+
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/eugo/index">EUGO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/eugo/map">Map <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ user.get_username }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/eugo/player">Profile</a>
+              <a class="dropdown-item" href="/eugo/logout">Logout</a>
+            </div>
+          </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
+        </li>
+                    <!--
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      -->
+    </div>
+  </nav>
+  
+    <div class="card text-center" style="
+    background-image: url(https://cdn.wallpapersafari.com/63/63/1bH4SE.jpg);
+    "><br>
+      <div class="card-header">
+        A Wild Lecturer Has Appeared!
+      </div>
+    {% if lec %}
+    <div class="card-body" style="
+    height: 100%;
+    width:60%;
+    margin-left:25%;
+    margin-top: 2%;
+    display: flex;
+    text-align: center;
+    justify-content: space-between;">
+        {% for l in lec %}
+            <div class = "card lec-card"  style="width: 18rem;">
+                <strong>Name: </strong> {{l.name}} <br>
+                <img class="card-img-top" id="lect-pic" src='{% static "/eugo/img/teacher_sprites/"%}{{l.sprite}}' width="200" height="200">
+                <p><br>
+                <strong>HP:</strong> {{l.hp}} <p>
+                <strong>Attack:</strong><p> {{l.attack}}</p>
+            </div>   
+            <div class="card-body">
+
+                <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} Has Appered!</p>
+
+              <table class = 'center2'>
+                <tr>
+                  <td id="c1"></td>
+                  <td id="c2"></td>
+                </tr>
+                <tr>
+                  <td id="c3"></td>
+                  <td id="c4"></td>
+                </tr>
+              </table>
+
+            </div>
+
+            <br style="clear:both;"/>
+        {% endfor %}
+    {% else %}
+        <p> ERROR: your trying to catch a lecturer that doesnt exist</p>
+    {% endif %}
+    </div>
+
+
+
+
+
+</body>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+<script>
+    const text = document.getElementById("game_txt");
+    
+    var resetTimer;
+    var boxes = [document.getElementById("c1"),document.getElementById("c2"),document.getElementById("c3"),document.getElementById("c4")]
+
+    function boxSet(){
+      /* format boxes */
+      "{% for l in lec %}"
+
+      boxes.forEach( (box) => 
+        box.onclick = function(){miss('{{l.name}}');}
+      );
+
+      boxes.forEach( (box) => 
+        box.style.backgroundColor = "aqua"
+      );
+
+      catchBox = boxes[Math.floor(Math.random() * boxes.length)]
+      catchBox.style.backgroundColor = "red";
+
+      /* pick random box */
+      catchBox.onclick = function(){catchLect('{{l.name}}','{{l.id}}')}
+      "{% endfor %}"
+
+    }
+
+    boxSet();
+    setInterval(boxSet, 250);
+
+    function catchLect(name, id){
+
+            // lecturer captured
+            text.innerHTML = "Sucsess!";
+            clearTimeout( resetTimer );
+
+            $.ajax({
+                type: "POST",
+                url: "/eugo/newcatch/",
+                data: {
+                    'lec_id': id,
+                    'event_id': '{{eve}}'
+                },
+                success: function (data) {
+                    console.log("success");
+                    lecPic = document.getElementById("lect-pic");
+                    lecPic.src = "/static/eugo/img/teacher_sprites/caught.gif"
+                },
+                failure: function (data) {
+                    console.log("failure");
+
+                },
+            });
+            
+
+            location.href='/eugo/lecturers';
+    }
+
+    function miss(name){
+      // try again
+      boxSet();
+      lecPic = document.getElementById("lect-pic");
+      lecPic.src = "/static/eugo/img/teacher_sprites/catching.gif"
+      text.innerHTML = name + " dodged the lectball\xAE , Try again!";
+
+    }
+
+</script>

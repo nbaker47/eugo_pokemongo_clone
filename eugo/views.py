@@ -15,7 +15,7 @@ from django.contrib.auth.models import User                     # to be able to 
 from django.contrib.auth import authenticate, login, logout     # built in django methods that handle the
                                                                 # user moving through pages
 from django.contrib import messages                             # handle sending messages to the client 
-from django.db import IntegrityError                            # throw integrity errors (database)
+from django.db import IntegrityError                          # throw integrity errors (database)
 from django.utils import timezone as tz
 
 """ OTHER IMPORTS ------------ """
@@ -96,6 +96,7 @@ def register(request):
         email       =   request.POST['email']
         username    =   request.POST['username']
         password    =   request.POST['password1']
+        staffno     =   request.POST['staffno']
 
         #Custom sprite or preset?:
         try:
@@ -127,12 +128,23 @@ def register(request):
             user = User.objects.create_user(username, email, password)
             user.first_name = firstname
             user.last_name = surname
+
+            # check if staff code is correct (If so set as staff)
+            if staffno == "123456":
+                print("SET AS SUPERUSER/STAFF")
+                is_admin = True
+            
+            else:
+                print("NOT A SUPERUSER/STAFF")
+                is_admin = False
+            
+
             # save the user in the User database
             user.save()
             print(f"[{username}] created user object")
 
             # create a new player in the Player database
-            p = Player.objects.create(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url)
+            p = Player.objects.create(firstname = firstname, surname = surname, email = email, username = username, pokemon_caught = 0, sprite_url = sprite_url, is_admin = is_admin)
             # save the player in the Player database
             #p.save()
             print(f"[{username}] created player object")
@@ -199,7 +211,7 @@ def player(request):
             # load the username
             name = cur_play.username
             # send the request with the sprite back to the player
-            return render(request, "player.html", {"player":player_img})
+            return render(request, "player.html", {"player":player_img, 'is_admin': get_admin(request)})
 
     # if they arent redirect to login
     return redirect("/eugo/login")
@@ -216,7 +228,7 @@ def lecturers(request):
     hands = Hand.objects.filter(username = player)
 
     # finally, return the rendered template with the hand
-    return render(request, 'lecturers.html',{'hand': hands})
+    return render(request, 'lecturers.html',{'hand': hands, 'is_admin': get_admin(request)})
 
 
 """ LECTURERDEX -------------- """
@@ -225,12 +237,13 @@ def lecturerdex(request):
     # get a list of all of the lecturers
     lec = Lecturer.objects.all()
     # return the render with the lecturers list
-    return render(request, 'lecturerdex.html',{'lec': lec})
+    return render(request, 'lecturerdex.html',{'lec': lec, 'is_admin': get_admin(request)})
 
 
 """ CATCH -------------------- """
 """ This method handles the catch link and the catching of lecturers """
 def catch(request):
+
     # check if the method is POST (a lecturer has been caught)
     if request.method == 'POST':
         #lec_id = request.POST['lecID']
@@ -245,7 +258,7 @@ def catch(request):
     # get the lecturer object from its id
     lec = Lecturer.objects.filter(id = lec_id)
     # return the render with the lecturer and event IDs
-    return render(request, 'catch.html',{'lec': lec, 'eve': event_id})
+    return render(request, 'catch.html',{'lec': lec, 'eve': event_id, 'is_admin': get_admin(request)})
 
 
 """ NEWCATCH ----------------- """
@@ -318,10 +331,15 @@ def map(request):
     un = current_user.username
     player = Player.objects.filter(username=un)[0]
 
+    # Sets if the user is a admin - gives it to the template
+    is_admin = player.is_admin
+
     lec = Lecturer.objects.all()
+    
     # load the player objects on the map
-    players = Player.objects.all()
+    players = Player.objects.filter(is_admin=False)
     player_vals = players.values()
+
     # fetch and sort the leaderboard
     leaderboard = sorted(player_vals, key=lambda d: d['pokemon_caught'], reverse=True)
    
@@ -350,11 +368,15 @@ def map(request):
         except:
             # removes completed events refrencing events that no longer exist
             i.delete()
+        
 
     #remove outdated events from whole database  
-    for i in mapEvent:
-        if((tz.now() - i.created_at).total_seconds() > i.lec_id.duration*60):
-            mapEvent.remove(i.event)
+    try:
+        for i in mapEvent:
+            if((tz.now() - i.created_at).total_seconds() > i.lec_id.duration*60):
+                mapEvent.remove(i.event)
+    except:
+        i.delete()
         
     
     #get incoming friend requests:
@@ -392,7 +414,7 @@ def map(request):
     
     #print("FRIENDS :", friends)
     # return the html render, giving it all of the corresponding data
-    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friend2, 'stops': stops})
+    return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friend2, 'stops': stops, 'is_admin': is_admin})
 
 
 """ FRIEND REQ --------------- """
@@ -409,14 +431,18 @@ def friendreq(request):
 
         # check if the user is sending or accepting a friend request
         if type == 'send':
-            # if the friend request is sent, then create a new request in the database
-            new_friend_req = FriendRequest(sender=sender, reciever=reciever)
-            # save the request
-            new_friend_req.save()
-            # print for debug
-            print(f"[{sender_name}] send friend request to [{reciever_name}]")
-            # send the success message
-            messages.success(request, "friend request sent")
+          
+            request_exists = FriendRequest.objects.filter(sender=sender, reciever=reciever).exists()
+
+            if not request_exists:
+              # if the friend request is sent, then create a new request in the database
+              new_friend_req = FriendRequest(sender=sender, reciever=reciever)
+              # save the request
+              new_friend_req.save()
+              # print for debug
+              print(f"[{sender_name}] send friend request to [{reciever_name}]")
+              # send the success message
+              messages.success(request, "friend request sent")
 
         elif type == 'accept':
             # if a friend request is being accepted then just accept it 
@@ -430,6 +456,17 @@ def friendreq(request):
 """ MAPMOD ------------------- """
 """ This method handles the mapmod link (admin map) and the ability to add more events """
 def mapmod(request):
+    
+    current_user = request.user
+    un = current_user.username
+    player = Player.objects.filter(username=un)[0]
+    
+    # If the user isn't a admin then it sends them back to map
+    # MAPMOD removes it from the html. But incase they try getting into MAPMOD through entering the url
+    if player.is_admin == False: 
+        print("\nNot admin sending back")
+        return redirect('/eugo/map/')
+
     # check if the request method is POST (a new event is being added)
     if request.method == 'POST':
         # get the operation being performed from the admin
@@ -504,6 +541,7 @@ def mapmod(request):
 
 """TRADE: """
 def trade(request):
+
     if request.method == 'POST':
         print(request.POST)
         s = request.POST.get('sender')
@@ -519,7 +557,8 @@ def trade(request):
     return render(request, 'trade.html', {'sender':sender_lects,
                                         'sender_name':sender.username,
                                         'reciever_name': reciever.username,
-                                         'reciever':reciever_lects})
+                                         'reciever':reciever_lects,
+                                         'is_admin': get_admin(request)})
 
 def newtrade(request):
     if request.method == 'POST':
@@ -541,3 +580,13 @@ def newtrade(request):
         h.save()
 
     return render(request, 'lecturers.html', {})
+
+""" get_admin ------------------- """
+""" This method handles checks if the user is an admin. This then gives it to the template """
+def get_admin(request):
+    current_user = request.user
+    un = current_user.username
+    player = Player.objects.filter(username=un)[0]
+    
+    #check if user is admin
+    return player.is_admin

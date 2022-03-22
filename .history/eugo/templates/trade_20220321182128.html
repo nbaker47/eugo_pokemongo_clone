@@ -1,0 +1,212 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" type="text/css" href='{% static "/eugo/css/bootstrap.css" %}' />
+
+    <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
+
+    <title>EUGO</title>
+
+    <!-- Custom styles for this template -->
+    <link href='{% static "/eugo/css/trade.css" %}' rel="stylesheet">
+</head>
+
+<body>
+
+    {% if not user.is_authenticated %}
+    <script>
+        window.location.href = "/eugo/logout/";
+    </script>
+    {% endif %}
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/eugo/index">EUGO</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ">
+                    <a class="nav-link" href="/eugo/map">Map <span class="sr-only"></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ user.get_username }}
+              </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/eugo/player">Profile</a>
+                        <a class="dropdown-item" href="/eugo/logout">Logout</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
+                </li>
+        </div>
+    </nav>
+
+    <!--center container-->
+    <div id="center-container">
+        <!--sender lecturers-->
+        <div id="lec-container " class="card text-center">
+            <br>
+            <div class="card-header">
+                {{ reciever_name }}'s Lecturers:
+            </div>
+            <div class="card-body">
+                {% for r in reciever %}
+                <div class="card lec-card card-dex" style="margin: 1%">
+                    <img class="card-img-top" src='{% static "/eugo/img/teacher_sprites/"%}{{r.lec_id.sprite}}' alt="no img">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ r.lec_id.name }}</h5>
+                        <p class="card-text"> </p>
+                    </div>
+                    <!--
+            <div class="lec-list">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">HP: {{ r.lec_id.hp }}</li>
+                <li class="list-group-item">Attack: {{ r.lec_id.attack }}</li>
+                <li class="list-group-item">Type: {{ r.lec_id.type }}</li>
+              </ul>
+            </div>
+            -->
+                    <button type="button" class="btn btn-success" onclick="replaceLeft('{{ r.lec_id.sprite }}', '{{ r.lec_id }}')">Select</button>
+                </div>
+
+                {% endfor %}
+            </div>
+        </div>
+
+        <!--centerdiv-->
+        <div class="card-header" style="width: 100; text-align: center">
+            Offer:
+        </div>
+        <br>
+        <div id="lec-container">
+            <div class="container">
+                <div class=" row justify-content-md-center">
+                    <div class="col-sm">
+                        You offer:
+                        <div class="card lec-card card-dex" style="margin: 1%">
+                            <img class="card-img-top" src='{% static "/eugo/img/teacher_sprites/"%}{{r.lec_id.sprite}}' id="leftPic" alt="no img">
+
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <button type="button" class="btn btn-warning" onclick="confirmTrade()">Confirm Trade</button>
+                    </div>
+                    <div class="col-sm">
+                        They offer:
+                        <div class="card lec-card card-dex" style="margin: 1%">
+                            <img class="card-img-top" src='{% static "/eugo/img/teacher_sprites/"%}{{r.lec_id.sprite}}' alt="no img" id="rightPic">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <!--reciever lecturers-->
+    <div id="lec-container " class="card text-center">
+        <br>
+        <div class="card-header">
+            {{ sender_name }}'s Lecturers:
+        </div>
+        <div class="card-body">
+            {% for r in sender %}
+            <div class="card lec-card card-dex" style="margin: 1%">
+                <img class="card-img-top" src='{% static "/eugo/img/teacher_sprites/"%}{{r.lec_id.sprite}}' alt="no img">
+                <!--
+          <div class="card-body">
+            <h5 class="card-title">{{ r.lec_id.name }}</h5>
+            <p class="card-text"> </p>
+          </div>
+          <div class="lec-list">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">HP: {{ r.lec_id.hp }}</li>
+              <li class="list-group-item">Attack: {{ r.lec_id.attack }}</li>
+              <li class="list-group-item">Type: {{ r.lec_id.type }}</li>
+            </ul>
+          </div>
+        </div>
+        -->
+                <button type="button" class="btn btn-success" onclick="replaceRight('{{ r.lec_id.sprite }}', '{{ r.lec_id }}')">Select</button> {% endfor %}
+            </div>
+        </div>
+
+        <form id="hiddenForm" method="post" action="/eugo/newtrade/">
+            <input type="hidden" id='leftIn' name="left" val="">
+            <input type="hidden" id='reightIn' name="right" val="">
+        </form>
+
+    </div>
+
+    <!--scripts-->
+    <script>
+        window.onload = function() {
+            var table = document.getElementById("lecturerdex");
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                for (var j = 0, cell; cell = row.cells[j]; j++) {
+                    var lecturer = cell;
+                    var image = lecturer.children[0];
+                    var stats = lecturer.children[1];
+                    var rect = image.getBoundingClientRect();
+                    stats.style.left = rect.left - 50 + "px";
+                    stats.style.top = rect.top + 35 + "px";
+                }
+            }
+        }
+
+        function replaceLeft(r, t) {
+            document.getElementById("leftPic").src = '{% static "/eugo/img/teacher_sprites/"%}' + r;
+            document.getElementById("leftIn").val = t;
+        }
+
+        function replaceRight(r, t) {
+            document.getElementById("rightPic").src = '{% static "/eugo/img/teacher_sprites/"%}' + r;
+            document.getElementById("leftIn").val = t;
+        }
+
+        function confirmTrade() {
+            document.getElementById("hiddenForm").submit();
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>
+
+<!-- <style media="screen">
+  .stats span{
+  position:absolute;
+  visibility:hidden;
+  top:500px; left:550px;
+  }
+  .stats:hover span{
+  visibility:visible;
+  position: absolute;
+  z-index:1;
+  }
+
+</style> -->

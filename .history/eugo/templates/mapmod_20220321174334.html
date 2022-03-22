@@ -1,0 +1,300 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!---->
+    <link rel="stylesheet" type="text/css" href='{% static "/eugo/css/bootstrap.css" %}' />
+
+    <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
+
+    <title>EUGO</title>
+
+    <!-- Custom styles for this template -->
+    <link href='{% static "/eugo/css/map.css" %}' rel="stylesheet">
+</head>
+
+<body>
+
+    {% if not user.is_authenticated %}
+    <script>
+        window.location.href = "/eugo/logout/";
+    </script>
+    {% endif %}
+    <p></p>
+    {% if not user.is_staff %}
+    <script>
+        window.location.href = "/eugo/map/";
+    </script>
+    {% endif %}
+
+
+    <div class="text-center parent-container-map" id="parent-container-map-id">
+
+        <div class="map" id="mapConID">
+            <img src='{% static "/eugo/img/exe_map_alpha.png" %}' class="map-img" onclick="showEventSelect()">
+        </div>
+
+        {% for i in mapEvent %}
+        <div class="lec-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
+        font-weight: bold; list-style-type: none;" id='{{i.lec.id}}' value='{{i.pos}}'>
+            <li>{{ i.lec_id.name }}</li>
+            <li>{{ i.lec_id.duration }} Mins Remaining</li>
+            <li>{{ i.pos }}</li>
+            <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.lec_id.sprite}}' class="spirite-img"></li>
+            <button type="button" class="btn btn-light btn-sm" id="qr-gen-but" class="qr-gen-but" onclick="viewQR('{{i.lec_id.qrUrl}}')">View QR</button>
+        </div>
+        {% endfor %}
+
+        <div id="qr-div">
+            <img src='' style="height: 30%; width: 30%;" id="qrIdImg" value='{% static "/eugo/img/qr/"%}' style="position: absolute; z-index: 15;">
+            <br>
+            <button type="button " onclick="hideQR()" id="hideQRButton" class="hideQRButton btn btn-light btn-sm">Hide</button>
+        </div>
+
+        <div class="event-select-panel" id="panel-id">
+            <ul class="event-select-panel-ul">
+                <li onclick="showLecSpawn('lecSpawnLi')" id="lecSpawnLi">Wild Lecturer Spawn</li>
+                <li onclick="showLecSpawn('lecBattleLi')" id="lecBattleLi">Lecturer Battle</li>
+                <li onclick="showLecSpawn('lecNewLi')" id="lecNewLi">New Lecturer</li>
+
+
+                <form class="spawn-lecturer-menu" id="lecSpawn" method="post">
+                    {% csrf_token %}
+
+                    <label for="lecturers">Choose a lecturer:</label>
+                    <select id="lecturers" name="lecturer">
+                      {%  for i in lec %}
+                        <option value='{{i.id}}'>{{i.name}}</option>
+                      {% endfor %}
+                  </select>
+
+                    <input type="hidden" value="0,0" id="coordsBox" name="coords">
+                    <input type="hidden" value="" id="gameOpBox" name="gameop">
+                    <input type="submit" class="form-submit" value="Confirm">
+                </form>
+
+
+                <form class="new-lecturer-menu" id="newLec" method="post">
+                    {% csrf_token %}
+
+                    <input type="number" name="duration" placeholder="Duration (mins)" required>
+                    <input type="text" name="name" placeholder="Lecturer Name" required>
+                    <input type="number" name="hp" placeholder="Lecturer Hp" required>
+                    <input type="number" name="attack" placeholder="Lecturer Attack" required></br>
+                    <select name="type" placeholder="Lecturer Type" required>
+                        <option value="english">English</option>
+                        <option value="maths">Maths</option>
+                        <option value="science">Science</option>
+                    </select>
+                    <div class="image mt-3 mb-3 img-container" id="sliderImages">
+                        <img src='{% static "/eugo/img/teacher_sprites/teacher_1.png" %}' class="spirite-img">
+                        <img src='{% static "/eugo/img/teacher_sprites/teacher_2.png" %}' class="spirite-img">
+                        <img src='{% static "/eugo/img/teacher_sprites/teacher_3.png" %}' class="spirite-img">
+                    </div>
+
+                    <input class="rangeslider" type="range" id="sprite" name="sprite" min="1" max="3" value="1">
+                    <input type="hidden" value="" id="gameOpBoxx" name="gameop">
+                    <input type="submit" class="form-submit" value="Confirm">
+                </form>
+            </ul>
+            <!--<img src='{% static "/eugo/img/qr_alpha.png" %}' class="qr-img">-->
+        </div>
+
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/eugo/index">EUGO</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ">
+                    <a class="nav-link" href="/eugo/map">Map <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ user.get_username }}
+                </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/eugo/player">Profile</a>
+                        <a class="dropdown-item" href="/eugo/logout">Logout</a>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
+                </li>
+                <!--
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+          -->
+        </div>
+    </nav>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+    <script>
+        window.onload = function() {
+            mapContainer = document.getElementById("mapConID");
+            var xOff = getOffset(mapContainer).left;
+            var yOff = getOffset(mapContainer).top;
+            pinL = document.getElementsByClassName("lec-map-pin")
+
+            for (let i = 0; i < pinL.length; i++) {
+                pin = pinL[i];
+                var x = parseInt(pin.getAttribute("value").split(",")[0])
+                var y = parseInt(pin.getAttribute("value").split(",")[1])
+                pin.style.left = x + xOff + "px";
+                pin.style.top = y + yOff + "px";
+                console.log(x, y);
+                var gifsrc = '{% static "/eugo/img/circle.gif" %}'
+                pin.style.backgroundImage = "url(" + gifsrc + ")";
+                pin.style.backgroundSize = "contain";
+                pin.style.backgroundRepeat = "no-repeat";
+
+                /*
+                var xImg = new Image();
+                xImg.src = '{% static "/eugo/img/x_alpha.png" %}'
+                xImg.style.left = x - xOff + "px";
+                xImg.style.top = y - yOff+ "px";
+                xImg.style.width = "20px";
+                xImg.style.height = "20px";
+                xImg.style.position = "relative";
+                xImg.style.zIndex = "4";
+                
+                document.getElementById('parent-container-map-id').appendChild(xImg);
+                */
+                //resetBox();
+            }
+        }
+
+        function showEventSelect() {
+            panel = document.getElementById("panel-id");
+            var x = event.clientX;
+            var y = event.clientY;
+            panel.style.left = x + "px";
+            panel.style.top = y + "px";
+            resetBox();
+            mapContainer = document.getElementById("mapConID");
+            var xOff = getOffset(mapContainer).left;
+            var yOff = getOffset(mapContainer).top;
+            document.getElementById("coordsBox").value = (x - xOff) + "," + (y - yOff);
+            panel.style.visibility = "visible";
+            document.getElementById("newLec").style.display = "none";
+            document.getElementById("lecSpawn").style.display = "none";
+        }
+
+        function getOffset(el) {
+            const rect = el.getBoundingClientRect();
+            return {
+                left: rect.left + window.scrollX,
+                top: rect.top + window.scrollY
+            };
+        }
+
+        function resetBox() {
+            document.getElementById("lecSpawnLi").style.color = "white";
+            document.getElementById("lecBattleLi").style.color = "white";
+            document.getElementById("lecNewLi").style.color = "white";
+            menu = document.getElementById("lecSpawn");
+            menu.style.width = "0";
+            menu.style.height = "0";
+            menu.style.visibility = "hidden";
+        }
+
+        function showLecSpawn(choice) {
+            document.getElementById("lecSpawnLi").style.color = "white";
+            document.getElementById("lecBattleLi").style.color = "white";
+            document.getElementById("lecNewLi").style.color = "white";
+            menu = document.getElementById("lecSpawn");
+            menu.style.width = "100%";
+            menu.style.height = "100%";
+            menu.style.visibility = "visible";
+            menu.style.display = "none";
+            li = document.getElementById(choice);
+            li.style.color = "red";
+
+            //if coice new lec show new menue
+            if (choice == "lecNewLi") {
+                document.getElementById("newLec").style.display = "block";
+                document.getElementById("lecSpawn").style.display = "none";
+            } else {
+                //else show drop down
+                document.getElementById("newLec").style.display = "none";
+                document.getElementById("lecSpawn").style.display = "block";
+            }
+
+            //this is rly dumb and should be changed
+            //realy this all should be ajax
+            document.getElementById("gameOpBoxx").value = choice;
+            document.getElementById("gameOpBox").value = choice;
+        }
+
+
+        window.addEventListener('load', function() {
+            var rangeslider = document.getElementById("sprite");
+
+            var images = document.getElementById("sliderImages");
+
+            rangeslider.addEventListener('input', function() {
+                for (var i = 0; i < images.children.length; i++) {
+                    images.children[i].style.display = 'none';
+                }
+                i = Number(this.value) - 1;
+                images.children[i].style.display = 'block';
+            });
+        });
+
+        function viewQR(qrId) {
+            qr = document.getElementById("qrIdImg");
+            var static_url = qr.getAttribute("value");
+            console.log(static_url);
+            qr.src = static_url + qrId;
+            console.log(qr.src);
+            qr.style.visibility = "visible";
+            qr.style.width = "500px";
+            qr.style.height = "500px";
+            but = document.getElementById("hideQRButton");
+            but.style.visibility = "visible";
+            but.style.width = "100px";
+            but.style.height = "50px";
+        }
+
+        function hideQR() {
+            qr = document.getElementById("qrIdImg");
+            qr.style.visibility = "hidden";
+            qr.style.width = "0";
+            qr.style.height = "0";
+            but = document.getElementById("hideQRButton");
+            but.style.visibility = "hidden";
+            but.style.width = "0";
+            but.style.height = "0";
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,178 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <style media="screen">
+      /*
+      .stats span{
+    	position:absolute;
+    	visibility:hidden;
+      }
+      .stats:hover span{
+    	visibility:visible;
+      position: absolute;
+      text-align: center;
+    	z-index:1;
+      }
+      td {
+        text-align: center;
+      }
+      */
+      #lec-container{
+        height: 100%;
+        width: 80%;
+        margin-left: 10%;
+        margin-top: 2%;
+        display: flex;
+      }
+
+    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+   <link rel = "stylesheet" type = "text/css" href = '{% static "/eugo/css/bootstrap.css" %}'/>
+
+    <link rel="icon" href='{%static "/eugo/img/favicon.ico"%}'>
+
+    <title>EUGO</title>
+
+    <!-- Custom styles for this template -->
+    <link href='{% static "/eugo/css/lecturers.css" %}' rel="stylesheet">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/eugo/index">EUGO</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item ">
+            <a class="nav-link" href="/eugo/map">Map <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/eugo/lecturers">My Lecturers</a>
+          </li>
+          <li class="nav-item active">
+              <a class="nav-link" href="/eugo/lecturerdex">LecturerDex</a>
+          </li>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ user.get_username }}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="/eugo/player">Profile</a>
+                <a class="dropdown-item" href="/eugo/logout">Logout</a>
+              </div>
+            </li>
+          <li class="nav-item">
+              <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
+          </li>
+                      <!--
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        -->
+      </div>
+    </nav>
+
+    
+    <div id="lec-container "  class="card text-center">
+      <br>
+      <div class="card-header">
+        All Known Lecturers
+      </div>
+      <div class="card-body">
+      {% for i in lec %}
+      <div class="card lec-card card-dex" style="margin: 1%">
+        <img class="card-img-top" src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' alt="no img">
+        <div class="card-body">
+          <h5 class="card-title">{{ i.name }}</h5>
+          <p class="card-text"> </p>
+        </div>
+        <div class="lec-list">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">HP: {{ i.hp }}</li>
+            <li class="list-group-item">Attack: {{ i.attack }}</li>
+            <li class="list-group-item">Type: {{ i.type }}</li>
+          </ul>
+        </div>
+        <!--
+        <div class="card-body">
+          <a href="#" class="card-link">Card link</a>
+          <a href="#" class="card-link">Another link</a>
+        </div>
+        -->
+      </div>
+      {% endfor %}
+    </div>
+    </div>
+
+<!--
+      <table class="visits">
+  			<thead>
+  				<tr>
+  					<th>Evolution 1</th>
+  					<th>Evolution 2</th>
+  					<th>Evolution 3</th>
+  				</tr>
+  			</thead>
+        <tbody id="lecturerdex">
+          {% for i in lec %}
+          <tr>
+            <td class="stats" id="{{i.id}}"><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.sprite}}' class="spirite-img" id="{{i.id}}image">
+            <span id="{{i.id}}stat">Name: {{ i.name }} <br> Hitpoints: {{ i.hp }} <br> Attack Power: {{ i.attack }}</span></td>
+          </tr>
+          {% endfor %}
+      </table>
+    </div>
+
+</div>
+    -->
+  <script>
+    window.onload = function() {
+      var table = document.getElementById("lecturerdex");
+      for (var i = 0, row; row = table.rows[i]; i++) {
+        for (var j = 0, cell; cell = row.cells[j]; j++) {
+          var lecturer = cell;
+          var image = lecturer.children[0];
+          var stats = lecturer.children[1];
+          var rect = image.getBoundingClientRect();
+          stats.style.left = rect.left - 50 + "px";
+          stats.style.top = rect.top + 35 + "px";
+        }
+      }
+    }
+  </script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+  </body>
+</html>
+
+<!-- <style media="screen">
+  .stats span{
+  position:absolute;
+  visibility:hidden;
+  top:500px; left:550px;
+  }
+  .stats:hover span{
+  visibility:visible;
+  position: absolute;
+  z-index:1;
+  }
+
+</style> -->
