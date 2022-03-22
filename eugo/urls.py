@@ -16,6 +16,7 @@ urlpatterns = [
     path('mapmod/', views.mapmod, name='mapmod'),
     path('catch/', views.catch, name='catch'),
     path('newcatch/', views.newcatch, name='newcatch'),
+    path('nocatch/', views.nocatch, name='nocatch'),
     path('friendreq/', views.friendreq, name='friendreq'),
     #path('sendchat/', views.sendchat, name = 'sendchat' ),
     path('trade/', views.trade, name='trade'),

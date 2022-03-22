@@ -288,6 +288,7 @@ def newcatch(request):
 
         #addds the lec to the players hand
         player.pokemon_caught = player.pokemon_caught+1
+        player.balls = request.POST.get("balls")
         player.save()
 
         h = Hand(username = player, lec_id = lec[0])
@@ -304,6 +305,32 @@ def newcatch(request):
 
     return render(request, 'catch.html', {'lec': lec})
 
+""" NOCATCH ----------------- """
+""" This method is for when the user fails a catch """
+def nocatch(request):
+    if request.method == 'POST':
+
+        #gets lecturer that want caught
+        lecid = str(request.POST.get('lec_id'))
+        lec = Lecturer.objects.filter(id = lecid)
+
+        #gets the current user
+        current_user = request.user
+        un = current_user.username
+        player = Player.objects.filter(username=un)[0]
+
+        player.balls = 0
+        player.save()
+        #adds the event to the list of events completed my the user 
+        event_id = request.POST.get("event_id")
+        mapEvent = MapEvent.objects.filter(id=event_id)[0]
+        ce = CompleteEvents(username = player, event = mapEvent)
+        ce.save()
+        print(ce)
+
+        
+
+    return render(request, 'catch.html', {'lec': lec})
 
 """
 def sendchat(request):
