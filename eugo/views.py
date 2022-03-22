@@ -211,7 +211,9 @@ def player(request):
             # load the username
             name = cur_play.username
             # send the request with the sprite back to the player
-            return render(request, "player.html", {"player":player_img, 'is_admin': get_admin(request)})
+            items = [player.balls, player.extensions]
+
+            return render(request, "player.html", {"player":player_img, 'is_admin': get_admin(request), 'items': items})
 
     # if they arent redirect to login
     return redirect("/eugo/login")
@@ -226,9 +228,9 @@ def lecturers(request):
     player = Player.objects.filter(username=un)[0]
     # get the hand of the player object
     hands = Hand.objects.filter(username = player)
-
+    items = [player.balls, player.extensions]
     # finally, return the rendered template with the hand
-    return render(request, 'lecturers.html',{'hand': hands, 'is_admin': get_admin(request)})
+    return render(request, 'lecturers.html',{'hand': hands, 'is_admin': get_admin(request), 'items': items})
 
 
 """ LECTURERDEX -------------- """
@@ -237,7 +239,12 @@ def lecturerdex(request):
     # get a list of all of the lecturers
     lec = Lecturer.objects.all()
     # return the render with the lecturers list
-    return render(request, 'lecturerdex.html',{'lec': lec, 'is_admin': get_admin(request)})
+    # get the username of the player
+    un = request.user.username
+    # get the player object that matches the username
+    player = Player.objects.filter(username=un)[0]
+    items = [player.balls, player.extensions]
+    return render(request, 'lecturerdex.html',{'lec': lec, 'is_admin': get_admin(request), 'items': items})
 
 
 """ CATCH -------------------- """
@@ -258,7 +265,11 @@ def catch(request):
     # get the lecturer object from its id
     lec = Lecturer.objects.filter(id = lec_id)
     # return the render with the lecturer and event IDs
-    return render(request, 'catch.html',{'lec': lec, 'eve': event_id, 'is_admin': get_admin(request)})
+    un = request.user.username
+    # get the player object that matches the username
+    player = Player.objects.filter(username=un)[0]
+    items = [player.balls, player.extensions]
+    return render(request, 'catch.html',{'lec': lec, 'eve': event_id, 'is_admin': get_admin(request), 'items': items})
 
 
 """ NEWCATCH ----------------- """
@@ -289,6 +300,7 @@ def newcatch(request):
         ce.save()
 
         print(lec[0].name + " was caputred by " + un )
+        
 
     return render(request, 'catch.html', {'lec': lec})
 
@@ -533,11 +545,12 @@ def mapmod(request):
             newEvent = MapEvent(id = uniqueid, lec_id = lecturer, pos=coords, wildOrBattle=gameop)
             newEvent.save()
 
+    items = [player.balls, player.extensions]
     # get all of the lecturers and map events
     lec = Lecturer.objects.all()
     mapEvent = MapEvent.objects.all()
     stops = LectStop.objects.all()
-    return render(request, 'mapmod.html',{'lec': lec, 'mapEvent': mapEvent, 'stops': stops})
+    return render(request, 'mapmod.html',{'lec': lec, 'mapEvent': mapEvent, 'stops': stops, 'items': items})
 
 """TRADE: """
 def trade(request):
@@ -554,11 +567,18 @@ def trade(request):
         #retrieve their lecturers
         sender_lects = Hand.objects.filter(username = sender.id)
         reciever_lects = Hand.objects.filter(username = reciever.id)
+        # return the render with the lecturer and event IDs
+        un = request.user.username
+        # get the player object that matches the username
+        player = Player.objects.filter(username=un)[0]
+        items = [player.balls, player.extensions]
+
     return render(request, 'trade.html', {'sender':sender_lects,
                                         'sender_name':sender.username,
                                         'reciever_name': reciever.username,
                                          'reciever':reciever_lects,
-                                         'is_admin': get_admin(request)})
+                                         'is_admin': get_admin(request),
+                                         'items' : items})
 
 def newtrade(request):
     if request.method == 'POST':
