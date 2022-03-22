@@ -38,7 +38,31 @@ def index(request):
 """ BATTLE ------------------- """
 """ This method to handle the battle.html """
 def battle(request):
-    return render(request, 'battle.html')
+    
+    # check if the method is POST (a lecturer has been caught)
+    if request.method == 'POST':
+        #lec_id = request.POST['lecID']
+        # get the lec and event IDs
+        lec_id = str(request.POST.get('lecID'))
+        event_id = request.POST.get('eventID')
+
+    # get the lecturer object from its id
+    lec = Lecturer.objects.filter(id = lec_id)
+    # return the render with the lecturer and event IDs
+    un = request.user.username
+    # get the player object that matches the username
+    player = Player.objects.filter(username=un)[0]
+    items = [player.balls, player.extensions]
+
+
+    hands = Hand.objects.all()
+    playerLecs = list()
+    for h in hands:
+        if h.username == player:
+            playerLecs.append(h.lec_id)
+
+
+    return render(request, 'battle.html',{'lec': lec, 'eve': event_id, 'is_admin': get_admin(request), 'items': items})
 
 
 """ SIGNIN ------------------- """
