@@ -269,7 +269,8 @@ class TestNewCatch(TestCase):
 
         # Send a post request to catch the new pokemon. We simulate canning a QR code to retrieve the lec
         # id and then send it to the /newcatch view
-        response = self.client.post("/eugo/newcatch/", {'lec_id': '123456TestLecturer', 'event_id': ['709,33316:15:10']})
+        response = self.client.post("/eugo/newcatch/", {'lec_id': '123456TestLecturer', 'event_id': ['709,33316:15:10'],
+        'balls': 0})
 
         # Assert that the player has their poken caught count incremented by 1
         self.assertEquals(Player.objects.get(username="TestUser").pokemon_caught, 1)
