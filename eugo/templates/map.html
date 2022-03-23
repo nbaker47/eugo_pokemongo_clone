@@ -62,7 +62,7 @@
             <li>{{ i.lec_id.duration }} Mins Remaining</li>
             <!--<li style="color: black;">{{ i.pos }}</li>-->
             <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.lec_id.sprite}}' class="spirite-img"></li>
-            <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.lec_id.qrUrl}}','{{i.lec_id.id}}','{{i.id}}')">Confirm QR Code</button></li>
+            <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.lec_id.qrUrl}}','{{i.lec_id.id}}','{{i.id}}','{{i.wildOrBattle}}')">Confirm QR Code</button></li>
         </div>
         {% endfor %}
 
@@ -89,7 +89,7 @@
     <input type="hidden" id="current-lec" value="">
     <input type="hidden" id="current-lec-id" value="">
     <input type="hidden" id="current-event-id" value="">
-
+    <input type="hidden" id="wild-battle" value="">
     <!--NavBar-->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/eugo/index">EUGO</a>
@@ -523,7 +523,9 @@
             document.getElementById("gameOpBox").value = choice;
         }
 
-        function showCam(spriteImg, id, event_id){
+        function showCam(spriteImg, id, event_id, wild_battle){
+
+            console.log("test")
 
             camDiv = document.getElementById("reader");
             camDiv.style.width = "500px";
@@ -541,10 +543,13 @@
             //console.log("id : " + document.getElementById('current-lec-id').value);
 
             document.getElementById('current-event-id').value = event_id;
+
+            document.getElementById('wild-battle').value = wild_battle;
         }
 
         function showCamStop(spriteImg, id){
 
+            
 
             camDiv = document.getElementById("reader");
             camDiv.style.width = "500px";
@@ -592,7 +597,6 @@
                     var form = document.createElement("form");
                     form.setAttribute("method", "post");
                     form.setAttribute("action", "/eugo/map/");
-                    form.setAttribute("target", "_blank");
                     var hiddenField = document.createElement("input"); 
                     hiddenField.setAttribute("type", "hidden");
                     hiddenField.setAttribute("name", "stopID");
@@ -603,14 +607,18 @@
                 }
             }
             else if(curLec == decodedText + ".png"){
-                alert("matched QR!")
-
                 //create form of lecturer and submit to /eugo/catch
                 let windowName = 'w_' + Date.now() + Math.floor(Math.random() * 100000).toString();
                 var form = document.createElement("form");
                 form.setAttribute("method", "post");
-                form.setAttribute("action", "/eugo/catch/");
-                form.setAttribute("target", "_blank");
+
+                
+
+                if(document.getElementById('wild-battle').value == "lecSpawnLi"){
+                    form.setAttribute("action", "/eugo/catch/");
+                }else{
+                    form.setAttribute("action", "/eugo/battle/");
+                }
 
                 var hiddenField = document.createElement("input");
                 hiddenField.setAttribute("type", "hidden");
@@ -631,8 +639,6 @@
 
                 document.body.appendChild(form);
 
-                window.open('', windowName);
-
                 form.submit();
             } else {
                 alert("invalid QR!")
@@ -640,6 +646,7 @@
         }
 
         function onScanFailure(error) {
+
             // handle scan failure, usually better to ignore and keep scanning.
             // for example:
             console.warn(`Code scan error = ${error}`);

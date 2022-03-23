@@ -88,39 +88,29 @@
     display: flex;
     text-align: center;
     justify-content: space-between;">
-            {% for l in lec %}
             <div class="card lec-card" style="width: 18rem;">
-                <strong>Name: </strong> {{l.name}} <br>
-                <img class="card-img-top" id="lect-pic" src='{% static "/eugo/img/teacher_sprites/"%}{{l.sprite}}' width="200" height="200">
+                <strong>Name: </strong> {{lec.name}} <br>
+                <img class="card-img-top" id="lect-pic" src='{% static "/eugo/img/teacher_sprites/"%}{{lec.sprite}}' width="200" height="200">
                 <p><br>
-                    <strong>HP:</strong> {{l.hp}}
+                    <strong>HP:</strong> {{lec.hp}}
                     <p>
                         <strong>Attack:</strong>
-                        <p> {{l.attack}}</p>
+                        <p> {{lec.attack}}</p>
+            </div>
+            <div class="card lec-card" style="width: 18rem;">
+                <strong>Name: </strong> {{player_lec.name}} <br>
+                <img class="card-img-top" id="lect-pic" src='{% static "/eugo/img/teacher_sprites/"%}{{player_lec.sprite}}' width="200" height="200">
+                <p><br>
+                    <strong>HP:</strong> {{player_lec.hp}}
+                    <p>
+                        <strong>Attack:</strong>
+                        <p> {{player_lec.attack}}</p>
             </div>
             <div class="card-body">
 
-                <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} Has Appered, they look like they want a fight!</p>
-
-                <form class="spawn-lecturer-menu" id="lecSpawn" action = "/eugo/startbattle/" method="post">
-                    {% csrf_token %}
-
-                    <label for="lecturers">Choose a lecturer to fight for you:</label>
-                    <select id="lecturers" name="playerLecturerID">
-                      {%  for i in playerLecs %}
-                        <option value='{{i.lec_id.id}}'>{{i.lec_id.name}}</option>
-                      {% endfor %}
-                    </select>
-                    {% if items.1 != 0 %}
-                    <label for="extension"> Use an extension to slow the oponent lecturer down</label><input type="checkbox" id="extension" name="extension" value="Extension"><br>
-                    {% endif %}
-                    <input name = "eventID" type="hidden" value="{{eve}}">
-                    <input type="submit" class="form-submit" value="Confirm">
-                </form>
-
             </div>
 
-            <br style="clear:both;" /> {% endfor %} {% else %}
+            <br style="clear:both;" />  {% else %}
             <p> ERROR: your trying to battle a lecturer that doesnt exist</p>
             {% endif %}
         </div>

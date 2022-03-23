@@ -58,7 +58,7 @@
                 {% endif %}
                 <div style="text-align: right">
                   <li >
-                      Balls : {{ items.0 }} <br>
+                       Balls : <div id = "balls">  </div> <br>
                       Extensions : {{ items.1 }}
                   </li>
                   </div>
@@ -133,6 +133,10 @@
 <script>
     const text = document.getElementById("game_txt");
 
+    var balls = parseInt("{{ items.0 }}");
+    console.log(balls)
+    document.getElementById("balls").innerHTML = balls;
+
     var resetTimer;
     var boxes = [document.getElementById("c1"), document.getElementById("c2"), document.getElementById("c3"), document.getElementById("c4")]
 
@@ -142,7 +146,7 @@
 
         boxes.forEach((box) =>
             box.onclick = function() {
-                miss('{{l.name}}');
+                miss('{{l.name}}', '{{l.id}}');
             }
         );
 
@@ -175,7 +179,8 @@
             url: "/eugo/newcatch/",
             data: {
                 'lec_id': id,
-                'event_id': '{{eve}}'
+                'event_id': '{{eve}}',
+                'balls': balls
             },
             success: function(data) {
                 console.log("success");
@@ -192,8 +197,32 @@
         location.href = '/eugo/lecturers';
     }
 
-    function miss(name) {
+    function miss(name, id) {
         // try again
+        balls--;
+        document.getElementById("balls").innerHTML = balls;
+
+        if(balls <= 0 ){
+          $.ajax({
+                type: "POST",
+                url: "/eugo/nocatch/",
+                data: {
+                    'lec_id': id,
+                    'event_id': '{{eve}}'
+                },
+                success: function(data) {
+                    console.log("success");
+                    window.location = "/eugo/map";
+                },
+                failure: function(data) {
+                    console.log("failure");
+
+                },
+            });
+
+
+        }
+
         boxSet();
         lecPic = document.getElementById("lect-pic");
         lecPic.src = "/static/eugo/img/teacher_sprites/catching.gif"
