@@ -1,6 +1,7 @@
 runtime: python39
 
 env_variables:
+    APPENGINE_URL: https://eugo-344915.uc.r.appspot.com
 
 handlers:
 - url: /static
