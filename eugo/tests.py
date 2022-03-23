@@ -55,7 +55,7 @@ class TestRegister(TestCase):
 
         # Send post request to register a test user with username=TestUser and password=12345678
         response = self.client.post("/eugo/register/", {'firstname': 'Test', 'surname': 'User', 'email': 'Test@eugo.com',
-        'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': ''})
+        'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': '', 'staffno': ''})
 
         # Send post request to login with the newly created user. If the login is succesful, the index.html template is returned
         response = self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
@@ -67,22 +67,20 @@ class TestRegister(TestCase):
 
         # Send post request to register a test user with username=TestUser and password=12345678
         response = self.client.post("/eugo/register/", {'firstname': 'Test', 'surname': 'User', 'email': 'Test@eugo.com',
-        'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': ''})
+        'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': '', 'staffno': ''})
 
         self.assertRedirects(response, '/eugo/login/')
 
         with transaction.atomic():
             # Register a duplicate of the newly registered user
             response = self.client.post("/eugo/register/", {'firstname': 'Test', 'surname': 'User', 'email': 'Test1@eugo.com',
-            'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': ''})
+            'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': '', 'staffno': ''})
 
             messages = response.context
-            print(messages)
 
             # Assert that the user is redirected to the register page if they attempt to create a duplicate user
             # Should also test error messages for this
             self.assertRedirects(response, '/eugo/register/')
-            print("hello")
 
         self.assertEquals(len(User.objects.all()), 1)
 
@@ -90,14 +88,14 @@ class TestRegister(TestCase):
 
         # Send post request to register a test user with username=TestUser and password=12345678
         response = self.client.post("/eugo/register/", {'firstname': 'Test', 'surname': 'User', 'email': 'Test@eugo.com',
-        'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': ''})
+        'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': '', 'staffno': ''})
 
         self.assertRedirects(response, '/eugo/login/')
 
         with transaction.atomic():
             # Register a different username with the same email
             response = self.client.post("/eugo/register/", {'firstname': 'Test', 'surname': 'User', 'email': 'Test@eugo.com',
-            'username': 'TestUser1', 'password1': '12345678', 'sprite': '1', 'canvas-output': ''})
+            'username': 'TestUser1', 'password1': '12345678', 'sprite': '1', 'canvas-output': '', 'staffno': ''})
 
             # Assert that the user is redirected to the register page if they attempt to create a duplicate user
             # Should also test error messages for this
@@ -129,6 +127,23 @@ class TestMapmod(TestCase):
     def setUp(self):
         self.client = Client()
 
+        user = User.objects.create_user("TestUser", "TestUser@gmail.com", "12345678")
+        user.first_name = "Test"
+        user.last_name = "User"
+        user.save()
+
+        # If a user enters a registered username/password combination then the sigin view returns the index.html template
+        response = self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
+        self.assertTemplateUsed(response,"index.html")
+
+        # Check the user has actually been authenticated and logged in
+        user = auth.get_user(self.client)
+        assert user.is_authenticated
+
+        self.player = Player.objects.create(firstname = 'Test', surname = 'User', email = 'Test@eugo.com', username = 'TestUser',
+        pokemon_caught = 0, sprite_url = '1', is_admin=True)
+        self.player.save()
+
     def createNewLecturer(self):
 
         # Send post request to create new wild lecturer called  TesrLecturer
@@ -151,6 +166,7 @@ class TestMapmod(TestCase):
 
         # Make sure the mapmod template is rendered
         self.assertTemplateUsed(response,"mapmod.html")
+        print("swag")
 
     def testQrAPI(self):
         # Test to make sure the QR code API is working
@@ -198,6 +214,20 @@ class TestCatch(TestCase):
     def setUp(self):
         self.client = Client()
 
+        # Set up a new user
+        user = User.objects.create_user("TestUser", "TestUser@gmail.com", "12345678")
+        user.first_name = "Test"
+        user.last_name = "User"
+        user.save()
+
+        # Log in with the new user and check it is authenticated
+        self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
+        user = auth.get_user(self.client)
+        assert user.is_authenticated
+
+        self.player = Player.objects.create(firstname = 'Test', surname = 'User', email = 'Test@eugo.com', username = 'TestUser',
+        pokemon_caught = 0, sprite_url = '1')
+        self.player.save()
 
     def testCatch(self):
         newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
@@ -260,6 +290,22 @@ class TestNewCatch(TestCase):
 class TestLecturerdex(TestCase):
     def setUp(self):
         self.client = Client()
+
+        # Set up a new user
+        user = User.objects.create_user("TestUser", "TestUser@gmail.com", "12345678")
+        user.first_name = "Test"
+        user.last_name = "User"
+        user.save()
+
+        # Log in with the new user and check it is authenticated
+        self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
+        user = auth.get_user(self.client)
+        assert user.is_authenticated
+
+        # Create a new player objects
+        self.player = Player.objects.create(firstname = 'Test', surname = 'User', email = 'Test@eugo.com', username = 'TestUser',
+        pokemon_caught = 0, sprite_url = '1')
+        self.player.save()
 
         # Create a new lecturer object
         self.newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",

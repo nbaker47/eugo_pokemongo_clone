@@ -26,6 +26,7 @@ from datetime import datetime
 import copy
 import datetime
 import urllib.request
+import random
 
 """ ---------------------------- VIEWS ---------------------------------------------------------------- """
 """ INDEX -------------------- """
@@ -37,8 +38,68 @@ def index(request):
 """ BATTLE ------------------- """
 """ This method to handle the battle.html """
 def battle(request):
-    return render(request, 'battle.html')
+    
 
+    #lec_id = request.POST['lecID']
+    # get the lec and event IDs
+    lec_id = str(request.POST.get('lecID'))
+    event_id = request.POST.get('eventID')
+
+    # get the lecturer object from its id
+    lec = Lecturer.objects.filter(id = lec_id)
+    # return the render with the lecturer and event IDs
+    un = request.user.username
+    # get the player object that matches the username
+    player = Player.objects.filter(username=un)[0]
+    items = [player.balls, player.extensions]
+
+
+    hands = Hand.objects.filter(username = player)
+
+    print(event_id)
+
+    return render(request, 'battle.html',{'lec': lec, 'eve': event_id, 'is_admin': get_admin(request), 'items': items, "playerLecs" : hands})
+
+
+def startbattle(request):
+    print(request.POST)
+
+    player_lec_id = request.POST.get('playerLecturerID')
+    event_id = request.POST.get('eventID')
+    opp_lec = MapEvent.objects.get(id = event_id).lec_id
+    player_lec = Lecturer.objects.get(id = player_lec_id)
+    un = request.user.username
+    player = Player.objects.filter(username=un)[0]
+
+    #create move list (player always first)
+    move_list = list()
+    p_hp = copy.deepcopy(player_lec.hp)
+    o_hp = copy.deepcopy(opp_lec.hp)
+    if(request.POST.get("extension")):
+        o_hp = int(o_hp*0.8)
+        player.extensions -= 1
+        player.save()
+
+    while True:
+        next_attack = int( random.random() * player_lec.attack )
+        move_list.append(next_attack)
+        o_hp -= next_attack
+        if(o_hp <= 0):
+            break
+        next_attack = int( random.random() * opp_lec.attack )
+        move_list.append(next_attack)
+        p_hp -= next_attack
+        if(p_hp <= 0):
+            break
+
+
+    items = [player.balls, player.extensions]
+
+
+    return render(request, 'battlegame.html',{'player_lec': player_lec, 'lec' : opp_lec,'eve': event_id, 'is_admin': get_admin(request), 'items': items})
+        
+
+    
 
 """ SIGNIN ------------------- """
 """ This is the method that handles the login page (cannot be named login because of built in function) """
@@ -287,6 +348,7 @@ def newcatch(request):
 
         #addds the lec to the players hand
         player.pokemon_caught = player.pokemon_caught+1
+        player.balls = request.POST.get("balls")
         player.save()
 
         h = Hand(username = player, lec_id = lec[0])
@@ -303,6 +365,32 @@ def newcatch(request):
 
     return render(request, 'catch.html', {'lec': lec})
 
+""" NOCATCH ----------------- """
+""" This method is for when the user fails a catch """
+def nocatch(request):
+    if request.method == 'POST':
+
+        #gets lecturer that want caught
+        lecid = str(request.POST.get('lec_id'))
+        lec = Lecturer.objects.filter(id = lecid)
+
+        #gets the current user
+        current_user = request.user
+        un = current_user.username
+        player = Player.objects.filter(username=un)[0]
+
+        player.balls = 0
+        player.save()
+        #adds the event to the list of events completed my the user 
+        event_id = request.POST.get("event_id")
+        mapEvent = MapEvent.objects.filter(id=event_id)[0]
+        ce = CompleteEvents(username = player, event = mapEvent)
+        ce.save()
+        print(ce)
+
+        
+
+    return render(request, 'catch.html', {'lec': lec})
 
 """
 def sendchat(request):
