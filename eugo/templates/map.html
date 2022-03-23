@@ -31,21 +31,12 @@
 
 <body>
 
+    <!-- check if the current user is authenticated -->
     {% if not user.is_authenticated %}
     <script>
         window.location.href = "/eugo/logout/";
     </script>
     {% endif %}
-
-    <!--
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    -->
 
     <div class="text-center parent-container-map" id="parent-container-map-id">
 
@@ -60,12 +51,13 @@
         font-weight: bold; list-style-type: none;" id='{{i.lec_id.id}}' value='{{i.pos}}'>
             <li>{{ i.lec_id.name }}</li>
             <li>{{ i.lec_id.duration }} Mins Remaining</li>
-            <!--<li style="color: black;">{{ i.pos }}</li>-->
             <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.lec_id.sprite}}' class="spirite-img"></li>
             <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.lec_id.qrUrl}}','{{i.lec_id.id}}','{{i.id}}','{{i.wildOrBattle}}')">Confirm QR Code</button></li>
         </div>
-        {% endfor %} {% for i in stops %}
+        {% endfor %} 
 
+        <!-- show stops-->
+        {% for i in stops %}
         <div class="stop-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
         font-weight: bold; list-style-type: none;" id='{{i.id}}' value='{{i.pos}}'>
             <li>LectStop</li>

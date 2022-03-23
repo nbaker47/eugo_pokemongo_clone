@@ -1,15 +1,13 @@
 """ ---------------------------- IMPORTS -------------------------------------------------------------- """
 """ IMPORTS FROM EUGO -------- """
 from eugo.models import *                                       # import the models (database)
-from eugo.forms import *                                        # all of the forms ????????? TODO
-from eugo.models import Player
-import os.path
+from eugo.forms import *                                        # all of the forms
+import os.path                                                  # this is so you can use the file directory
+                                                                # and making it OS independent
 
 """ IMPORTS FROM DJANGO ------ """
 from django.shortcuts import redirect, render                   # to render templates and redirect 
 from django.http import HttpResponse                            # send a http response using django
-from django.template import loader# """ TODO: DEAD IMPORT? """
-from django.shortcuts import get_object_or_404 #""" TODO: DEAD IMPORT? """
 from django.contrib.auth.models import User                     # to be able to access the user database
 from django.contrib.auth import authenticate, login, logout     # built in django methods that handle the
                                                                 # user moving through pages
@@ -21,12 +19,12 @@ from django.utils import timezone as tz
 import requests                                                 # for the image data
 import qrtools                                                  # for scanning and recognising the qr code
 import re                                                       # for regex patterns
-from random import randint                                      # random is self-explanatory
-from datetime import datetime
-import copy
-import datetime
-import urllib.request
 import random
+from random import randint                                      # random is self-explanatory
+import datetime
+from datetime import datetime                                   # get the date for events
+import copy
+import urllib.request
 
 """ ---------------------------- VIEWS ---------------------------------------------------------------- """
 """ INDEX -------------------- """
@@ -62,17 +60,19 @@ def battle(request):
 def startbattle(request):
     print(request.POST)
 
-    player_lec_id = request.POST.get('playerLecturerID')
-    event_id = request.POST.get('eventID')
-    opp_lec = MapEvent.objects.get(id = event_id).lec_id
-    player_lec = Lecturer.objects.get(id = player_lec_id)
-    un = request.user.username
-    player = Player.objects.filter(username=un)[0]
+    # get all of th edata from the post request
+    player_lec_id   =   request.POST.get('playerLecturerID')
+    event_id        =   request.POST.get('eventID')
+    opp_lec         =   MapEvent.objects.get(id = event_id).lec_id
+    player_lec      =   Lecturer.objects.get(id = player_lec_id)
+    un              =   request.user.username
+    player          =   Player.objects.filter(username=un)[0]
 
-    #create move list (player always first)
+    # create move list (player always first)
     move_list = list()
     p_hp = player_lec.hp
     o_hp = opp_lec.hp
+    # apply extensions (if player has used any)
     if(request.POST.get("extension")):
         o_hp = int(o_hp*0.8)
         opp_lec.hp = int(opp_lec.hp*0.8)
@@ -81,31 +81,39 @@ def startbattle(request):
 
     result = ""
 
+    # repeat attacks until win
     print(o_hp)
     while True:
+        # do random attack multiplier
         next_attack = int( random.random() * player_lec.attack )
         move_list.append(next_attack)
+        # take away from hp
         o_hp -= next_attack
         
+        # check win condition
         if(o_hp <= 0):
-            
             result = "you won!"
             break
+        
+        # do the opponent's attack
         next_attack = int( random.random() * opp_lec.attack )
         move_list.append(next_attack)
+        # take away from hp
         p_hp -= next_attack
+        # check lose condition
         if(p_hp <= 0):
             result = opp_lec.name + " won"
             break
 
+    # update playerballs and extensions
     items = [player.balls, player.extensions]
 
+    # mark event as completed
     ce = CompleteEvents(username = player, event = MapEvent.objects.get(id = event_id))
     ce.save()
 
+    # finally return render with info
     return render(request, 'battlegame.html',{'player_lec': player_lec, 'lec' : opp_lec,'eve': event_id, 'is_admin': get_admin(request), 'items': items, 'moves': move_list, "result": result})
-        
-
     
 
 """ SIGNIN ------------------- """
@@ -238,9 +246,7 @@ def register(request):
 
         # catch integrity errors (problem with database -> not registered)
         except IntegrityError as e:
-            # semd appropriate messages to notify the user of the errors
-            #messages.error(sprite_url)
-            #messages.error(request, e)
+            # send appropriate messages to notify the user of the errors
             print(f"[{username}] raised IntegrityError")
             print(e)
             # redirect (so they can try again)
@@ -396,8 +402,6 @@ def nocatch(request):
         ce = CompleteEvents(username = player, event = mapEvent)
         ce.save()
         print(ce)
-
-        
 
     return render(request, 'catch.html', {'lec': lec})
 
@@ -565,10 +569,10 @@ def friendreq(request):
 """ MAPMOD ------------------- """
 """ This method handles the mapmod link (admin map) and the ability to add more events """
 def mapmod(request):
-    
-    current_user = request.user
-    un = current_user.username
-    player = Player.objects.filter(username=un)[0]
+    # get the data from the request
+    current_user    =   request.user
+    un              =   current_user.username
+    player          =   Player.objects.filter(username=un)[0]
     
     # If the user isn't a admin then it sends them back to map
     # MAPMOD removes it from the html. But incase they try getting into MAPMOD through entering the url
@@ -651,18 +655,21 @@ def mapmod(request):
 
 
 """ TRADE -------------------- """
+""" This method handles the sending of trades """
 def trade(request):
-
+    # check if method is POST
     if request.method == 'POST':
         print(request.POST)
-        s = request.POST.get('sender')
-        r = request.POST.get('reciever')
-        #retrieve object
+        # get all of the data from the POST request
+        s           =   request.POST.get('sender')
+        r           =   request.POST.get('reciever')
+        # retrieve object
         sender = Player.objects.filter(username=s).first()
         reciever = Player.objects.get(username=r)
+        # print info
         print(sender ,"<--- sender")
         print(reciever ,"<--- reciever")
-        #retrieve their lecturers
+        # retrieve their lecturers
         sender_lects = Hand.objects.filter(username = sender.id)
         reciever_lects = Hand.objects.filter(username = reciever.id)
         # return the render with the lecturer and event IDs
@@ -679,22 +686,25 @@ def trade(request):
                                          'items' : items})
 
 """ NEW TRADE ---------------- """
+""" This method to handle the accepting of new trade requests """
 def newtrade(request):
     if request.method == 'POST':
         print(request.POST)
-        l = request.POST.get('left')
-        r = request.POST.get('right')
+        # get the data from the post request
+        l               =   request.POST.get('left')
+        r               =   request.POST.get('right')
 
-        current_user = request.user
-        un = current_user.username
-        player = Player.objects.filter(username=un)[0]
-
-        lec = Lecturer.objects.filter()
+        # get other relevant data for the trade
+        current_user    =   request.user
+        un              =   current_user.username
+        player          =   Player.objects.filter(username=un)[0]
+        lec             =   Lecturer.objects.filter()
 
         #addds the lec to the players hand
         player.pokemon_caught = player.pokemon_caught+1
         player.save()
 
+        # make and save the new player hand
         h = Hand(username = player, lec_id = l.lec_id)
         h.save()
 

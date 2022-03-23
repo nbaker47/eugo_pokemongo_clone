@@ -1,13 +1,28 @@
-from django.test import TestCase
+""" ---------------------------- IMPORTS -------------------------------------------------------------- """
+""" IMPORTS FROM DJANGO TEST - """
+""" These are all for testing both client and server side """
+from django.test import TestCase                                
 from django.test import TransactionTestCase
 from django.test import Client
+
+""" IMPORTS FROM CONTRIB ----- """
+""" Here to set up models and make sure that django build in functions are available """
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import auth
+
+""" IMPORTS FROM DB ---------- """
+""" These are for transactions and integrity errors """
 from django.db import IntegrityError
 from django.db import transaction
+
+""" IMPORTS FROM VIEWS ------- """
+""" These are used for the email exception and the built in register function """
 from eugo.views import EmailExistsException
 from eugo.views import register
+
+""" IMPORTS FROM MODELS ------ """
+""" These are all used so the database can be used and checked """
 from eugo.models import Lecturer
 from eugo.models import MapEvent
 from eugo.models import Player
@@ -15,14 +30,20 @@ from eugo.models import Hand
 from eugo.models import CompleteEvents
 from eugo.models import FriendRequest
 from eugo.models import FriendsList
-import requests
-
 from eugo.models import Player
 
+""" OTHER IMPORTS ------------ """
+""" Requests is used for sending selective data to the program """
+import requests
+
+""" ---------------------------- TESTS ---------------------------------------------------------------- """
+""" LOGIN TESTS -------------- """
 class TestLogin(TestCase):
+    """ This method sets up the tests by creating a client """
     def setUp(self):
         self.client = Client()
 
+    """ This method tests how the program treats unregistered players trying to login """
     def testUnregisteredUser(self):
         # If a user enters an unregistered username/password combination then the sigin view returns the login.html template
         response = self.client.post('/eugo/login/', {'username': 'TestUser', 'password': '12345678'})
@@ -32,6 +53,7 @@ class TestLogin(TestCase):
         user = auth.get_user(self.client)
         assert not user.is_authenticated
 
+    """ This method tests how the program treats registered users logging in """
     def testRegisteredUser(self):
         # Register a test user with username=TestUser and password=12345678
         user = User.objects.create_user("TestUser", "TestUser@gmail.com", "12345678")
@@ -47,12 +69,15 @@ class TestLogin(TestCase):
         user = auth.get_user(self.client)
         assert user.is_authenticated
 
+
+""" REGISTER TESTS ----------- """
 class TestRegister(TestCase):
+    """ This method sets up the tests by creating a client """
     def setUp(self):
         self.client = Client()
 
+    """ This method test registering users with correct data """
     def testRegisterUser(self):
-
         # Send post request to register a test user with username=TestUser and password=12345678
         response = self.client.post("/eugo/register/", {'firstname': 'Test', 'surname': 'User', 'email': 'Test@eugo.com',
         'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': '', 'staffno': ''})
@@ -63,8 +88,8 @@ class TestRegister(TestCase):
 
         self.assertEquals(User.objects.get(username__exact="TestUser").username, "TestUser")
 
+    """ This method tests regisetering users when a username already exists """
     def testRegisterDuplicateUsername(self):
-
         # Send post request to register a test user with username=TestUser and password=12345678
         response = self.client.post("/eugo/register/", {'firstname': 'Test', 'surname': 'User', 'email': 'Test@eugo.com',
         'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': '', 'staffno': ''})
@@ -84,8 +109,8 @@ class TestRegister(TestCase):
 
         self.assertEquals(len(User.objects.all()), 1)
 
+    """ This method tests registering users when the email address is already used """
     def testRegisterDuplicateEmail(self):
-
         # Send post request to register a test user with username=TestUser and password=12345678
         response = self.client.post("/eugo/register/", {'firstname': 'Test', 'surname': 'User', 'email': 'Test@eugo.com',
         'username': 'TestUser', 'password1': '12345678', 'sprite': '1', 'canvas-output': '', 'staffno': ''})
@@ -103,7 +128,10 @@ class TestRegister(TestCase):
 
         self.assertEquals(len(User.objects.all()), 1)
 
+
+""" PLAYER TESTS ------------- """
 class TestPlayer(TestCase):
+    """ This method sets up the tests by creating a client and registering a user """
     def setUp(self):
         self.client = Client()
 
@@ -113,6 +141,7 @@ class TestPlayer(TestCase):
         user.last_name = "User"
         user.save()
 
+    """ This method tests the user changing passwords """
     def testChangePassword(self):
 
         # Login with the newly created user
@@ -123,7 +152,10 @@ class TestPlayer(TestCase):
         user = User.objects.get(username__exact="TestUser")
         self.assertEquals(user.check_password("87654321"), True)
 
+
+""" MAPMOD TESTS ------------- """
 class TestMapmod(TestCase):
+    """ This method sets up the tests by creating a client and a player and user objects """
     def setUp(self):
         self.client = Client()
 
@@ -144,8 +176,8 @@ class TestMapmod(TestCase):
         pokemon_caught = 0, sprite_url = '1', is_admin=True)
         self.player.save()
 
+    """ This method test the creation of new lecturers """
     def createNewLecturer(self):
-
         # Send post request to create new wild lecturer called  TesrLecturer
         response = self.client.post("/eugo/mapmod/", {'duration': '1', 'name': 'TestLecturer', 'hp': '1', 'attack': '1', 'type': 'english',
         'sprite': '1', 'gameop': 'lecNewLi'})
@@ -168,13 +200,14 @@ class TestMapmod(TestCase):
         self.assertTemplateUsed(response,"mapmod.html")
         print("swag")
 
+    """ This method test if the QR API code works correctly """
     def testQrAPI(self):
         # Test to make sure the QR code API is working
         qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + "123456TestLecturer"
         self.assertEquals(requests.get(qrUrl).status_code, 200)
 
+    """ This method test if spawning wild lecturers works corrrectly """
     def testWildLecturerSpawn(self):
-
         # Save new lectutrer in the database
         newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
         type="english", qrUrl = "123456TestLecturer.png")
@@ -191,8 +224,8 @@ class TestMapmod(TestCase):
         # Make sure the mapmod template is rendered
         self.assertTemplateUsed(response,"mapmod.html")
 
+    """ This method tests if creating a lecturer battle works correctly """
     def testLecturerBattle(self):
-
         # Save new lectutrer in the database
         newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
         type="english", qrUrl = "123456TestLecturer.png")
@@ -210,7 +243,9 @@ class TestMapmod(TestCase):
         self.assertTemplateUsed(response,"mapmod.html")
 
 
+""" CATCH TESTS -------------- """
 class TestCatch(TestCase):
+    """ This method sets up the test by creating a cliend and user and player objects """
     def setUp(self):
         self.client = Client()
 
@@ -229,6 +264,7 @@ class TestCatch(TestCase):
         pokemon_caught = 0, sprite_url = '1')
         self.player.save()
 
+    """ This method test the catching of lecturers """
     def testCatch(self):
         newLec = Lecturer(id="123456TestLecturer", duration="1", name="TestLecturer", hp="1", attack="1", sprite="1",
         type="english", qrUrl = "123456TestLecturer.png")
@@ -236,7 +272,10 @@ class TestCatch(TestCase):
         response = self.client.post("/eugo/catch/", {'lecID': ['123456TestLecturer'], 'eventID': ['709,33316:15:10']})
         self.assertTemplateUsed(response,'catch.html')
 
+
+""" NEWCATCH TESTS ----------- """
 class TestNewCatch(TestCase):
+    """ This method sets up the test by creating a cliend and user, player, lecturer and wild lecturer objects """
     def setUp(self):
         self.client = Client()
 
@@ -288,7 +327,9 @@ class TestNewCatch(TestCase):
         # Assert that the catch.html template is rendered back to the user
         self.assertTemplateUsed(response, "catch.html")
 
+""" LECTURER DEX TESTS ------- """
 class TestLecturerdex(TestCase):
+    """ This method sets up the tests by creating a client and user, player lecturer objects """
     def setUp(self):
         self.client = Client()
 
@@ -313,6 +354,7 @@ class TestLecturerdex(TestCase):
         type="english", qrUrl = "123456TestLecturer.png")
         self.newLec.save()
 
+    """ This method tests if lecturerdex returns what it should """
     def testLecturerdex(self):
         # Get request for the lecturerdex
         response = self.client.get("/eugo/lecturerdex/")
@@ -324,7 +366,9 @@ class TestLecturerdex(TestCase):
         self.assertEquals(response.context["lec"].get(id="123456TestLecturer").name, "TestLecturer")
 
 
+""" LECTURERS TESTS ---------- """
 class TestLecturers(TestCase):
+    """ This method sets up the tests by creating a cliend and user, player, lecturer, wild lecturer and hand objects """
     def setUp(self):
         self.client = Client()
 
@@ -356,6 +400,7 @@ class TestLecturers(TestCase):
         hand = Hand(username = self.player, lec_id = self.newLec)
         hand.save()
 
+    """ This method tests if lecturers method return the right html template with the right data """
     def testLecturers(self):
         # Get request for the lecturers
         response = self.client.get("/eugo/lecturers/")
@@ -366,7 +411,10 @@ class TestLecturers(TestCase):
         # Check that it is rendered with the hand object
         self.assertEquals(response.context["hand"].get(username=self.player).lec_id, self.newLec)
 
+
+""" FRIEND REQUEST TEST ------ """
 class TestFriendRequest(TestCase):
+    """ This method sets up the tests by creating a client and user, player, objects """
     def setUp(self):
         self.client = Client()
 

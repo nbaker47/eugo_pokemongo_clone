@@ -26,7 +26,7 @@ class Player(models.Model):
     balls           =   models.IntegerField(default=0)
     extensions      =   models.IntegerField(default=0)
 
-    # return username when object printed
+    """ To string function so its in a readable format """
     def __str__(self):
         return(self.username)
 
@@ -44,6 +44,7 @@ class Lecturer(models.Model):
     duration        =   models.IntegerField()
     qrUrl           =   models.CharField(max_length=500)
 
+    """ To string function so its in a readable format """
     def __str__(self):
         return (self.name)
 
@@ -57,7 +58,8 @@ class MapEvent(models.Model):
     wildOrBattle    =   models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
-
+""" LECT STOPS --------------- """
+""" A model to keep track of all of the lecture stops and their properties """
 class LectStop(models.Model):
     id              =   models.CharField(max_length=100, primary_key=True)
     balls           =   models.IntegerField()
@@ -110,8 +112,8 @@ class ChatMessage(models.Model):
 """ FRIENDS LIST ------------- """
 """ keeps track of friends/blocked"""
 class FriendsList(models.Model):
-    user1 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='user')
-    friends = models.CharField(default='', max_length=2000)
+    user1           =   models.ForeignKey(Player, on_delete=models.CASCADE, related_name='user')
+    friends         =   models.CharField(default='', max_length=2000)
     
     # to string method so the list is printable
     def __str__(self) -> str:
@@ -138,15 +140,16 @@ class FriendsList(models.Model):
 
 """Class for friend request"""
 class FriendRequest(models.Model):
-    sender = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="sender")
-    reciever = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="reciever")
-    is_active = models.BooleanField(blank=True, null=False, default=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    sender          =   models.ForeignKey(Player, on_delete=models.CASCADE, related_name="sender")
+    reciever        =   models.ForeignKey(Player, on_delete=models.CASCADE, related_name="reciever")
+    is_active       =   models.BooleanField(blank=True, null=False, default=True)
+    timestamp       =   models.DateTimeField(auto_now_add=True)
 
+    """ To string method so the object is printable in a readable format """
     def __str__(self) -> str:
         return self.sender.username
     
-    """When receiver accepts"""
+    """ When reciever accepts """
     def accept(self):
         #update sender and reciever
         print("SELF RECIEVER: ", self.reciever)
