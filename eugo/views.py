@@ -210,7 +210,7 @@ def player(request):
             # load the username
             name = cur_play.username
             # send the request with the sprite back to the player
-            items = [player.balls, player.extensions]
+            items = [cur_play.balls, cur_play.extensions]
 
             return render(request, "player.html", {"player":player_img, 'is_admin': get_admin(request), 'items': items})
 
