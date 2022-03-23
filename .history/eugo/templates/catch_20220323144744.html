@@ -1,4 +1,5 @@
 {% load static %}
+
 <!doctype html>
 <html lang="en">
 
@@ -20,6 +21,7 @@
     <link href='{% static "/eugo/css/lecturers.css" %}' rel="stylesheet">
 
     <!--webcam JS script-->
+
 </head>
 
 <body>
@@ -70,13 +72,13 @@
       </form>
       -->
         </div>
-    </nav> 
+    </nav>
 
     <div class="card text-center" style="
     background-image: url(https://cdn.wallpapersafari.com/63/63/1bH4SE.jpg);
     "><br>
         <div class="card-header">
-            Battle!
+            A Wild Lecturer Has Appeared!
         </div>
         {% if lec %}
         <div class="card-body" style="
@@ -99,28 +101,23 @@
             </div>
             <div class="card-body">
 
-                <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} Has Appered, they look like they want a fight!</p>
+                <p style="font-size: 15px;" id="game_txt">A wild {{l.name}} Has Appered!</p>
 
-                <form class="spawn-lecturer-menu" id="lecSpawn" action = "/eugo/startbattle/" method="post">
-                    {% csrf_token %}
-
-                    <label for="lecturers">Choose a lecturer to fight for you:</label>
-                    <select id="lecturers" name="playerLecturerID">
-                      {%  for i in playerLecs %}
-                        <option value='{{i.lec_id.id}}'>{{i.lec_id.name}}</option>
-                      {% endfor %}
-                    </select>
-                    {% if items.1 != 0 %}
-                    <label for="extension"> Use an extension to slow the oponent lecturer down</label><input type="checkbox" id="extension" name="extension" value="Extension"><br>
-                    {% endif %}
-                    <input name = "eventID" type="hidden" value="{{eve}}">
-                    <input type="submit" class="form-submit" value="Confirm">
-                </form>
+                <table class='center2'>
+                    <tr>
+                        <td id="c1"></td>
+                        <td id="c2"></td>
+                    </tr>
+                    <tr>
+                        <td id="c3"></td>
+                        <td id="c4"></td>
+                    </tr>
+                </table>
 
             </div>
 
             <br style="clear:both;" /> {% endfor %} {% else %}
-            <p> ERROR: your trying to battle a lecturer that doesnt exist</p>
+            <p> ERROR: your trying to catch a lecturer that doesnt exist</p>
             {% endif %}
         </div>
 
@@ -130,5 +127,79 @@
 
 </body>
 
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+<script>
+    const text = document.getElementById("game_txt");
+
+    var resetTimer;
+    var boxes = [document.getElementById("c1"), document.getElementById("c2"), document.getElementById("c3"), document.getElementById("c4")]
+
+    function boxSet() {
+        /* format boxes */
+        "{% for l in lec %}"
+
+        boxes.forEach((box) =>
+            box.onclick = function() {
+                miss('{{l.name}}');
+            }
+        );
+
+        boxes.forEach((box) =>
+            box.style.backgroundColor = "aqua"
+        );
+
+        catchBox = boxes[Math.floor(Math.random() * boxes.length)]
+        catchBox.style.backgroundColor = "red";
+
+        /* pick random box */
+        catchBox.onclick = function() {
+            catchLect('{{l.name}}', '{{l.id}}')
+        }
+        "{% endfor %}"
+
+    }
+
+    boxSet();
+    setInterval(boxSet, 250);
+
+    function catchLect(name, id) {
+
+        // lecturer captured
+        text.innerHTML = "Sucsess!";
+        clearTimeout(resetTimer);
+
+        $.ajax({
+            type: "POST",
+            url: "/eugo/newcatch/",
+            data: {
+                'lec_id': id,
+                'event_id': '{{eve}}'
+            },
+            success: function(data) {
+                console.log("success");
+                lecPic = document.getElementById("lect-pic");
+                lecPic.src = "/static/eugo/img/teacher_sprites/caught.gif"
+            },
+            failure: function(data) {
+                console.log("failure");
+
+            },
+        });
+
+
+        location.href = '/eugo/lecturers';
+    }
+
+    function miss(name) {
+        // try again
+        boxSet();
+        lecPic = document.getElementById("lect-pic");
+        lecPic.src = "/static/eugo/img/teacher_sprites/catching.gif"
+        text.innerHTML = name + " dodged the lectball\xAE , Try again!";
+
+    }
+</script>
+</body>
 
 </html>

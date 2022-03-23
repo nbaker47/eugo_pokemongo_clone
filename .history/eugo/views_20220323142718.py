@@ -26,7 +26,6 @@ from datetime import datetime
 import copy
 import datetime
 import urllib.request
-import random
 
 """ ---------------------------- VIEWS ---------------------------------------------------------------- """
 """ INDEX -------------------- """
@@ -38,79 +37,8 @@ def index(request):
 """ BATTLE ------------------- """
 """ This method to handle the battle.html """
 def battle(request):
-    #lec_id = request.POST['lecID']
-    # get the lec and event IDs
-    lec_id = str(request.POST.get('lecID'))
-    event_id = request.POST.get('eventID')
+    return render(request, 'battle.html')
 
-    # get the lecturer object from its id
-    lec = Lecturer.objects.filter(id = lec_id)
-    # return the render with the lecturer and event IDs
-    un = request.user.username
-    # get the player object that matches the username
-    player = Player.objects.filter(username=un)[0]
-    items = [player.balls, player.extensions]
-
-    hands = Hand.objects.filter(username = player)
-
-    print(event_id)
-
-    return render(request, 'battle.html',{'lec': lec, 'eve': event_id, 'is_admin': get_admin(request), 'items': items, "playerLecs" : hands})
-
-""" STARTBATTLE -------------- """
-""" This function handles making the battles and then playing them out """
-def startbattle(request):
-    print(request.POST)
-
-    player_lec_id = request.POST.get('playerLecturerID')
-    event_id = request.POST.get('eventID')
-    opp_lec = MapEvent.objects.get(id = event_id).lec_id
-    player_lec = Lecturer.objects.get(id = player_lec_id)
-    un = request.user.username
-    player = Player.objects.filter(username=un)[0]
-
-    #create move list (player always first)
-    move_list = list()
-    p_hp = player_lec.hp
-    o_hp = opp_lec.hp
-    if(request.POST.get("extension")):
-        o_hp = int(o_hp*0.8)
-        opp_lec.hp = int(opp_lec.hp*0.8)
-        player.extensions -= 1
-        player.save()
-
-    result = ""
-
-    print(o_hp)
-    while True:
-        next_attack = int( random.random() * player_lec.attack )
-        move_list.append(next_attack)
-        o_hp -= next_attack
-        
-        if(o_hp <= 0):
-            
-            result = "you won!"
-            break
-        next_attack = int( random.random() * opp_lec.attack )
-        move_list.append(next_attack)
-        p_hp -= next_attack
-        if(p_hp <= 0):
-            result = opp_lec.name + " won"
-            break
-
-    items = [player.balls, player.extensions]
-
-<<<<<<< HEAD
-    return render(request, 'battlegame.html',{'player_lec': player_lec, 'lec' : opp_lec,'eve': event_id, 'is_admin': get_admin(request), 'items': items})
-=======
-    ce = CompleteEvents(username = player, event = MapEvent.objects.get(id = event_id))
-    ce.save()
-
-    return render(request, 'battlegame.html',{'player_lec': player_lec, 'lec' : opp_lec,'eve': event_id, 'is_admin': get_admin(request), 'items': items, 'moves': move_list, "result": result})
->>>>>>> 5b6e990ff56e32434f13c67a322143f929f40ff5
-        
-
-    
 
 """ SIGNIN ------------------- """
 """ This is the method that handles the login page (cannot be named login because of built in function) """
@@ -151,7 +79,6 @@ def signout(request):
     return redirect('index')
 
 
-""" A custom class to throw an "EmailExists" exception for register if the email is linked to another account """
 class EmailExistsException(Exception):
     pass
 
@@ -203,11 +130,11 @@ def register(request):
 
             # check if staff code is correct (If so set as staff)
             if staffno == "123456":
-                print(f"[{username}] SET AS SUPERUSER/STAFF")
+                print("SET AS SUPERUSER/STAFF")
                 is_admin = True
             
             else:
-                print(f"[{username}] NOT A SUPERUSER/STAFF")
+                print("NOT A SUPERUSER/STAFF")
                 is_admin = False
             
 
@@ -360,7 +287,6 @@ def newcatch(request):
 
         #addds the lec to the players hand
         player.pokemon_caught = player.pokemon_caught+1
-        player.balls = request.POST.get("balls")
         player.save()
 
         h = Hand(username = player, lec_id = lec[0])
@@ -378,32 +304,22 @@ def newcatch(request):
     return render(request, 'catch.html', {'lec': lec})
 
 
-""" NOCATCH ----------------- """
-""" This method is for when the user fails a catch """
-def nocatch(request):
+"""
+def sendchat(request):
     if request.method == 'POST':
-
-        #gets lecturer that want caught
-        lecid = str(request.POST.get('lec_id'))
-        lec = Lecturer.objects.filter(id = lecid)
-
-        #gets the current user
-        current_user = request.user
-        un = current_user.username
-        player = Player.objects.filter(username=un)[0]
-
-        player.balls = 0
-        player.save()
-        #adds the event to the list of events completed my the user 
-        event_id = request.POST.get("event_id")
-        mapEvent = MapEvent.objects.filter(id=event_id)[0]
-        ce = CompleteEvents(username = player, event = mapEvent)
-        ce.save()
-        print(ce)
-
-        
-
-    return render(request, 'catch.html', {'lec': lec})
+        try:
+            channel_id = str(request.POST.get('channel'))
+            username = str(request.POST.get('user'))
+            message = str(request.POST.get('message'))
+            channel_id_k = ChatChannel.objects.filter(channel_id  = channel_id)[0]
+            new_message = ChatMessage(channel_id = channel_id_k , user = username, content=message)
+            new_message.save()
+            print("message : " + message)
+        except Exception as e:
+            print(e)
+            
+    return render(request, 'map.html')
+"""
 
 
 """ MAP ---------------------- """
@@ -504,7 +420,9 @@ def map(request):
             s.delete()
 
     items = [player.balls, player.extensions]
+    
 
+    
     #print("FRIENDS :", friends)
     # return the html render, giving it all of the corresponding data
     return render(request, 'map.html',{'lec': lec, 'players': leaderboard, 'mapEvent': mapEvent, 'incomingReq': incoming_friend_req, 'friends': friend2, 'stops': stops, 'is_admin': is_admin, 'items': items})
@@ -513,7 +431,6 @@ def map(request):
 """ FRIEND REQ --------------- """
 """ This method handles the sending and accepting of friend requests """
 def friendreq(request):
-    # print(request.POST)
     # check if POST method is being used (if they are sending a request or just want the page)
     if request.method == 'POST':
         # retrieve sender/recipient post data:
@@ -534,7 +451,7 @@ def friendreq(request):
               # save the request
               new_friend_req.save()
               # print for debug
-              print(f"[{sender_name}] send friend request to '{reciever_name}'")
+              print(f"[{sender_name}] send friend request to [{reciever_name}]")
               # send the success message
               messages.success(request, "friend request sent")
 
@@ -542,29 +459,10 @@ def friendreq(request):
             # if a friend request is being accepted then just accept it 
             friend_req = FriendRequest.objects.get(sender=sender, reciever=reciever)
             friend_req.accept()
-            print(f"[{sender_name}] accepted a friend request from '{reciever_name}'")
-
-        elif type == 'unfriend':
-            print(f"[{sender}] Started unfriend process with '{reciever}'")
-            """ remove from sender friend list """
-            # get sender friend list
-            fl = FriendsList.objects.filter(user1=sender)[0]
-            # remove from list
-            fl.remove_friend(reciever)
-            # save the list
-            fl.save()
-
-            """ remove from reciever friend list """
-            # get the reciever friend list
-            fl = FriendsList.objects.filter(user1=reciever)[0]
-            # remove sender from list
-            fl.remove_friend(sender)
-            # save the list
-            fl.save()
+            print(f"[{sender_name}] accepted a friend request from [{reciever_name}]")
 
     # finally, return the map render
     return render(request, 'map.html')
-
 
 """ MAPMOD ------------------- """
 """ This method handles the mapmod link (admin map) and the ability to add more events """
@@ -653,8 +551,7 @@ def mapmod(request):
     stops = LectStop.objects.all()
     return render(request, 'mapmod.html',{'lec': lec, 'mapEvent': mapEvent, 'stops': stops, 'items': items})
 
-
-""" TRADE -------------------- """
+"""TRADE: """
 def trade(request):
 
     if request.method == 'POST':
@@ -682,7 +579,6 @@ def trade(request):
                                          'is_admin': get_admin(request),
                                          'items' : items})
 
-""" NEW TRADE ---------------- """
 def newtrade(request):
     if request.method == 'POST':
         print(request.POST)
@@ -704,16 +600,12 @@ def newtrade(request):
 
     return render(request, 'lecturers.html', {})
 
-
 """ get_admin ------------------- """
 """ This method handles checks if the user is an admin. This then gives it to the template """
 def get_admin(request):
-    # get the user object from the request
     current_user = request.user
-    # get the username of the user
     un = current_user.username
-    # get player object by username from the database (filter returns a list)
     player = Player.objects.filter(username=un)[0]
     
-    # return is_admin (boolean)
+    #check if user is admin
     return player.is_admin
