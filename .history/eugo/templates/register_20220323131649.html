@@ -48,7 +48,7 @@
 
                     var tester = new RegExp("/^[a-zA-Z\-]*$/");
 
-                    /*
+
                     if (tester.test(fname)) {
                         errors.push("Name must not contain any spaces or special characters.")
                         valid = false;
@@ -57,7 +57,6 @@
                         errors.push("Surname must not contain any spaces or special characters.")
                         valid = false;
                     }
-                    */
 
                     if (password1 != password2) {
                         errors.push("Please keep the passwords the same.")
@@ -110,13 +109,13 @@
                     <p id="errors"></p>
                     <div class="form-group">
                         <label>
-                        <input type="text" class="form-control" name="firstname" placeholder="First Name" size="50" pattern="[A-Za-z]+" required autocomplete="off">
+                        <input type="text" class="form-control" name="firstname" placeholder="First Name" size="50" pattern="[a-zA-Z\-]" required autocomplete="off">
                     </label>
                         <p id="fname"></p>
                     </div>
                     <div class="form-group">
                         <label>
-                        <input type="text" class="form-control" name="surname" placeholder="Surname" size="50" pattern="[A-Za-z\-]+" required autocomplete="off">
+                        <input type="text" class="form-control" name="surname" placeholder="Surname" size="50" pattern="[a-zA-Z\-]" required autocomplete="off">
                     </label>
                     </div>
                     <div class="form-group">
