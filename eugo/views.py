@@ -220,6 +220,8 @@ def register(request):
             # save the player in the Player database
             #p.save()
             print(f"[{username}] created player object")
+            # Create the users friendlist
+            FriendsList.objects.create(user1=p)
             
             #make friends list
             #fl = FriendsList(user1 = p)
