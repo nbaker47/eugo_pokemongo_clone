@@ -6,5 +6,5 @@ requests
 regex
 # channels for the chat
 channels
-# scipy
-scipy
+# MySql
+mysqlclient
