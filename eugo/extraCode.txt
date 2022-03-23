@@ -28,3 +28,35 @@
 
     print("\nPlayer vals" + str(player_vals))
     '''
+
+"""
+def sendchat(request):
+    if request.method == 'POST':
+        try:
+            channel_id = str(request.POST.get('channel'))
+            username = str(request.POST.get('user'))
+            message = str(request.POST.get('message'))
+            channel_id_k = ChatChannel.objects.filter(channel_id  = channel_id)[0]
+            new_message = ChatMessage(channel_id = channel_id_k , user = username, content=message)
+            new_message.save()
+            print("message : " + message)
+        except Exception as e:
+            print(e)
+            
+    return render(request, 'map.html')
+"""
+
+    """
+    def unfriend(self, removee):
+        #remove both from eachothers friend list
+        remover_friends_list = self
+        remover_friends_list.remove_friend(removee)
+        friends_list = FriendsList.objects.get(user=removee)
+        friends_list.remove_friend(self.user)
+    
+    def is_mutual_friend(self, friend):
+        if friend in self.friends.all():
+            return True
+        else:
+            return False
+    """            

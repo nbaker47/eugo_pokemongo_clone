@@ -196,7 +196,7 @@
                     <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="battleFriend()">Battle</button>
                     <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="tradeFriend('{{ user.get_username }}','{{ f.username }}')">Trade</button>
                     <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="whisperFriend()">Whisper</button>
-                    <button class="btn btn-outline-danger my-2 my-sm-0 sticky-top" type="button" onclick="unFriend()">Unfriend</button>
+                    <button class="btn btn-outline-danger my-2 my-sm-0 sticky-top" type="button" onclick="unfriend('{{ user.get_username }}', '{{ f.username }}')">Unfriend</button>
                 </li>
                 {% endfor %}
             </ul>
@@ -359,6 +359,26 @@
                 error: function(data) {
                     console.log("error : ", JSON.stringify(data));
                     //alert(")
+                },
+            });
+        }
+
+        function unfriend(sender, reciever) {
+            console.log(sender, reciever);
+            $.ajax({
+                type: "POST",
+                url: "/eugo/friendreq/",
+                data: {
+                    'type': 'unfriend',
+                    'sender': sender,
+                    'reciever': reciever,
+                },
+                success: function(data) {
+                    alert("Unfriended Player Successfully");
+                    location.reload();
+                },
+                error: function(data) {
+                    console.log("error: ". JSON.stringify(data));
                 },
             });
         }
