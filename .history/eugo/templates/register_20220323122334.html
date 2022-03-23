@@ -48,13 +48,13 @@
                     var filter = /^(?=.*?[#?!@$%^&*-])+$/;
                     var valid = true;
 
-
+                    /*Alerts should be change to instead change text underneath the button (Added later) */
                     if (fname.search(/^(?=.*?[#?!@$%^&*-])+$/) < 0) {
                         errors.push("Name must not contain any spaces or special characters.")
                         valid = false;
                     }
-                    if (lname.search(/^(?=.*?[#?!@$%^&*])+$/) < 0) {
-                        errors.push("Surname must not contain any spaces or special characters.")
+                    if (lname.search(" ") < 0) {
+                        errors.push("Name must not contain any spaces or special characters.")
                         valid = false;
                     }
 
@@ -79,12 +79,25 @@
                     if (errors.length > 0) {
                         var lines = errors.join("\r\n");
                         document.getElementById("errors").innerHTML = lines;
+                        /*
+                        for (let i = 0; i < errors.length; i++) {
+                            document.getElementById("errors").innerHTML = errors.pop() + "<br\>";
+                        }
+                        */
                     }
 
                     return valid;
                 }
             </script>
 
+            <!--
+        <div>
+            <div class="alert alert-{{message.tags}} alert-dissmissable fade show" role="alert">
+                <strong>Message</strong> {{message}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"> </button>
+            </div>
+        </div>
+    -->
 
             <br><br>
             <form id="formp" name="myForm" class="form" method="POST" action="." onsubmit="return validateForm()">

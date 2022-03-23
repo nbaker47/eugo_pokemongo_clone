@@ -196,6 +196,6 @@ canvas:hover {
     display: flex;
 }
 
-#errors {
+#id {
     white-space: pre;
 }
