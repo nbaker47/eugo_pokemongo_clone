@@ -46,14 +46,14 @@
                     var errors = [];
                     var valid = true;
 
-                    var tester = new RegExp("/^[a-zA-Z\-]*$/");
+                    var tester = /^[a-zA-Z]*$/
 
 
-                    if (tester.test(fname)) {
+                    if (tester(fname)) {
                         errors.push("Name must not contain any spaces or special characters.")
                         valid = false;
                     }
-                    if (tester.test(lname)) {
+                    if (lname.search() < 0) {
                         errors.push("Surname must not contain any spaces or special characters.")
                         valid = false;
                     }
@@ -82,18 +82,6 @@
                     }
 
                     return valid;
-                }
-
-                function showPassword() {
-                    var x = document.getElementById("pass");
-                    var x2 = document.getElementById("pass2");
-                    if (x.type === "password" && x2.type === "password") {
-                        x.type = "text";
-                        x2.type = "text";
-                    } else {
-                        x.type = "password";
-                        x2.type = "password";
-                    }
                 }
             </script>
 
@@ -130,16 +118,14 @@
                     </div>
                     <div class="form-group">
                         <label>
-                        <input type="password" class="form-control"  name="password1" id="pass" placeholder="Password" size="50" minlength="8" required>
+                        <input type="password" class="form-control"  name="password1" placeholder="Password" size="50" minlength="8" required>
                     </label>
                     </div>
                     <div class="form-group">
                         <label>
-                        <input type="password" class="form-control" name="password2" id="pass2" placeholder="Re-enter Password" size="50" minlength="8" required >
+                        <input type="password" class="form-control" name="password2" placeholder="Re-enter Password" size="50" minlength="8" required >
                     </label>
                     </div>
-                    <input type="checkbox" onclick="showPassword()"> Show Password
-                    <br>
                     <br>
                     <div class="form-group">
                         <label>

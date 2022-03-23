@@ -39,21 +39,21 @@
 
                     let fname = document.forms['myForm']['firstname'].value;
                     let lname = document.forms['myForm']['surname'].value;
-                    //let username = document.forms['myForm']['username'].value;
+                    let username = document.forms['myForm']['username'].value;
                     let password1 = document.forms['myForm']['password1'].value;
                     let password2 = document.forms['myForm']['password2'].value;
 
                     var errors = [];
+                    var pwd_expression = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])/;
+                    var filter = /^(?=.*?[#?!@$%^&*-])+$/;
                     var valid = true;
 
-                    var tester = new RegExp("/^[a-zA-Z\-]*$/");
 
-
-                    if (tester.test(fname)) {
+                    if (fname.search() < 0) {
                         errors.push("Name must not contain any spaces or special characters.")
                         valid = false;
                     }
-                    if (tester.test(lname)) {
+                    if (lname.search() < 0) {
                         errors.push("Surname must not contain any spaces or special characters.")
                         valid = false;
                     }
@@ -82,18 +82,6 @@
                     }
 
                     return valid;
-                }
-
-                function showPassword() {
-                    var x = document.getElementById("pass");
-                    var x2 = document.getElementById("pass2");
-                    if (x.type === "password" && x2.type === "password") {
-                        x.type = "text";
-                        x2.type = "text";
-                    } else {
-                        x.type = "password";
-                        x2.type = "password";
-                    }
                 }
             </script>
 
@@ -130,16 +118,14 @@
                     </div>
                     <div class="form-group">
                         <label>
-                        <input type="password" class="form-control"  name="password1" id="pass" placeholder="Password" size="50" minlength="8" required>
+                        <input type="password" class="form-control"  name="password1" placeholder="Password" size="50" minlength="8" required>
                     </label>
                     </div>
                     <div class="form-group">
                         <label>
-                        <input type="password" class="form-control" name="password2" id="pass2" placeholder="Re-enter Password" size="50" minlength="8" required >
+                        <input type="password" class="form-control" name="password2" placeholder="Re-enter Password" size="50" minlength="8" required >
                     </label>
                     </div>
-                    <input type="checkbox" onclick="showPassword()"> Show Password
-                    <br>
                     <br>
                     <div class="form-group">
                         <label>

@@ -46,14 +46,14 @@
                     var errors = [];
                     var valid = true;
 
-                    var tester = new RegExp("/^[a-zA-Z\-]*$/");
+                    var tester = /^[a-zA-Z]*$/
 
 
-                    if (tester.test(fname)) {
+                    if (fname.value.match(tester)) {
                         errors.push("Name must not contain any spaces or special characters.")
                         valid = false;
                     }
-                    if (tester.test(lname)) {
+                    if (lname.value.match(tester)) {
                         errors.push("Surname must not contain any spaces or special characters.")
                         valid = false;
                     }
