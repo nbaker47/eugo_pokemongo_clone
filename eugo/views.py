@@ -103,6 +103,8 @@ def startbattle(request):
 
     items = [player.balls, player.extensions]
 
+    ce = CompleteEvents(username = player, event = MapEvent.objects.get(id = event_id))
+    ce.save()
 
     return render(request, 'battlegame.html',{'player_lec': player_lec, 'lec' : opp_lec,'eve': event_id, 'is_admin': get_admin(request), 'items': items, 'moves': move_list, "result": result})
         
