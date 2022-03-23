@@ -10,6 +10,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('map/', views.map, name='map'),
     path('battle/', views.battle, name='battle'),
+    path('startbattle/', views.startbattle, name='startbattle'),
     path('player/', views.player, name='player'),
     path('lecturers/', views.lecturers, name='lecturers'),
     path('lecturerdex/', views.lecturerdex, name='lecturerdex'),

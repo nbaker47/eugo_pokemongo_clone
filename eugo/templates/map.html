@@ -607,14 +607,14 @@
                 }
             }
             else if(curLec == decodedText + ".png"){
-                alert("matched QR!")
-
                 //create form of lecturer and submit to /eugo/catch
                 let windowName = 'w_' + Date.now() + Math.floor(Math.random() * 100000).toString();
                 var form = document.createElement("form");
                 form.setAttribute("method", "post");
 
-                if(document.getElementById('wild-battle') == "lecSpawnLi"){
+                
+
+                if(document.getElementById('wild-battle').value == "lecSpawnLi"){
                     form.setAttribute("action", "/eugo/catch/");
                 }else{
                     form.setAttribute("action", "/eugo/battle/");

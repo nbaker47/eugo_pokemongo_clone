@@ -27,6 +27,7 @@ from datetime import datetime
 import copy
 import datetime
 import urllib.request
+import random
 
 """ ---------------------------- VIEWS ---------------------------------------------------------------- """
 """ INDEX -------------------- """
@@ -39,12 +40,11 @@ def index(request):
 """ This method to handle the battle.html """
 def battle(request):
     
-    # check if the method is POST (a lecturer has been caught)
-    if request.method == 'POST':
-        #lec_id = request.POST['lecID']
-        # get the lec and event IDs
-        lec_id = str(request.POST.get('lecID'))
-        event_id = request.POST.get('eventID')
+
+    #lec_id = request.POST['lecID']
+    # get the lec and event IDs
+    lec_id = str(request.POST.get('lecID'))
+    event_id = request.POST.get('eventID')
 
     # get the lecturer object from its id
     lec = Lecturer.objects.filter(id = lec_id)
@@ -55,15 +55,52 @@ def battle(request):
     items = [player.balls, player.extensions]
 
 
-    hands = Hand.objects.all()
-    playerLecs = list()
-    for h in hands:
-        if h.username == player:
-            playerLecs.append(h.lec_id)
+    hands = Hand.objects.filter(username = player)
+
+    print(event_id)
+
+    return render(request, 'battle.html',{'lec': lec, 'eve': event_id, 'is_admin': get_admin(request), 'items': items, "playerLecs" : hands})
 
 
-    return render(request, 'battle.html',{'lec': lec, 'eve': event_id, 'is_admin': get_admin(request), 'items': items})
+def startbattle(request):
+    print(request.POST)
 
+    player_lec_id = request.POST.get('playerLecturerID')
+    event_id = request.POST.get('eventID')
+    opp_lec = MapEvent.objects.get(id = event_id).lec_id
+    player_lec = Lecturer.objects.get(id = player_lec_id)
+    un = request.user.username
+    player = Player.objects.filter(username=un)[0]
+
+    #create move list (player always first)
+    move_list = list()
+    p_hp = copy.deepcopy(player_lec.hp)
+    o_hp = copy.deepcopy(opp_lec.hp)
+    if(request.POST.get("extension")):
+        o_hp = int(o_hp*0.8)
+        player.extensions -= 1
+        player.save()
+
+    while True:
+        next_attack = int( random.random() * player_lec.attack )
+        move_list.append(next_attack)
+        o_hp -= next_attack
+        if(o_hp <= 0):
+            break
+        next_attack = int( random.random() * opp_lec.attack )
+        move_list.append(next_attack)
+        p_hp -= next_attack
+        if(p_hp <= 0):
+            break
+
+
+    items = [player.balls, player.extensions]
+
+
+    return render(request, 'battlegame.html',{'player_lec': player_lec, 'lec' : opp_lec,'eve': event_id, 'is_admin': get_admin(request), 'items': items})
+        
+
+    
 
 """ SIGNIN ------------------- """
 """ This is the method that handles the login page (cannot be named login because of built in function) """
