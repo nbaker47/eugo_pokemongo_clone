@@ -73,30 +73,38 @@ def startbattle(request):
 
     #create move list (player always first)
     move_list = list()
-    p_hp = copy.deepcopy(player_lec.hp)
-    o_hp = copy.deepcopy(opp_lec.hp)
+    p_hp = player_lec.hp
+    o_hp = opp_lec.hp
     if(request.POST.get("extension")):
         o_hp = int(o_hp*0.8)
+        opp_lec.hp = int(opp_lec.hp*0.8)
         player.extensions -= 1
         player.save()
 
+    result = ""
+
+    print(o_hp)
     while True:
         next_attack = int( random.random() * player_lec.attack )
         move_list.append(next_attack)
         o_hp -= next_attack
+        
         if(o_hp <= 0):
+            
+            result = "you won!"
             break
         next_attack = int( random.random() * opp_lec.attack )
         move_list.append(next_attack)
         p_hp -= next_attack
         if(p_hp <= 0):
+            result = opp_lec.name + " won"
             break
 
 
     items = [player.balls, player.extensions]
 
 
-    return render(request, 'battlegame.html',{'player_lec': player_lec, 'lec' : opp_lec,'eve': event_id, 'is_admin': get_admin(request), 'items': items})
+    return render(request, 'battlegame.html',{'player_lec': player_lec, 'lec' : opp_lec,'eve': event_id, 'is_admin': get_admin(request), 'items': items, 'moves': move_list, "result": result})
         
 
     

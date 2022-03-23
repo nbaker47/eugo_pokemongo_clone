@@ -92,10 +92,9 @@
                 <strong>Name: </strong> {{lec.name}} <br>
                 <img class="card-img-top" id="lect-pic" src='{% static "/eugo/img/teacher_sprites/"%}{{lec.sprite}}' width="200" height="200">
                 <p><br>
-                    <strong>HP:</strong> {{lec.hp}}
+                    <strong>HP:</strong> <span id="opphp">{{lec.hp}}<span>
                     <p>
-                        <strong>Attack:</strong>
-                        <p> {{lec.attack}}</p>
+                        <strong>Attack:</strong> {{lec.attack}}
             </div>
             <div class="card lec-card" style="width: 18rem;">
                 <strong>Name: </strong> {{player_lec.name}} <br>
@@ -103,11 +102,9 @@
                 <p><br>
                     <strong>HP:</strong> {{player_lec.hp}}
                     <p>
-                        <strong>Attack:</strong>
-                        <p> {{player_lec.attack}}</p>
+                        <strong>Attack:</strong>{{player_lec.attack}}
             </div>
-            <div class="card-body">
-
+            <div class="card-body" id = "battle-text">
             </div>
 
             <br style="clear:both;" />  {% else %}
@@ -116,7 +113,29 @@
         </div>
 
 
+<script>
+    moves = "{{moves}}".replace("[" , "").replace("]" , "")
+    movesl = moves.split(",")
+    opp = "{{lec.name}}"
+    cur = "opp"
+    result = "{{result}}"
+    stringBuild = ""
+    for(let i = 0; i < movesl.length; i++){
+        if(cur == "opp"){
+            cur = "you"
+            stringBuild += ("You hit " + opp + " for " + movesl[i] + " <br> ")
+        }else{
+            cur = "opp"
+            stringBuild += (opp + " hit you for " + movesl[i] + " <br> ")
+        }
 
+        setTimeout(function(){
+            document.getElementById("battle-text").innerHTML = stringBuild
+        }, 20000);
+    }
+    document.getElementById("battle-text").innerHTML = stringBuild + " <br> " + result
+
+</script>
 
 
 </body>
