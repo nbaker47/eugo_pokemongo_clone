@@ -544,6 +544,8 @@ def friendreq(request):
             # if a friend request is being accepted then just accept it 
             friend_req = FriendRequest.objects.get(sender=sender, reciever=reciever)
             friend_req.accept()
+            # Delete the request
+            friend_req.delete()
             print(f"[{sender_name}] accepted a friend request from '{reciever_name}'")
 
         elif type == 'unfriend':
