@@ -1,4 +1,7 @@
 # ECM2434 Group 28 - EUGO
+## Public Address
+The EUGO website is public and accessible on [here](https://eugo-344915.ew.r.appspot.com/eugo/login/ "EUGO Login"). The website should contain the current up to date EUGO program.
+
 ## Requirements
 * \>= python3.9
 * pip
@@ -17,6 +20,10 @@ The database should be set-up already(note it is sqlite3), but just in case it i
 ```
 python manage.py makemigrations
 python manage.py migrate
+```
+If there are still errors with the database, you can try the command:
+```
+python manage.py migrate --run-syncdb
 ```
 After this is done, all of the setup for the backend should be complete
 

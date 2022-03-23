@@ -278,6 +278,16 @@
         var friends_list_a = document.getElementById("friends-list-a");
         //var mailbox_a = document.getElementById("mailbox-a");
 
+        const form = document.getElementById('chat-reset');
+
+        form.addEventListener('submit', function handleSubmit(event) {
+            event.preventDefault();
+            // 👇️ Send data to server here
+            // 👇️ Reset form here
+            form.reset();
+        });
+
+
         friends_list_a.onclick = function() {
             showFriendsList()
         };
@@ -421,16 +431,12 @@
             console.log("sending chat");
             let message = document.getElementById('usermsg').value
 
-            const form = document.getElementById('chat-reset');
-
             if (message.length > 1) {
                 //if (!isOpen(chatSocket)) return;
                 chatSocket.send(JSON.stringify({
                     'message': message,
                     'username': username,
                 }))
-
-                form.reset();
             }
         }
 
