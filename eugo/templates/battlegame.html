@@ -98,7 +98,7 @@
             </div>
             <div class="card lec-card" style="width: 18rem;">
                 <strong>Name: </strong> {{player_lec.name}} <br>
-                <img class="card-img-top" id="lect-pic" src='{% static "/eugo/img/teacher_sprites/"%}{{player_lec.sprite}}' width="200" height="200">
+                <img class="card-img-top" id="lect-pic" src='{% static "/eugo/img/teacher_sprites/"%}{{player_lec.sprite}}' width="200" height="200" style = "transform: rotateY(180deg)">
                 <p><br>
                     <strong>HP:</strong> {{player_lec.hp}}
                     <p>
@@ -124,16 +124,24 @@
         if(cur == "opp"){
             cur = "you"
             stringBuild += ("You hit " + opp + " for " + movesl[i] + " <br> ")
+            setTimeout(function(){
+                document.getElementById("battle-text").innerHTML += ("You hit " + opp + " for " + movesl[i] + " <br> ")
+                //animations here (u hit them)
+            }, (2000*i));
         }else{
             cur = "opp"
             stringBuild += (opp + " hit you for " + movesl[i] + " <br> ")
+            setTimeout(function(){
+                document.getElementById("battle-text").innerHTML += (opp + " hit you for " + movesl[i] + " <br> ")
+                //animations here (they hit u)
+            }, (2000*i));
         }
 
-        setTimeout(function(){
-            document.getElementById("battle-text").innerHTML = stringBuild
-        }, 20000);
+        
     }
-    document.getElementById("battle-text").innerHTML = stringBuild + " <br> " + result
+    setTimeout(function(){
+        document.getElementById("battle-text").innerHTML = stringBuild + " <br> " + result
+    }, (2000*movesl.length));
 
 </script>
 
