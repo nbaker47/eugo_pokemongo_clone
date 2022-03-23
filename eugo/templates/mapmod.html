@@ -36,8 +36,23 @@
         <div class="map" id="mapConID">
             <img src='{% static "/eugo/img/exe_map_alpha.png" %}' class="map-img" onclick="showEventSelect()">
         </div>
+        
+        <!-- create lectstops -->
 
-        {% for i in mapEvent %}
+        {%  for i in stops %}
+
+        <div class="stop-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
+        font-weight: bold; list-style-type: none;" id='{{i.id}}' value='{{i.pos}}'>
+            <li>LectStop</li>
+            <li>{{ i.pos }}</li>
+            <li><img src='{% static "/eugo/img/"%}stopmark.png' class="spirite-img" style="width: 15%; height: 15%"></li>
+            <button type="button" class="btn btn-light btn-sm" id="qr-gen-but" class="qr-gen-but" onclick="viewQR('{{i.qrUrl}}')">View QR</button>
+        </div>
+
+        {% endfor %}
+
+        <!-- create spawns and battles (position chanaged in js) -->
+        {%  for i in mapEvent %}
         <div class="lec-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
         font-weight: bold; list-style-type: none;" id='{{i.lec.id}}' value='{{i.pos}}'>
             <li>{{ i.lec_id.name }}</li>
@@ -59,6 +74,7 @@
                 <li onclick="showLecSpawn('lecSpawnLi')" id="lecSpawnLi">Wild Lecturer Spawn</li>
                 <li onclick="showLecSpawn('lecBattleLi')" id="lecBattleLi">Lecturer Battle</li>
                 <li onclick="showLecSpawn('lecNewLi')" id="lecNewLi">New Lecturer</li>
+                <li onclick="showLecSpawn('newStopLi')" id="newStopLi">New Lect Stop</li>
 
 
                 <form class="spawn-lecturer-menu" id="lecSpawn" method="post">
@@ -70,11 +86,27 @@
                         <option value='{{i.id}}'>{{i.name}}</option>
                       {% endfor %}
                   </select>
-
-                    <input type="hidden" value="0,0" id="coordsBox" name="coords">
-                    <input type="hidden" value="" id="gameOpBox" name="gameop">
-                    <input type="submit" class="form-submit" value="Confirm">
+                  <input type="hidden" value="0,0" id="coordsBox" name="coords">
+                  <input type="hidden" value="" id="gameOpBox" name="gameop">
+                  <input type="submit" class="form-submit" value="Confirm">
                 </form>
+
+                <form class="spawn-stop-menu" id="newStop" method="post">
+                  {% csrf_token %}
+                  
+                  <label for="lecturers">Choose balls rewarded:</label><br>
+                  <input name = "balls" type="range" min="1" max="10" value="1" class="slider" id="balls"><br>
+
+                  <label for="lecturers">Choose extensions rewarded:</label><br>
+                  <input name = "extensions" type="range" min="1" max="10" value="1" class="slider" id="extensions"><br>
+                  
+                  <input type="hidden" value="0,0" id="coordsBoxx" name="coords">
+                  <input type="hidden" value="" id="gameOpBoxxx" name="gameop">
+                  <input type="submit" class="form-submit" value="Confirm">
+                </form>
+
+                
+
 
 
                 <form class="new-lecturer-menu" id="newLec" method="post">
@@ -130,6 +162,7 @@
                         <a class="dropdown-item" href="/eugo/player">Profile</a>
                         <a class="dropdown-item" href="/eugo/logout">Logout</a>
                     </div>
+                    
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
@@ -158,6 +191,7 @@
             var xOff = getOffset(mapContainer).left;
             var yOff = getOffset(mapContainer).top;
             pinL = document.getElementsByClassName("lec-map-pin")
+            stops = document.getElementsByClassName("stop-map-pin")
 
             for (let i = 0; i < pinL.length; i++) {
                 pin = pinL[i];
@@ -184,7 +218,24 @@
                 document.getElementById('parent-container-map-id').appendChild(xImg);
                 */
                 //resetBox();
-            }
+            } 
+
+            for (let i = 0; i < stops.length; i++) {
+                
+                pin = stops[i];
+                var x = parseInt(pin.getAttribute("value").split(",")[0])
+                console.log(x)
+                var y = parseInt(pin.getAttribute("value").split(",")[1])
+                pin.style.left = x + xOff+ "px";
+                pin.style.top = y + yOff+ "px";
+                console.log(x, y);
+                var gifsrc = '{% static "/eugo/img/circle.gif" %}'
+                pin.style.backgroundImage = "url("+ gifsrc +")";
+                pin.style.backgroundSize = "contain";
+                pin.style.backgroundRepeat = "no-repeat";
+                
+            } 
+
         }
 
         function showEventSelect() {
@@ -198,9 +249,12 @@
             var xOff = getOffset(mapContainer).left;
             var yOff = getOffset(mapContainer).top;
             document.getElementById("coordsBox").value = (x - xOff) + "," + (y - yOff);
-            panel.style.visibility = "visible";
+            document.getElementById("coordsBoxx").value = (x - xOff) + "," + (y - yOff);
+            panel.style.visibility = "visible";	
             document.getElementById("newLec").style.display = "none";
             document.getElementById("lecSpawn").style.display = "none";
+            document.getElementById("newStop").style.display = "none";
+            
         }
 
         function getOffset(el) {
@@ -215,6 +269,7 @@
             document.getElementById("lecSpawnLi").style.color = "white";
             document.getElementById("lecBattleLi").style.color = "white";
             document.getElementById("lecNewLi").style.color = "white";
+            document.getElementById("newStopLi").style.color = "white";
             menu = document.getElementById("lecSpawn");
             menu.style.width = "0";
             menu.style.height = "0";
@@ -225,6 +280,7 @@
             document.getElementById("lecSpawnLi").style.color = "white";
             document.getElementById("lecBattleLi").style.color = "white";
             document.getElementById("lecNewLi").style.color = "white";
+            document.getElementById("newStopLi").style.color = "white";
             menu = document.getElementById("lecSpawn");
             menu.style.width = "100%";
             menu.style.height = "100%";
@@ -234,17 +290,24 @@
             li.style.color = "red";
 
             //if coice new lec show new menue
-            if (choice == "lecNewLi") {
-                document.getElementById("newLec").style.display = "block";
-                document.getElementById("lecSpawn").style.display = "none";
-            } else {
-                //else show drop down
-                document.getElementById("newLec").style.display = "none";
-                document.getElementById("lecSpawn").style.display = "block";
+            if(choice == "lecNewLi"){
+              document.getElementById("newLec").style.display = "block";
+              document.getElementById("lecSpawn").style.display = "none";
+              document.getElementById("newStop").style.display = "none";
+            }else if(choice == "newStopLi"){
+              document.getElementById("newLec").style.display = "none";
+              document.getElementById("lecSpawn").style.display = "none";
+              document.getElementById("newStop").style.display = "block";
+            }else{
+              //else show drop down
+              document.getElementById("newLec").style.display = "none";
+              document.getElementById("lecSpawn").style.display = "block";
+              document.getElementById("newStop").style.display = "none";
             }
 
             //this is rly dumb and should be changed
             //realy this all should be ajax
+            document.getElementById("gameOpBoxxx").value = choice;
             document.getElementById("gameOpBoxx").value = choice;
             document.getElementById("gameOpBox").value = choice;
         }

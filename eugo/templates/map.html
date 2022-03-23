@@ -66,6 +66,18 @@
         </div>
         {% endfor %}
 
+        {%  for i in stops %}
+
+        <div class="stop-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
+        font-weight: bold; list-style-type: none;" id='{{i.id}}' value='{{i.pos}}'>
+            <li>LectStop</li>
+            <li><img src='{% static "/eugo/img/"%}stopmark.png' class="spirite-img" style="width: 15%; height: 15%"></li>
+            <li><button type="button" class="btn btn-light btn-sm" onclick="showCamStop('{{i.qrUrl}}','{{i.id}}')">Confirm QR Code</button></li>
+        </div>
+
+        {% endfor %}
+
+
         <!--QR handlers-->
         <button id="cam-button-cancel" class="btn btn-danger" onclick="hideCam()" style="position: absolute; text-align: center; top: 550px">Cancel</button>
         <div style="width: 500px; position: absolute; text-align: center;" id="reader">
@@ -110,6 +122,12 @@
                     <a class="nav-link" href="/eugo/mapmod">MAPMOD!</a>
                 </li>
                 {% endif %}
+                <div style="text-align: right">
+                <li >
+                    Balls : {{ items.0 }} <br>
+                    Extensions : {{ items.1 }}
+                </li>
+                </div>
         </div>
     </nav>
 
@@ -453,7 +471,8 @@
             var xOff = getOffset(mapContainer).left;
             var yOff = getOffset(mapContainer).top;
             pinL = document.getElementsByClassName("lec-map-pin")
-                //scrollbar
+            stops = document.getElementsByClassName("stop-map-pin")
+            //scrollbar
             var myDiv = document.getElementById("messagesContainer");
             myDiv.scrollTop = myDiv.scrollHeight;
 
@@ -468,7 +487,20 @@
                 pin.style.backgroundImage = "url(" + gifsrc + ")";
                 pin.style.backgroundSize = "contain";
                 pin.style.backgroundRepeat = "no-repeat";
-            }
+            } 
+
+            for (let i = 0; i < stops.length; i++) {
+                pin = stops[i];
+                var x = parseInt(pin.getAttribute("value").split(",")[0])
+                var y = parseInt(pin.getAttribute("value").split(",")[1])
+                pin.style.left = x + xOff+ "px";
+                pin.style.top = y + yOff+ "px";
+                console.log(x, y);
+                var gifsrc = '{% static "/eugo/img/circle.gif" %}'
+                pin.style.backgroundImage = "url("+ gifsrc +")";
+                pin.style.backgroundSize = "contain";
+                pin.style.backgroundRepeat = "no-repeat";
+            } 
         }
 
         function getOffset(el) {
@@ -491,7 +523,8 @@
             document.getElementById("gameOpBox").value = choice;
         }
 
-        function showCam(spriteImg, id, event_id) {
+        function showCam(spriteImg, id, event_id){
+
             camDiv = document.getElementById("reader");
             camDiv.style.width = "500px";
             camDiv.style.height = "375px";
@@ -510,7 +543,28 @@
             document.getElementById('current-event-id').value = event_id;
         }
 
-        function hideCam() {
+        function showCamStop(spriteImg, id){
+
+
+            camDiv = document.getElementById("reader");
+            camDiv.style.width = "500px";
+            camDiv.style.height = "375px";
+            camDiv.style.visibility = "visible";
+            canBut = document.getElementById('cam-button-cancel');
+            canBut.style.width = "100px";
+            canBut.style.height = "30px";
+            canBut.style.visibility = "visible";
+
+            document.getElementById('current-lec').value = spriteImg;
+            //console.log("url : " + document.getElementById('current-lec').value);
+
+            document.getElementById('current-lec-id').value = id;
+            //console.log("id : " + document.getElementById('current-lec-id').value);
+
+            document.getElementById('current-event-id').value = id;
+        }
+
+        function hideCam(){
             camDiv = document.getElementById("reader");
             camDiv.style.width = "0";
             camDiv.style.height = "0";
@@ -523,61 +577,32 @@
     </script>
     <!--QR scripts-->
     <script type="text/javascript" src='{% static "/eugo/js/html5-qrcode.min.js" %}'></script>
-    <!--SK BROKEN QR SCRIPT
-    <script type="text/javascript">
 
-        function onScanSuccess(decodedText, decodedResult) {
-            curLec = document.getElementById('current-lec').value
-            event_id = document.getElementById('current-event-id').value
-            console.log("eventid: " + event_id)
-            console.log(curLec + " ?= " + decodedText);
-            if(curLec == decodedText + ".png"){
-                alert("matched QR!")
-                
-                //create form of lecturer and submit to /eugo/catch
-                let windowName = 'w_' + Date.now() + Math.floor(Math.random() * 100000).toString();
-                var form = document.createElement("form");
-                form.setAttribute("method", "post");
-                form.setAttribute("action", "/eugo/catch/");
-                form.setAttribute("target", windowName);
-
-                //add lect id to post form
-                var hiddenField = document.createElement("input"); 
-                hiddenField.setAttribute("type", "hidden");
-                hiddenField.setAttribute("name", "lecID");
-                hiddenField.setAttribute("value", decodedText);
-                form.appendChild(hiddenField);
-
-                //add event id to post form
-                var eventfield = document.createElement("input"); 
-                eventfield.setAttribute("type", "hidden");
-                eventfield.setAttribute("name", "eventID");
-                eventfield.setAttribute("value", event_id);
-                form.appendChild(eventfield);
-
-                /*realy we should just use the post id and then quirey the db for the lecture server side 
-                but oh well again this really needs to be done with ajax*/
-
-                
-                document.body.appendChild(form);
-
-                window.open('', windowName);
-
-                form.submit();
-            }
-            else{
-                alert("invalid QR!")
-            }
-        }
-    </script>
-    -->
     <!--Previous working script-->
     <script type="text/javascript">
+        //this all needs re doing because was orginaly made hard coded to only work with catch....
         function onScanSuccess(decodedText, decodedResult) {
             curLec = document.getElementById('current-lec').value
             console.log(curLec + " ?= " + decodedText);
             event_id = document.getElementById('current-event-id').value
-            if (curLec == decodedText + ".png") {
+
+            if(document.getElementById('current-lec-id').value == event_id){
+                //is lectstop
+                if(curLec == decodedText + ".png"){
+                    var form = document.createElement("form");
+                    form.setAttribute("method", "post");
+                    form.setAttribute("action", "/eugo/map/");
+                    form.setAttribute("target", "_blank");
+                    var hiddenField = document.createElement("input"); 
+                    hiddenField.setAttribute("type", "hidden");
+                    hiddenField.setAttribute("name", "stopID");
+                    hiddenField.setAttribute("value", event_id);
+                    form.appendChild(hiddenField);
+                    document.body.appendChild(form);
+                    form.submit()
+                }
+            }
+            else if(curLec == decodedText + ".png"){
                 alert("matched QR!")
 
                 //create form of lecturer and submit to /eugo/catch
@@ -585,7 +610,7 @@
                 var form = document.createElement("form");
                 form.setAttribute("method", "post");
                 form.setAttribute("action", "/eugo/catch/");
-                form.setAttribute("target", windowName);
+                form.setAttribute("target", "_blank");
 
                 var hiddenField = document.createElement("input");
                 hiddenField.setAttribute("type", "hidden");

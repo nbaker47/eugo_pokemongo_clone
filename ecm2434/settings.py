@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     '192.168.246.30',
     'localhost',
     '127.0.0.1',
+    'eugo-344915.ew.r.appspot.com'
 ]
 
 # Application definition
