@@ -1,6 +1,5 @@
 """ ---------------------------- IMPORTS -------------------------------------------------------------- """
 """ IMPORTS FROM EUGO -------- """
-from scipy import rand
 from eugo.models import *                                       # import the models (database)
 from eugo.forms import *                                        # all of the forms ????????? TODO
 from eugo.models import Player
