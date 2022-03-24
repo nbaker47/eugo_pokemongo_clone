@@ -644,7 +644,7 @@
             if (document.getElementById('current-lec-id').value == event_id) {
                 //is lectstop
                 console.log("TEST1")
-                if (curLec + ".png" == decodedText) {
+                if (curLec == decodedText + ".png") {
                     console.log("TEST2")
                     var form = document.createElement("form");
                     form.setAttribute("method", "post");
@@ -657,7 +657,7 @@
                     document.body.appendChild(form);
                     form.submit()
                 }
-            } else if (curLec + ".png" == decodedText) {
+            } else if (curLec == decodedText + ".png") {
 
                 console.log("TEST3")
                     //create form of lecturer and submit to /eugo/catch

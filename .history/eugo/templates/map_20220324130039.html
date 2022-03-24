@@ -637,14 +637,14 @@
     <script type="text/javascript">
         //this all needs re doing because was orginaly made hard coded to only work with catch....
         function onScanSuccess(decodedText, decodedResult) {
-            curLec = document.getElementById('current-lec').value
+            curLec = document.getElementById('current-lec').value + ".png"
             console.log(curLec + " ?= " + decodedText);
             event_id = document.getElementById('current-event-id').value
 
             if (document.getElementById('current-lec-id').value == event_id) {
                 //is lectstop
                 console.log("TEST1")
-                if (curLec + ".png" == decodedText) {
+                if (curLec == decodedText) {
                     console.log("TEST2")
                     var form = document.createElement("form");
                     form.setAttribute("method", "post");
@@ -657,10 +657,8 @@
                     document.body.appendChild(form);
                     form.submit()
                 }
-            } else if (curLec + ".png" == decodedText) {
-
-                console.log("TEST3")
-                    //create form of lecturer and submit to /eugo/catch
+            } else if (curLec == decodedText) {
+                //create form of lecturer and submit to /eugo/catch
                 let windowName = 'w_' + Date.now() + Math.floor(Math.random() * 100000).toString();
                 var form = document.createElement("form");
                 form.setAttribute("method", "post");

@@ -643,9 +643,7 @@
 
             if (document.getElementById('current-lec-id').value == event_id) {
                 //is lectstop
-                console.log("TEST1")
-                if (curLec + ".png" == decodedText) {
-                    console.log("TEST2")
+                if (curLec == decodedText + ".png") {
                     var form = document.createElement("form");
                     form.setAttribute("method", "post");
                     form.setAttribute("action", "/eugo/map/");
@@ -657,10 +655,8 @@
                     document.body.appendChild(form);
                     form.submit()
                 }
-            } else if (curLec + ".png" == decodedText) {
-
-                console.log("TEST3")
-                    //create form of lecturer and submit to /eugo/catch
+            } else if (curLec == decodedText + ".png") {
+                //create form of lecturer and submit to /eugo/catch
                 let windowName = 'w_' + Date.now() + Math.floor(Math.random() * 100000).toString();
                 var form = document.createElement("form");
                 form.setAttribute("method", "post");

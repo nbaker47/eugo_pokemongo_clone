@@ -40,7 +40,7 @@ def index(request):
 def battle(request):
     #lec_id = request.POST['lecID']
     # get the lec and event IDs
-    lec_id = str(request.POST.get('lecID')).replace(".png","")
+    lec_id = str(request.POST.get('lecID'))
     event_id = request.POST.get('eventID')
 
     # get the lecturer object from its id
@@ -84,9 +84,6 @@ def startbattle(request):
     print(o_hp)
     while True:
         next_attack = int( random.random() * player_lec.attack )
-        if(next_attack == 0):
-            next_attack += 1
-        print(next_attack)
         move_list.append(next_attack)
         o_hp -= next_attack
         
@@ -95,8 +92,6 @@ def startbattle(request):
             result = "you won!"
             break
         next_attack = int( random.random() * opp_lec.attack )
-        if(next_attack == 0):
-            next_attack += 1
         move_list.append(next_attack)
         p_hp -= next_attack
         if(p_hp <= 0):
@@ -330,7 +325,7 @@ def catch(request):
     if request.method == 'POST':
         #lec_id = request.POST['lecID']
         # get the lec and event IDs
-        lec_id = str(request.POST.get('lecID')).replace(".png","")
+        lec_id = str(request.POST.get('lecID'))
         event_id = request.POST.get('eventID')
 
         # print for debugging
@@ -609,12 +604,10 @@ def mapmod(request):
             # save the QR to the file
             img_data = requests.get(qrUrl).content
             file_path = 'eugo/static/eugo/img/qr/' + qr_key + '.png' 
-            '''
             with open(file_path, 'wb') as handler:
                 handler.write(img_data)
-                '''
             # create the new lecturer int eh Lecturer table
-            newLec = Lecturer(id=qr_key, duration=duration, name=name, hp=hp, attack=attack, sprite=sprite, type=type, qrUrl = qr_key)
+            newLec = Lecturer(id=qr_key, duration=duration, name=name, hp=hp, attack=attack, sprite=sprite, type=type, qrUrl = qr_key+'.png')
             # save the new lecturer
             newLec.save()
             print(newLec)

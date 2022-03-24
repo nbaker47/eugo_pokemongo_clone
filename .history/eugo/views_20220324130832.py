@@ -84,9 +84,6 @@ def startbattle(request):
     print(o_hp)
     while True:
         next_attack = int( random.random() * player_lec.attack )
-        if(next_attack == 0):
-            next_attack += 1
-        print(next_attack)
         move_list.append(next_attack)
         o_hp -= next_attack
         
@@ -95,8 +92,6 @@ def startbattle(request):
             result = "you won!"
             break
         next_attack = int( random.random() * opp_lec.attack )
-        if(next_attack == 0):
-            next_attack += 1
         move_list.append(next_attack)
         p_hp -= next_attack
         if(p_hp <= 0):

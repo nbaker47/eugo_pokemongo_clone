@@ -328,11 +328,10 @@
         });
 
         function viewQR(qrId) {
-            var url = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="
             qr = document.getElementById("qrIdImg");
             var static_url = qr.getAttribute("value");
             console.log(static_url);
-            qr.src = url + qrId + ".png";
+            qr.src = qrId + ".img";
             console.log(qr.src);
             qr.style.visibility = "visible";
             qr.style.width = "500px";
