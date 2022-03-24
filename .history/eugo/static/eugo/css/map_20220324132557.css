@@ -9,7 +9,7 @@ body {
     left: 0;
     bottom: 0;
     right: 0;
-    overflow: auto;
+    overflow: scroll;
     display: -ms-flexbox;
     display: -webkit-box;
     display: flex;
@@ -24,9 +24,8 @@ body {
     position: fixed;
     top: 0;
     bottom: 0;
-    overflow: auto;
-    min-width: 0%;
-    max-width: 100%;
+    min-width: 1000px;
+    max-width: 1000px;
     padding: 2px;
 }
 
