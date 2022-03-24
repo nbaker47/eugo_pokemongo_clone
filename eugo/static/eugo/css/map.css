@@ -82,7 +82,7 @@ body{
 }
 
 .rangeslider {
-    width: 400px;
+    width: 70%;
     margin: 0 auto;
   }
   
@@ -229,6 +229,7 @@ body{
 .leaderboard{
   resize: horizontal;
   overflow: scroll;
+  width: 10%;
 }
 
 #leaderboard-list{

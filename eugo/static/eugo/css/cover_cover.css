@@ -196,6 +196,11 @@ canvas:hover {
     display: flex;
 }
 
+canvas {
+    height: 0;
+    width: 0;
+}
+
 #errors {
     white-space: pre;
 }
