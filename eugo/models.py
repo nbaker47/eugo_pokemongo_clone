@@ -106,41 +106,35 @@ class ChatMessage(models.Model):
     content         =   models.CharField(max_length=100, default='message', null=True)
     date            =   models.TimeField(auto_now=False, default=timezone.now )
 
-""" FRIENDS"""
+
+""" FRIENDS LIST ------------- """
 """ keeps track of friends/blocked"""
 class FriendsList(models.Model):
     user1 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='user')
     friends = models.CharField(default='', max_length=2000)
-    #relationship = models.IntegerField() #0=pending 1=friends 2=blocked
-    #date_sent = models.DateField(auto_now=True=)
-
+    
+    # to string method so the list is printable
     def __str__(self) -> str:
         return self.user1.username
 
+    # a function that deals with adding a friend
     def add_friend(self, user):
-        print("ADDING A FIREIEAIWDNAD")
         self.friends = str(self.friends) + ',' + str(user.id)
         self.save()
+        print(f"[{self.user1.username}] Added a friend")
     
+    # a function that deals with removing friends
     def remove_friend(self, user):
-        if user in self.friends.all():
-            self.friends.remove(user)
-            self.save() 
-    
-    """
-    def unfriend(self, removee):
-        #remove both from eachothers friend list
-        remover_friends_list = self
-        remover_friends_list.remove_friend(removee)
-        friends_list = FriendsList.objects.get(user=removee)
-        friends_list.remove_friend(self.user)
-    
-    def is_mutual_friend(self, friend):
-        if friend in self.friends.all():
-            return True
-        else:
-            return False
-    """            
+        # check if the user is in friends
+        print(self.friends)
+        print(Player.objects.get(username=user).id)
+        self.friends = str(self.friends.replace(("," + str(Player.objects.get(username=user).id)), ""))
+        print(self.friends)
+        self.save() 
+        print(f"[{self.user1.username}] Successfully removed '{user.username}' from friends")            
+        # else:
+        #    print(f"[{self.user1.username}] Tried to remove friend '{user.username}' but user is not in friends")
+
 
 """Class for friend request"""
 class FriendRequest(models.Model):
@@ -156,14 +150,14 @@ class FriendRequest(models.Model):
     def accept(self):
         #update sender and reciever
         print("SELF RECIEVER: ", self.reciever)
-        reciever_friend_list = FriendsList.objects.filter(user1=self.reciever)
+        reciever_friend_list = FriendsList.objects.filter(user1=self.reciever)[0]
         if reciever_friend_list:
             reciever_friend_list.add_friend(self.sender)
         else:
             reciever_friend_list = FriendsList.objects.create(user1=self.reciever)
             reciever_friend_list.add_friend(self.sender)
         
-        sender_friend_list  = FriendsList.objects.filter(user1=self.sender)
+        sender_friend_list  = FriendsList.objects.filter(user1=self.sender)[0]
         if sender_friend_list:
             sender_friend_list.add_friend(self.reciever)
         else:
