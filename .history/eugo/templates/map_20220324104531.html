@@ -448,10 +448,6 @@
                 chatbox.style.width = "285px";
                 chatbox.style.height = "600px";
                 chatbox.style.visibility = "visible";
-                chatbox = document.getElementById('leaderboard')
-                chatbox.style.width = "0";
-                chatbox.style.height = "0";
-                chatbox.style.visibility = "hidden";
             } else {
                 chatbox = document.getElementById('chatboard')
                 chatbox.style.width = "0";
@@ -462,7 +458,7 @@
             document.getElementById('hideChatButton').value = buttonVal;
         }
 
-        function hideLeaderboardPanel() {
+        function hideLeaderboard() {
             var buttonVal = parseInt(document.getElementById('hideLeaderboardButton').value, 10);
 
             if (buttonVal % 2 != 0) {
@@ -470,10 +466,6 @@
                 chatbox.style.width = "285px";
                 chatbox.style.height = "600px";
                 chatbox.style.visibility = "visible";
-                chatbox = document.getElementById('chatboard')
-                chatbox.style.width = "0";
-                chatbox.style.height = "0";
-                chatbox.style.visibility = "hidden";
             } else {
                 chatbox = document.getElementById('leaderboard')
                 chatbox.style.width = "0";
