@@ -516,16 +516,6 @@
             var myDiv = document.getElementById("messagesContainer");
             myDiv.scrollTop = myDiv.scrollHeight;
 
-            chatbox = document.getElementById('chatboard')
-            chatbox.style.width = "0";
-            chatbox.style.height = "0";
-            chatbox.style.visibility = "hidden";
-
-            chatbox = document.getElementById('leaderboard')
-            chatbox.style.width = "0";
-            chatbox.style.height = "0";
-            chatbox.style.visibility = "hidden";
-
             for (let i = 0; i < pinL.length; i++) {
                 pin = pinL[i];
                 var x = parseInt(pin.getAttribute("value").split(",")[0])

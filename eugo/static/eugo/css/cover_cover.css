@@ -147,11 +147,11 @@ body {
     width: 80%;
     top: 5%;
     padding: 5%;
+    text-align: center;
 }
 
 #char-select {
-    width: 50%;
-    float: left;
+    width: 100%;
     padding: 10px;
     text-align: center;
     color: #2e2e2e;
@@ -159,8 +159,8 @@ body {
 }
 
 #register-form-left {
-    width: 50%;
-    float: left;
+    width: 100%;
+
     padding: 20px;
 }
 

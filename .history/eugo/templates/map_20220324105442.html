@@ -267,8 +267,8 @@
     </div>
 
     <!--hide panels button-->
-    <button type="button" onclick="hideLeaderboardPanel()" id="hideLeaderboardButton" class="btn btn-sm btn-primary hideLeaderboardButton" value=0>🏆</button>
-    <br> <button type="button" onclick="hideChatPanel()" id="hideChatButton" class="btn btn-sm btn-primary hideChatButton" value=0>💬</button>
+    <button type="button" onclick="hideLeaderboardPanel()" id="hideLeaderboardButton" class="btn btn-sm btn-primary hideLeaderboardButton" value=1>🏆</button>
+    <br> <button type="button" onclick="hideChatPanel()" id="hideChatButton" class="btn btn-sm btn-primary hideChatButton" value=1>💬</button>
 
     </div>
 
@@ -515,16 +515,6 @@
                 //scrollbar
             var myDiv = document.getElementById("messagesContainer");
             myDiv.scrollTop = myDiv.scrollHeight;
-
-            chatbox = document.getElementById('chatboard')
-            chatbox.style.width = "0";
-            chatbox.style.height = "0";
-            chatbox.style.visibility = "hidden";
-
-            chatbox = document.getElementById('leaderboard')
-            chatbox.style.width = "0";
-            chatbox.style.height = "0";
-            chatbox.style.visibility = "hidden";
 
             for (let i = 0; i < pinL.length; i++) {
                 pin = pinL[i];

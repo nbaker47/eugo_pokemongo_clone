@@ -420,7 +420,7 @@ class TestFriendRequest(TestCase):
         self.assertTemplateUsed(response, 'map.html')
 
         # Send a post request to simulate TestUser1 accepting the request
-        response = self.client.post("/eugo/friendreq/", {'type': 'accept', 'sender': 'TestUser', 'reciever': 'TestUser1'})
+        response = self.client.post("/eugo/friendreq/", {'type': 'accept', 'sender': 'TestUser1', 'reciever': 'TestUser'})
 
         # Asser that the two users have been added to the others friend list
         self.assertEquals(str(FriendsList.objects.get(user1=self.player1).friends), "," + str(self.player2.id))

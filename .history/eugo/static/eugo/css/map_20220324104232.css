@@ -81,7 +81,7 @@ body {
 }
 
 .rangeslider {
-    width: 70%;
+    width: 400px;
     margin: 0 auto;
 }
 
@@ -246,18 +246,18 @@ body {
 
 .hideChatButton {
     position: absolute;
-    text-align: center;
+    text-align: right;
     bottom: 0;
-    left: 75%;
+    left: 50%;
     transform: translate(-50%);
     width: 100px;
 }
 
 .hideLeaderboardButton {
     position: absolute;
-    text-align: center;
+    text-align: left;
     bottom: 0;
-    left: 25%;
+    left: 50%;
     transform: translate(-50%);
     width: 100px;
 }

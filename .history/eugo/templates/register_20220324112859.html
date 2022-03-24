@@ -99,7 +99,7 @@
             </script>
 
 
-            <br>
+            <br><br>
             <form id="formp" name="myForm" class="form" method="POST" action="." onsubmit="return validateForm()">
                 <!--action to the php ./homePage.html -->
                 {% csrf_token %}
@@ -147,53 +147,49 @@
                         <input type="text" class="form-control" name="staffno" placeholder="Enter Staff-Code" size="50" minlength="6">
                     </label>
                     </div>
+                    <br><br>
 
+                    <label>
+                    <input type="checkbox" name="terms" value="" required>
+                    <a href="https://gdpr.eu/terms-and-conditions/" class="text-muted">Please read and check the Terms and Conditions</a>
+                </label>
+                    <br><br>
                 </div>
-        </div>
+                <!--</div>-->
 
-        <!--Char selector-->
-        <div id="char-select" class="shadow-sm p-3 mb-5 bg-white rounded">
-            <img src="">
-            <img src="">
-            <img src="">
-            <div class="image mt-3 mb-3 img-container" id="sliderImages">
-                <img src='{% static "/eugo/img/teacher_sprites/teacher_1.png" %}' class="spirite-img">
-                <img src='{% static "/eugo/img/teacher_sprites/teacher_2.png" %}' class="spirite-img">
-                <img src='{% static "/eugo/img/teacher_sprites/teacher_3.png" %}' class="spirite-img">
-            </div>
+                <!--Char selector-->
+                <!--<div id="char-select" class="shadow-sm p-3 mb-5 bg-white rounded">-->
+                <img src="">
+                <img src="">
+                <img src="">
+                <div class="image mt-3 mb-3 img-container" id="sliderImages">
+                    <img src='{% static "/eugo/img/teacher_sprites/teacher_1.png" %}' class="spirite-img">
+                    <img src='{% static "/eugo/img/teacher_sprites/teacher_2.png" %}' class="spirite-img">
+                    <img src='{% static "/eugo/img/teacher_sprites/teacher_3.png" %}' class="spirite-img">
+                </div>
 
-            <!--sprite desidner div-->
-            <div id="sprite-designer-div">
-                <canvas id="myCanvas" class="shadow-sm p-3 mb-5 bg-white rounded" width="500px" height="500px"></canvas>
-                <div id="color-picker-div">
-                    <label for="color-input" id="color-label" style="background-color: red"></label>
-                    <input type="checkbox" id="color-input" checked></input>
-                    <br>
-                    <div id="color-picker">
-                        <canvas id="color-block" height="150px" width="150px"></canvas>
-                        <canvas id="color-strip" height="150px" width="30px"></canvas>
+                <div id="sprite-designer-div">
+                    <canvas id="myCanvas" class="shadow-sm p-3 mb-5 bg-white rounded" width="500" height="500"></canvas>
+                    <div id="color-picker-div">
+                        <label for="color-input" id="color-label" style="background-color: red"></label>
+                        <input type="checkbox" id="color-input" checked></input>
+                        <br>
+                        <div id="color-picker">
+                            <canvas id="color-block" height="150" width="150"></canvas>
+                            <canvas id="color-strip" height="150" width="30"></canvas>
+                        </div>
+                        <input type="hidden" value="" id="colour-output">
+                        <input type="hidden" value="" id="canvas-output" name="canvas-output">
                     </div>
-                    <input type="hidden" value="" id="colour-output">
-                    <input type="hidden" value="" id="canvas-output" name="canvas-output">
                 </div>
-            </div>
 
-            <p>Please Select an Avatar</p>
-            <input class="rangeslider" type="range" id="sprite" name="sprite" min="1" max="3" value="1">
-            <p>Or draw your own character:</p>
-            <button type="button" id="draw-char-button" class="btn btn-primary">Draw</button>
-            <button type="button" id="draw-char-button-cancel" class="btn btn-warning">Cancel</button>
-       
+                <p>Please Select an Avatar</p>
+                <input class="rangeslider" type="range" id="sprite" name="sprite" min="1" max="3" value="1">
+                <p>Or draw your own character:</p>
+                <button type="button" id="draw-char-button" class="btn btn-primary">Draw</button>
+                <button type="button" id="draw-char-button-cancel" class="btn btn-warning">Cancel</button>
         </div>
 
-        <br>
-        <label>
-            <input type="checkbox" name="terms" value="" required>
-            <a href="https://gdpr.eu/terms-and-conditions/" class="text-muted">Please read and check the Terms and Conditions</a>
-        </label>
-        <br>
-
-        <!--form submit-->
         <div class="btn-group" role="group" aria-label="Basic example">
             <label>
                     <input type="submit" onclick="saveCanvas()" class="btn btn-success" value="Register" size="25">
@@ -370,24 +366,13 @@
         div.style.wdith = "100%";
 
         var canvas = document.getElementById('myCanvas');
-        canvas.style.width = "250px";
-        canvas.style.height = "250px";
-
-        var colorBlock = document.getElementById("color-block");
-        colorBlock.style.width="80%";
-        colorBlock.style.height="100%";
-
-        var colorStrip = document.getElementById("color-strip");
-        colorStrip.style.width="20%";
-        colorStrip.style.height="20%";
-
-
+        canvas.style.width = "500px";
+        canvas.style.height = "500px";
         var context = document.getElementById('myCanvas').getContext("2d");
         context = canvas.getContext("2d");
         context.strokeStyle = document.getElementById("color-label").value;
         context.lineJoin = "round";
         context.lineWidth = 5;
-        context.scale(1.8, 1.8);
 
         //cancel preset sprite
         //document.getElementById('sprite').value = '999';

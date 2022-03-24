@@ -193,7 +193,7 @@
                     <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="battleFriend()">Battle</button>
                     <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="tradeFriend('{{ user.get_username }}','{{ f.username }}')">Trade</button>
                     <button class="btn btn-outline-success my-2 my-sm-0 sticky-top" type="button" onclick="whisperFriend()">Whisper</button>
-                    <button class="btn btn-outline-danger my-2 my-sm-0 sticky-top" type="button" onclick="unfriend('{{ user.get_username }}', '{{ f.username }}')">Unfriend</button>
+                    <button class="btn btn-outline-danger my-2 my-sm-0 sticky-top" type="button" onclick="unFriend()">Unfriend</button>
                 </li>
                 {% endfor %}
             </ul>
@@ -267,8 +267,8 @@
     </div>
 
     <!--hide panels button-->
-    <button type="button" onclick="hideLeaderboardPanel()" id="hideLeaderboardButton" class="btn btn-sm btn-primary hideLeaderboardButton" value=0>🏆</button>
-    <br> <button type="button" onclick="hideChatPanel()" id="hideChatButton" class="btn btn-sm btn-primary hideChatButton" value=0>💬</button>
+    <button type="button" onclick="hideLeaderboardPanel()" id="hideLeaderboardButton" class="btn btn-sm btn-primary hideChatButton" value=0>🏆</button>
+    <button type="button" onclick="hideChatPanel()" id="hideChatButton" class="btn btn-sm btn-primary hideChatButton" value=0>💬</button>
 
     </div>
 
@@ -361,26 +361,6 @@
             });
         }
 
-        function unfriend(sender, reciever) {
-            console.log(sender, reciever);
-            $.ajax({
-                type: "POST",
-                url: "/eugo/friendreq/",
-                data: {
-                    'type': 'unfriend',
-                    'sender': sender,
-                    'reciever': reciever,
-                },
-                success: function(data) {
-                    alert("Unfriended Player Successfully");
-                    location.reload();
-                },
-                error: function(data) {
-                    console.log("error: ".JSON.stringify(data));
-                },
-            });
-        }
-
         function tradeFriend(reciever, sender) {
             console.log(sender, reciever)
 
@@ -468,10 +448,6 @@
                 chatbox.style.width = "285px";
                 chatbox.style.height = "600px";
                 chatbox.style.visibility = "visible";
-                chatbox = document.getElementById('leaderboard')
-                chatbox.style.width = "0";
-                chatbox.style.height = "0";
-                chatbox.style.visibility = "hidden";
             } else {
                 chatbox = document.getElementById('chatboard')
                 chatbox.style.width = "0";
@@ -482,7 +458,7 @@
             document.getElementById('hideChatButton').value = buttonVal;
         }
 
-        function hideLeaderboardPanel() {
+        function hideLeaderboard() {
             var buttonVal = parseInt(document.getElementById('hideLeaderboardButton').value, 10);
 
             if (buttonVal % 2 != 0) {
@@ -490,10 +466,6 @@
                 chatbox.style.width = "285px";
                 chatbox.style.height = "600px";
                 chatbox.style.visibility = "visible";
-                chatbox = document.getElementById('chatboard')
-                chatbox.style.width = "0";
-                chatbox.style.height = "0";
-                chatbox.style.visibility = "hidden";
             } else {
                 chatbox = document.getElementById('leaderboard')
                 chatbox.style.width = "0";
@@ -515,16 +487,6 @@
                 //scrollbar
             var myDiv = document.getElementById("messagesContainer");
             myDiv.scrollTop = myDiv.scrollHeight;
-
-            chatbox = document.getElementById('chatboard')
-            chatbox.style.width = "0";
-            chatbox.style.height = "0";
-            chatbox.style.visibility = "hidden";
-
-            chatbox = document.getElementById('leaderboard')
-            chatbox.style.width = "0";
-            chatbox.style.height = "0";
-            chatbox.style.visibility = "hidden";
 
             for (let i = 0; i < pinL.length; i++) {
                 pin = pinL[i];
