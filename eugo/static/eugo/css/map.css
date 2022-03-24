@@ -229,7 +229,7 @@ body{
 .leaderboard{
   resize: horizontal;
   overflow: scroll;
-  width: 10%;
+  width: 190px;
 }
 
 #leaderboard-list{
@@ -319,4 +319,7 @@ body{
 #friends-div, #mailbox-div{
   opacity : 0;
   height : 0;
+}
+#friend-input-box{
+  width: 100%;
 }
