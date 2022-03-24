@@ -413,6 +413,11 @@ def nocatch(request):
 """ This method handles the map link and its forms """
 def map(request):
     # check if the request method is POST (corresponding to QR scans)
+    try:
+        chat = ChatChannel(channel_id="global123", channel_name="global123")
+        chat.save()
+    except:
+        pass
     if request.method == 'POST':
         # if it is get the QR URL
         qrUrl = request.POST.get('qrUrl')

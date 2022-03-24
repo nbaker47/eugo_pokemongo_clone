@@ -59,7 +59,7 @@
         <div class="lec-map-pin" style="position: absolute; z-index: 4; font-size: 10px;
         font-weight: bold; list-style-type: none;" id='{{i.lec_id.id}}' value='{{i.pos}}'>
             <li>{{ i.lec_id.name }}</li>
-            <li>{{ i.lec_id.duration }} Mins Remaining</li>
+            <!--<li>{{ i.lec_id.duration }} Mins Remaining</li>-->
             <!--<li style="color: black;">{{ i.pos }}</li>-->
             <li><img src='{% static "/eugo/img/teacher_sprites/"%}{{i.lec_id.sprite}}' class="spirite-img"></li>
             <li><button type="button" class="btn btn-light btn-sm" onclick="showCam('{{i.lec_id.qrUrl}}','{{i.lec_id.id}}','{{i.id}}','{{i.wildOrBattle}}')">Confirm QR Code</button></li>
@@ -229,7 +229,7 @@
         <div id="content" style="direction: ltr;">
             <!--Channel selector button-->
             <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle chatselect" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-primary chatselect" type="button" id="dropdownMenuButton"  aria-haspopup="true" aria-expanded="false">
                     Global Chat
                     </button>
                 <!--
@@ -267,8 +267,8 @@
     </div>
 
     <!--hide panels button-->
-    <button type="button" onclick="hideLeaderboardPanel()" id="hideLeaderboardButton" class="btn btn-sm btn-primary hideLeaderboardButton" value=0>🏆</button>
-    <br> <button type="button" onclick="hideChatPanel()" id="hideChatButton" class="btn btn-sm btn-primary hideChatButton" value=0>💬</button>
+    <button type="button" onclick="hideLeaderboardPanel()" id="hideLeaderboardButton" class="btn btn-sm btn-primary hideLeaderboardButton" value=1>🏆</button>
+    <br> <button type="button" onclick="hideChatPanel()" id="hideChatButton" class="btn btn-sm btn-primary hideChatButton" value=1>💬</button>
 
     </div>
 
