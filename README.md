@@ -12,7 +12,7 @@ The EUGO website is public and accessible on [here](https://eugo-344915.ew.r.app
   * channels
 
 ## Setup
-In order to be able to run the server, all of the dependencies will have to be installed, this can be done with the command:
+In order to be able to run the server, all of the dependencies will have to be installed, this can be done with the command: 
 ```
 pip install -r requirements.txt
 ```
